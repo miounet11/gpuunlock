@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: gpu-unlock
+Source: local source checkout
+
+Files: *
+Copyright: See source file headers and licenses/ notices.
+License: GPL-2.0-only
+
+License: GPL-2.0-only
+ On Debian systems, the complete license text is in
+ /usr/share/common-licenses/GPL-2.

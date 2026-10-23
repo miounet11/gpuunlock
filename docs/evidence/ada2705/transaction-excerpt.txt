@@ -1,0 +1,5 @@
+[    1.410267] kernel: pci 0000:01:00.0: AD102 payload result: boot=0 halt=0 marker=0x67b00001 expected=0x67b00001 marker_ok=1 required_permissions=1 cpuctl=0x10 halted=1 debug=0xda550000 ss0=0x6301153 ss1=0x6
+[    1.410273] kernel: pci 0000:01:00.0: selector result: SS0=0x88888888 expected=0x88888888 matched=1
+[    1.410278] kernel: pci 0000:01:00.0: selector result: SS1=0x8 expected=0x8 matched=1
+[    1.898595] kernel: pci 0000:01:00.0: post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+[    1.915919] kernel: pci 0000:01:00.0: gpu_unlock: unlocked

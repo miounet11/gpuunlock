@@ -1,0 +1,27 @@
+# `make dist` ships only the source needed to build and test the packages.
+/* export-ignore
+/.gitignore -export-ignore
+/.gitattributes -export-ignore
+/VERSION -export-ignore
+/LICENSE -export-ignore
+/Makefile -export-ignore
+/README.md -export-ignore
+/QUICKSTART.md -export-ignore
+/rtx4090-register-report.md -export-ignore
+/docs -export-ignore
+/diagnostics -export-ignore
+/firmware -export-ignore
+/kernel -export-ignore
+/licenses -export-ignore
+/packaging -export-ignore
+/tests -export-ignore
+/tools -export-ignore
+/requirements-research.txt -export-ignore
+*.bin export-ignore
+*.cu export-ignore
+/diagnostics/bench/mma_bench.cu -export-ignore
+/diagnostics/bench/validate_gemm.cu -export-ignore
+/debian -export-ignore
+# Keep published evidence bytes identical on Windows and Linux clones.
+/docs/evidence/ada2705/* -text
+/docs/evidence/rtx4090/* -text

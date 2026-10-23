@@ -1,0 +1,6 @@
+# Pinned GPU firmware is a device image, not a host program.
+addFilter(r"^gpu-unlock-firmware.*: [WE]: (unstripped-binary-or-object|statically-linked-binary|missing-PT_GNU_STACK-section)")
+# The DKMS package intentionally ships source and configuration only.
+addFilter(r"^gpu-unlock-dkms.*: E: no-binary")
+# Retain the unmodified GPL-2.0 notice required by the source provenance.
+addFilter(r"^gpu-unlock-dkms.*: E: incorrect-fsf-address")

@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+include /usr/share/dpkg/pkg-info.mk
+
+# Pinned NVIDIA inputs, fetched beforehand with `make inputs`; the build
+# itself never touches the network.
+GPU_UNLOCK_INPUTS ?= $(HOME)/.cache/gpu-unlock/inputs
+ASSETS := $(CURDIR)/debian/gpu-unlock-build/assets
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	test "$$(cat VERSION)" = "$(DEB_VERSION_UPSTREAM)"
+
+override_dh_auto_build:
+	$(MAKE) INPUTS="$(GPU_UNLOCK_INPUTS)" ASSETS="$(ASSETS)" firmware
+
+override_dh_auto_test:
+	$(MAKE) test ASSETS="$(ASSETS)"
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp ASSETS="$(ASSETS)" \
+		install-dkms install-firmware install-initramfs-tools

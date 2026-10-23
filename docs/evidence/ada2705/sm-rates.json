@@ -1,0 +1,25 @@
+{
+  "stock": {
+    "imla0": 0,
+    "fmla16": 0,
+    "dp": 0,
+    "fmla32": 1,
+    "ffma": 0,
+    "imla1": 0,
+    "imla2": 1,
+    "imla3": 0,
+    "imla4": 1
+  },
+  "unlocked": {
+    "imla0": 0,
+    "fmla16": 0,
+    "dp": 0,
+    "fmla32": 0,
+    "ffma": 0,
+    "imla1": 0,
+    "imla2": 0,
+    "imla3": 0,
+    "imla4": 0
+  },
+  "encoding": "0=full, 1=half, 2=quarter"
+}

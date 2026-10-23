@@ -1,0 +1,29 @@
+{
+  "samples": 32,
+  "active_samples": 26,
+  "clocks.current.sm [MHz]": {
+    "min": 2550.0,
+    "max": 2760.0,
+    "mean": 2713.269230769231
+  },
+  "clocks.current.memory [MHz]": {
+    "min": 10251.0,
+    "max": 10251.0,
+    "mean": 10251.0
+  },
+  "power.draw [W]": {
+    "min": 23.81,
+    "max": 224.89,
+    "mean": 138.58615384615385
+  },
+  "power.limit [W]": {
+    "min": 450.0,
+    "max": 450.0,
+    "mean": 450.0
+  },
+  "temperature.gpu": {
+    "min": 35.0,
+    "max": 52.0,
+    "mean": 42.76923076923077
+  }
+}

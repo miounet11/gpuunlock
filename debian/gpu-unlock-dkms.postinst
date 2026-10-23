@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+# dkms has built gpu_unlock for every kernel with headers. Put it and its
+# firmware into their initramfs so that it runs before nvidia; kernels
+# installed later get both from the dkms and initramfs-tools kernel hooks.
+if [ "$1" = configure ] && command -v update-initramfs >/dev/null; then
+	update-initramfs -u -k all
+fi

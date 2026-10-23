@@ -1,0 +1,81 @@
+# RTX 4090 / AD102, successful transaction, 2026-10-23
+# Selected original log messages. Wall-clock timestamps, PCI location prefixes
+# and the host-assigned BAR0 address are removed; register values are unchanged.
+
+# Cold preflight
+gpu_peek: driver=none command=0x3 (MEM=0x1 MASTER=0x0)
+gpu_peek: 0x001fa824 WPR2 lo                = 0x1ffffe00
+gpu_peek: 0x001fa828 WPR2 hi                = 0x00000000
+gpu_peek: 0x00823804 PLM entry              = 0xffffff8f
+gpu_peek: 0x0082381c SS0 speed select       = 0x44023025
+gpu_peek: 0x00823820 SS1 speed select       = 0x00000007
+gpu_peek: 0x00823818 FEAT_READOUT_1 (SS effective)      = 0x00410080
+gpu_peek: 0x001fa7cc WPR_CFG PLM            = 0x0004cb8f
+gpu_peek: 0x009a0148 FBPA PLM               = 0xffffff0f
+gpu_peek: 0x001fa7c4 WPR PLM                = 0x0004cb8f
+gpu_peek: summary boot_completed=1 gfw_plm_level0=1 falcon_halted=1 falcon_accessible=1 wpr2_up=0 plm_open=0 ss0_unlocked=0 ss1_unlocked=0
+
+# Firmware, payload, selectors and FLR
+AD102 permission before-firmware: WPR_CFG[0x1fa7cc]=0x4cb8f before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission before-firmware: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission before-firmware: WPR[0x1fa7c4]=0x4cb8f before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission before-firmware: FEAT[0x823804]=0xffffff8f before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+FWSEC result: scratch=0x0 expected_hi16=0
+FWSEC WPR2: low=0x5ff2000 high=0x5ff2e00 expected_page=0x5ff200 end=0x5ff300000
+AD102 permission after-payload: WPR_CFG[0x1fa7cc]=0xfffff0ff before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission after-payload: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission after-payload: WPR[0x1fa7c4]=0xffffffff before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission after-payload: FEAT[0x823804]=0xffffffff before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 payload result: boot=0 halt=0 marker=0x67b00001 expected=0x67b00001 marker_ok=1 required_permissions=1 cpuctl=0x10 halted=1 debug=0xda550000 ss0=0x44023025 ss1=0x7
+selector result: SS0=0x88888888 expected=0x88888888 matched=1
+selector result: SS1=0x8 expected=0x8 matched=1
+AD102 selectors-applied: readout1=0x0 fields=0 0 0 0 0 0 0 0 0 valid=1 full=1
+PCIe FLR returned: result=0
+post-FLR SEC2 reset released, GSP halted, BME=0 pending=0 WPR2=1ffffe00:00000000 SS0=88888888 SS1=00000008
+AD102 permission post-FLR: WPR_CFG[0x1fa7cc]=0x4cb8f before=0x4cb8f expected=0xfffff0ff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission post-FLR: FBPA[0x9a0148]=0xffffff0f before=0xffffff0f expected=0xffffffff required=0 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission post-FLR: WPR[0x1fa7c4]=0x4cb8f before=0x4cb8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 permission post-FLR: FEAT[0x823804]=0xffffffff before=0xffffff8f expected=0xffffffff required=1 valid=1 pci=0x268410de chip=0x192000a1
+AD102 post-FLR: readout1=0x0 fields=0 0 0 0 0 0 0 0 0 valid=1 full=1
+driver probe resources: phase=handoff empty=1
+restore PCI command: actual=0x3 original=0x3 mask=0x6
+gpu_unlock: unlocked
+
+# Independent sample after unlock module unload
+gpu_peek: driver=none command=0x3 (MEM=0x1 MASTER=0x0)
+gpu_peek: 0x001fa824 WPR2 lo                = 0x1ffffe00
+gpu_peek: 0x001fa828 WPR2 hi                = 0x00000000
+gpu_peek: 0x00823804 PLM entry              = 0xffffffff
+gpu_peek: 0x0082381c SS0 speed select       = 0x88888888
+gpu_peek: 0x00823820 SS1 speed select       = 0x00000008
+gpu_peek: 0x00823818 FEAT_READOUT_1 (SS effective)      = 0x00000000
+gpu_peek: 0x001fa7cc WPR_CFG PLM            = 0x0004cb8f
+gpu_peek: 0x009a0148 FBPA PLM               = 0xffffff0f
+gpu_peek: 0x001fa7c4 WPR PLM                = 0x0004cb8f
+gpu_peek: summary boot_completed=1 gfw_plm_level0=1 falcon_halted=1 falcon_accessible=1 wpr2_up=0 plm_open=1 ss0_unlocked=1 ss1_unlocked=1
+
+# After stock NVIDIA driver initialization
+gpu_peek: driver=nvidia command=0x407 (MEM=0x1 MASTER=0x1)
+gpu_peek: 0x001fa824 WPR2 lo                = 0x05f56000
+gpu_peek: 0x001fa828 WPR2 hi                = 0x05ff2e00
+gpu_peek: 0x00823804 PLM entry              = 0xffffffff
+gpu_peek: 0x0082381c SS0 speed select       = 0x88888888
+gpu_peek: 0x00823820 SS1 speed select       = 0x00000008
+gpu_peek: 0x00823818 FEAT_READOUT_1 (SS effective)      = 0x00000000
+gpu_peek: 0x001fa7cc WPR_CFG PLM            = 0x0004cb8f
+gpu_peek: 0x009a0148 FBPA PLM               = 0xffffff0f
+gpu_peek: 0x001fa7c4 WPR PLM                = 0x0004cb8f
+gpu_peek: summary boot_completed=1 gfw_plm_level0=1 falcon_halted=0 falcon_accessible=0 wpr2_up=1 plm_open=1 ss0_unlocked=1 ss1_unlocked=1
+
+# After CUDA benchmarks
+gpu_peek: driver=nvidia command=0x407 (MEM=0x1 MASTER=0x1)
+gpu_peek: 0x001fa824 WPR2 lo                = 0x05f56000
+gpu_peek: 0x001fa828 WPR2 hi                = 0x05ff2e00
+gpu_peek: 0x00823804 PLM entry              = 0xffffffff
+gpu_peek: 0x0082381c SS0 speed select       = 0x88888888
+gpu_peek: 0x00823820 SS1 speed select       = 0x00000008
+gpu_peek: 0x00823818 FEAT_READOUT_1 (SS effective)      = 0x00000000
+gpu_peek: 0x001fa7cc WPR_CFG PLM            = 0x0004cb8f
+gpu_peek: 0x009a0148 FBPA PLM               = 0xffffff0f
+gpu_peek: 0x001fa7c4 WPR PLM                = 0x0004cb8f
+gpu_peek: summary boot_completed=1 gfw_plm_level0=1 falcon_halted=0 falcon_accessible=0 wpr2_up=1 plm_open=1 ss0_unlocked=1 ss1_unlocked=1

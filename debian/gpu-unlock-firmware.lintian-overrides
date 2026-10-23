@@ -1,0 +1,2 @@
+# Pinned NVIDIA GSP firmware is a device image, not a host ELF program.
+gpu-unlock-firmware: arch-independent-package-contains-binary-or-object [usr/lib/firmware/gpu-unlock/610.43.03/gsp_ga10x.bin]

@@ -1,0 +1,3 @@
+GPU: NVIDIA GeForce RTX 4070 Ti SUPER, sm_89, PCI 0000:01:00.0
+FP16/FP32: 65536 cells, failures=0, max_abs=0
+BF16/FP32: 65536 cells, failures=0, max_abs=0
