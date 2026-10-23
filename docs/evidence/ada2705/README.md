@@ -10,7 +10,8 @@ private GPU UUID is omitted. `transaction-excerpt.txt` contains selected
 current-boot kernel messages, with the host name removed. It is an excerpt,
 not a complete kernel log. `mining-recovery-excerpt.txt` contains two fresh
 accepted-share lines and a later 17-accepted, zero-rejected status sample from
-the restored owner miner; credentials are excluded.
+the restored owner miner. The `1/0` accepted line is from its new process after
+the second cold boot; credentials are excluded.
 
 `cutlass-unlocked-f16.txt` and `cutlass-unlocked-bf16.txt` are complete stdout
 from NVIDIA CUTLASS Profiler 4.8.1, source commit
@@ -23,19 +24,24 @@ The exact commands selected one `128x128x32` Tensor Core kernel per datatype,
 `reference_device` verification. Both outputs say `Disposition: Passed` and
 `reference_device: Passed`. cuBLAS was not used as this profiler's reference;
 the separate `*-numeric.txt` files document the cuBLAS-versus-CPU check.
-These are absolute **unlocked** CUTLASS measurements; no same-card stock
-CUTLASS run has been made.
+These are absolute **unlocked** FP16/BF16 CUTLASS measurements; no same-card
+stock CUTLASS run was made for those two modes.
 
-`cutlass-unlocked-e4m3-fp32.txt` is complete ANSI-color-stripped stdout for
-an unlocked-only E4M3 FP8 input, FP32 accumulate `4096³` GEMM. It used CUTLASS
-4.8.1 at the same source commit, CUDA 12.8, one SM89
+`cutlass-stock-e4m3-fp32.txt` and `cutlass-unlocked-e4m3-fp32.txt` are complete
+ANSI-color-stripped stdout for matched E4M3 FP8 input, FP32 accumulate
+`4096³` GEMMs. They used the same CUTLASS 4.8.1 profiler binary, source
+commit and CUDA 12.8 build, with one SM89
 `cutlass_tensorop_s16832gemm_e4m3_128x128_64x3_tn_align16` kernel, 10 warmups,
 20 profiling iterations, and required device-reference verification. The
 binary SHA-256 was
 `e4b1fb2a5ab6e75bbb79e06ac620bf8ca29438362e2c326209771432ee57a256`.
-The output reports `Disposition: Passed`, `reference_device: Passed`,
-`2.31066 ms`, and `59,495 GFLOP/s`. This is one specific GEMM implementation,
-not a measured FP8 instruction-issue peak or a before/after result.
+Both outputs report `Disposition: Passed` and `reference_device: Passed`.
+Stock measured `2.31724 ms` and `59,325.8 GFLOP/s`; unlocked measured
+`2.31066 ms` and `59,495 GFLOP/s`, a 1.0029× ratio. The stock run followed a
+normal boot without `gpu_unlock`, with FMLA32/IMLA2/IMLA4 back at half rate;
+the unlocked run used the successful Ada canary boot. The same card, driver,
+kernel and 240 W GPU cap were used. This is one specific GEMM implementation,
+not a measured FP8 instruction-issue peak or a survey of FP8 workloads.
 
 The FP8 profiler build needed `cutlass-cuda128-atomic.patch` applied to that
 CUTLASS source checkout: four `__nv_atomic_load_n` calls in
@@ -48,7 +54,7 @@ The kernel was compiled with `CUTLASS_NVCC_ARCHS=89`,
 `CUTLASS_LIBRARY_KERNELS=cutlass_tensorop_s16832gemm_e4m3_128x128_64x3_tn_align16`.
 The patch and raw numeric output are included so the exact benchmark tool can
 be reproduced. The 240 W cap and unlocked boot were the same as for the FP16
-and BF16 profiling; no stock FP8 profiling run was made.
+and BF16 profiling. The matched stock FP8 run is included here.
 
 The original RTX 4090 report belongs to a different card, driver and host.
 See [the 2705 report](../../ada-2705-report.md) for scope and limitations.

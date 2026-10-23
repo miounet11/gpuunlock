@@ -4,8 +4,8 @@ This guide is for a Linux machine you control. The RTX 4070 Ti SUPER path is
 experimental and has been tested on **one** `10de:2705` card. RTX 4090
 `10de:2684` has a separate [single-card report](rtx4090-register-report.md).
 Other Ada IDs are not enabled. The measured gain is for FP16/BF16 tensor work
-with FP32 accumulation; INT8 did not speed up in the 2705 test. An unlocked-only
-FP8 GEMM was measured, but its effect versus stock remains unknown.
+with FP32 accumulation; INT8 did not speed up in the 2705 test. A matched
+FP8/FP32 GEMM was effectively unchanged (59.326 → 59.495 TF/s).
 
 ## 1. Find your GPU's PCI address
 

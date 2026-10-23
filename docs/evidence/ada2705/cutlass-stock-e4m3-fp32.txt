@@ -1,0 +1,36 @@
+=============================
+  Problem ID: 1
+
+        Provider: CUTLASS
+   OperationKind: gemm
+       Operation: cutlass_tensorop_s16832gemm_e4m3_128x128_64x3_tn_align16
+
+          Status: Success
+    Verification: ON
+     Disposition: Passed
+
+reference_device: Passed
+
+       Arguments: --gemm_kind=universal --m=4096 --n=4096 --k=4096 --A=fe4m3:row --B=fe4m3:column --C=f32:column --D=f32:column  \
+                  --alpha=1 --beta=0 --split_k_mode=serial --split_k_slices=1 --batch_count=1 --raster_order=heuristic  \
+                  --runtime_input_datatype_a=invalid --runtime_input_datatype_b=invalid --use_pdl=false --enable_sm90_mixed_dtype_shuffle_test=false  \
+                  --swizzle_size=1 --op_class=tensorop --accum=f32 --cta_m=128 --cta_n=128 --cta_k=64 --cluster_m=1 --cluster_n=1  \
+                  --cluster_k=1 --cluster_m_fallback=1 --cluster_n_fallback=1 --cluster_k_fallback=1 --stages=3 --warps_m=2  \
+                  --warps_n=2 --warps_k=1 --inst_m=16 --inst_n=8 --inst_k=32 --min_cc=89 --max_cc=100
+
+           Bytes: 100663296  bytes
+           FLOPs: 137472507904  flops
+           FLOPs/Byte: 1365
+
+         Runtime: 2.31724  ms
+          Memory: 40.4575 GiB/s
+
+            Math: 59325.8 GFLOP/s
+
+
+=============================
+
+CSV Results:
+
+Problem,Provider,OperationKind,Operation,Disposition,Status,gemm_kind,m,n,k,A,B,C,D,alpha,beta,split_k_mode,split_k_slices,batch_count,raster_order,runtime_input_datatype_a,runtime_input_datatype_b,use_pdl,enable_sm90_mixed_dtype_shuffle_test,swizzle_size,op_class,accum,cta_m,cta_n,cta_k,cluster_m,cluster_n,cluster_k,cluster_m_fallback,cluster_n_fallback,cluster_k_fallback,stages,warps_m,warps_n,warps_k,inst_m,inst_n,inst_k,min_cc,max_cc,Bytes,Flops,Flops/Byte,Runtime,GB/s,GFLOPs
+1,CUTLASS,gemm,cutlass_tensorop_s16832gemm_e4m3_128x128_64x3_tn_align16,passed,success,universal,4096,4096,4096,fe4m3:row,fe4m3:column,f32:column,f32:column,1,0,serial,1,1,heuristic,invalid,invalid,false,false,1,tensorop,f32,128,128,64,1,1,1,1,1,1,3,2,2,1,16,8,32,89,100,100663296,137472507904,1365,2.31724,40.4575,59325.8
