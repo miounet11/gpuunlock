@@ -86,7 +86,7 @@ The package does nothing until these options are present.
 ## 4. Start from full power-off
 
 Shut down cleanly. Cut AC power to the machine, wait about 30 seconds, then
-restore power and start it. A normal restart is not a cold GPU power cycle.
+restore power and start it. This gives the first test a fresh card state.
 If the GPU has a customer or rented workload, wait until it is fully released
 before doing this.
 
@@ -112,12 +112,32 @@ python3 tools/read_sm_rates.py --expect-uuid GPU-PASTE-YOUR-EXACT-UUID
 Get the UUID from `nvidia-smi --query-gpu=uuid --format=csv,noheader` after
 boot. Do not use a UUID from another card.
 
+## Keep it enabled across boots
+
+First test an ordinary reboot with the same early initramfs and exact target
+options selected for **one boot**. Check for `gpu_unlock: unlocked`, healthy
+`nvidia-smi`, and full rate readbacks again. On the tested 4070 Ti SUPER, a
+warm reboot returned the card to a fresh enough state and the unlock
+succeeded; other boards may retain firmware state and be rejected. A loaded
+module alone does not prove the unlock succeeded.
+
+After that test succeeds, leave the target options in your persistent GRUB
+entry. With systemd-boot, make the *tested* Ada entry persistent using
+`sudo bootctl set-default YOUR-ADA-ENTRY.conf`, replacing the entry ID with
+the one shown by `bootctl status`. Keep a separate stock entry in the boot
+menu. `bootctl set-oneshot` selects only the next boot and will not persist.
+After a kernel update, verify that the selected entry points to a rebuilt
+initramfs containing `gpu_unlock` before booting the new kernel.
+
 ## Roll back
 
 Remove the `gpu_unlock.*` kernel-command-line options and boot the normal
 entry. If the firmware transaction did not stop cleanly, power off completely
 before retrying; do not force-unload the module while it may retain DMA buffers.
 Uninstall the generated packages if you no longer want the module or firmware.
+If you used `bootctl set-default` for a separate Ada entry, run
+`sudo bootctl set-default YOUR-STOCK-ENTRY.conf` and confirm the selected
+default with `bootctl status` before rebooting.
 
 For licensing, provenance and distribution limits, see
 [firmware/NOTICE.md](firmware/NOTICE.md) and [the release notes](docs/release-1.1.0.md).

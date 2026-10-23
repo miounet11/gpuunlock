@@ -29,8 +29,9 @@ outputs matched exactly, and owner mining recovered with fresh accepted shares.
 A matched, verified E4M3 FP8/FP32 CUTLASS GEMM measured **59.326 TF/s stock →
 59.495 TF/s unlocked** on this card, a 0.3% difference. This single GEMM did
 not show a meaningful FP8 gain; other FP8 kernels remain untested.
-This is one card; the unlock succeeded on two cold boots, with throughput
-measured on the first. See the [2705 canary report](docs/ada-2705-report.md)
+This is one card; the unlock succeeded on two cold boots and two ordinary
+warm reboots, the last from a persistent EFI default. Throughput was measured
+on the first cold boot. See the [2705 canary report](docs/ada-2705-report.md)
 and its [sanitized raw benchmark output](docs/evidence/ada2705/README.md).
 
 The AD102 payload and its debug-booter analysis come from
@@ -135,10 +136,21 @@ There is no `softdep nvidia pre:` rule because kmod uses only the first matching
 soft dependency line, which can conflict with other packages.
 
 **Power the machine off and start it again for the first attempt.** The module
-needs a card that no GPU driver has initialized since power-on. A warm reboot
-does not provide that state. It skips cards that are already bound, powered down
-or bus mastering, and refuses cards whose firmware state shows earlier use.
+needs a card whose firmware state is fresh before NVIDIA loads. A warm reboot
+is not guaranteed to provide that state: it did on the tested
+RTX 4070 Ti SUPER, where the pre-firmware WPR2 readback returned to zero and
+the unlock succeeded again without an AC cut. Other boards may retain WPR2;
+the module refuses to rerun the firmware sequence in that state. It also skips
+cards that are already bound, powered down or bus mastering.
 Loading the module manually after NVIDIA has bound the card cannot unlock it.
+
+After validating a cold boot and a one-time warm reboot on the exact card, a
+persistent bootloader entry can select the same early initramfs and exact
+`gpu_unlock.*` options on every boot. A one-shot entry by itself does not
+persist. Keep an unmodified stock entry available, and verify
+`gpu_unlock: unlocked`, the rate readback and GPU health after each boot.
+The tested canary uses a kernel-version-specific image; regenerate and
+revalidate that image before removing its pinned kernel during an upgrade.
 
 Avoid `nvidia-smi`, CUDA, NVML and `nvidia-modprobe` before a manual cold-card
 attempt: they can load NVIDIA by name. Ordinary modprobe blacklist rules do not

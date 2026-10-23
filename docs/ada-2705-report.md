@@ -3,8 +3,8 @@
 On October 23, 2026, the AD102-family four-PLM payload ran on one cold
 RTX 4070 Ti SUPER (`10de:2705`, 66 SMs) before the unmodified NVIDIA
 `580.178.04` driver. FP16 and BF16 tensor instructions with FP32 accumulation
-then issued at about twice their stock rates. This is one physical card and
-one physical card. A second full AC cycle later restored the same unlock
+then issued at about twice their stock rates. This is one physical card.
+A second full AC cycle later restored the same unlock
 selector readbacks, but the FP16/BF16 throughput test was not repeated on that
 second boot. This does not establish support for every AD103 board.
 The [evidence directory](evidence/ada2705/README.md) contains unedited
@@ -14,8 +14,9 @@ recovery lines, each with a SHA-256 manifest.
 The Linux kernel was `5.15.0-177-generic`. The source module was built from
 commit `a7bcce015fd034cb930f5acc7f2ce4f60158f5bd`; the resulting `.ko`
 SHA-256 was `a2afbed0b203025b01544dd150643bfe5049d1565174047eeda78c82296be2fa`.
-It was loaded from a one-time initramfs entry with the **single exact PCI
-target** and `ad103_experimental=1`. The normal boot entry stayed unchanged.
+The initial cold tests loaded it from a one-time initramfs entry with the
+**single exact PCI target** and `ad103_experimental=1`. The normal boot entry
+stayed unchanged.
 No host identifiers or customer credentials are included here.
 Release 1.1.0 changes only module metadata and the DKMS package version
 relative to that tested kernel logic. The 1.1.0 module separately compiled
@@ -126,10 +127,35 @@ it is not evidence of a mining speedup from the tensor unlock.
 After the second cold cycle restored the Ada override, the owner miner again
 connected to its pool at 240 W and logged a fresh accepted share (`1/0`).
 
+## Boot persistence on the tested card
+
+An ordinary warm reboot selected the same Ada entry for one boot without
+cutting AC power. Before its firmware transaction, the card reported
+`wpr2_hi=0`, and the module again logged the payload marker, selector
+readbacks, and `gpu_unlock: unlocked`. The independent NVIDIA RM getter again
+reported full FMLA32, IMLA2, and IMLA4 rates; the owner miner reconnected and
+submitted a fresh `1/0` accepted share. This establishes that a warm reboot
+returned **this card on this host** to an eligible pre-driver state. It does
+not establish the same behavior on other boards.
+
+The tested Ada EFI entry was then made the **persistent default**, while the
+original stock entry and its `loader.conf` remained unchanged. A second
+ordinary warm reboot used that default with no one-time selection. The module
+again logged `gpu_unlock: unlocked`, the RM getter again read full rates, and
+the owner miner submitted another fresh `1/0` accepted share at the 240 W cap.
+The [selected boot evidence](evidence/ada2705/warm-boot-persistence-excerpt.txt)
+contains both transaction excerpts, the EFI selection, rate readback, and
+accepted-share line. No NVRM Xid or GSP/SEC2 timeout appeared in the second
+boot's kernel log scan.
+
 ## Limits and reproduction
 
-The experiment ran from a one-time boot entry on each cold cycle. It did not
-alter the default boot entry or install a permanent fleet policy. Further
+The cold canaries used one-time entries; the later warm test promoted the
+already tested Ada entry to this host's persistent EFI default. The original
+stock entry remains available for rollback, and no fleet policy was installed.
+This hand-staged image is tied to Linux `5.15.0-177-generic`; it must be
+regenerated and revalidated for a kernel upgrade. These manual EFI trials do
+not validate the public native packages' boot integration. Further
 independent cold-boot and card reproduction, representative application GEMM
 benchmarks, longer stability tests, and
 card-by-card eligibility checks are required before expanding the allowlist.

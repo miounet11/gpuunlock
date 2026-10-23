@@ -6,10 +6,12 @@ Linux transaction from `elias-gaeros/gpu-unlock` (commit
 `TOTORONG/AD103_win_unlocker` (revision
 `51df9c17ec89eb8486df52cc9079dde4bd1f9974`). The fork reports a physical
 RTX 4090 result and TOTORONG reports a different AD103 RTX 4080 result. This
-branch subsequently completed one cold RTX 4070 Ti SUPER `10de:2705` canary:
+branch subsequently completed a physical RTX 4070 Ti SUPER `10de:2705` canary:
 the stock driver loaded, the NVIDIA RM getter reported full FP32-accumulate
 issue rate, and matched CUDA instructions ran at approximately twice their
-stock rate. See [the 2705 canary report](ada-2705-report.md). The path still
+stock rate. Two cold starts and two later ordinary warm reboots succeeded on
+that card; the last warm reboot selected a persistent Ada EFI default. See
+[the 2705 canary report](ada-2705-report.md). The path still
 requires an extra exact-card opt-in and other Ada IDs remain excluded.
 
 ## Verified on October 23, 2026
@@ -37,8 +39,10 @@ requires an extra exact-card opt-in and other Ada IDs remain excluded.
   `5.15.0-177-generic` headers, SHA-256
   `a2afbed0b203025b01544dd150643bfe5049d1565174047eeda78c82296be2fa`.
   All 22 host test methods passed, including mocked GA/AD transactions.
-  The module was subsequently loaded from a one-time cold-boot initramfs for
-  the exact 2705 canary; the normal boot entry was preserved.
+  The module was first loaded from a one-time cold-boot initramfs for the
+  exact 2705 canary. Later warm-boot tests selected that same image through
+  a one-shot entry and then a persistent EFI default; the normal stock entry
+  file remains available.
 - The published debug test key independently reproduced the AES-zero control
   `717d1494eaca317ff106195258b38377`. The guarded decoder decrypted the
   pinned GA102 and AD102 debug-code ranges. A second implementation using
@@ -92,8 +96,8 @@ reproduces its pinned hash, and TOTORONG's selected-path model passes against
 our independently decoded AD102 debug image. The exact 2705 canary then
 validated production execution and NVIDIA 580.178.04 handoff on one physical
 board, with a matching 240 W stock/unlocked benchmark and numerical check.
-Repeated cold boots, larger application GEMMs, extended stability, and other
-Ada cards remain unverified. No fleet-wide opt-in has been enabled.
+Further independent cold boots, larger application GEMMs, extended stability,
+and other Ada cards remain unverified. No fleet-wide opt-in has been enabled.
 
 The earlier one-write tail hypothesis below is retained as research history.
 It is superseded by the published four-PLM payload and must not be used for a

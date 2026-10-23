@@ -56,5 +56,14 @@ The patch and raw numeric output are included so the exact benchmark tool can
 be reproduced. The 240 W cap and unlocked boot were the same as for the FP16
 and BF16 profiling. The matched stock FP8 run is included here.
 
+`warm-boot-persistence-excerpt.txt` contains selected, host-redacted kernel
+lines from two ordinary warm reboots of the same card. The first selected the
+tested Ada image for one boot; the second selected it using a persistent
+systemd-boot default with no one-shot override. Both showed `wpr2_hi=0`
+before the transaction and `gpu_unlock: unlocked` afterward. The file also
+records the second boot's EFI selection, read-only NVIDIA RM full-rate values,
+and a fresh accepted owner-mining share. This is evidence for one host and
+one GPU; a different board may need a full power cut before each attempt.
+
 The original RTX 4090 report belongs to a different card, driver and host.
 See [the 2705 report](../../ada-2705-report.md) for scope and limitations.

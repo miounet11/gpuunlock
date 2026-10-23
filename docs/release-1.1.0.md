@@ -13,8 +13,8 @@ readbacks, numerical checks, and one-card limits.
 NVIDIA CUTLASS Profiler independently reported **177.5 TF/s FP16/FP32** and
 **176.3 TF/s BF16/FP32** for verified 4096³ GEMMs on the unlocked card; its
 [captured output](evidence/ada2705/README.md) is included. No same-card stock
-CUTLASS result was collected, so these are absolute rates rather than a
-third-party before/after ratio.
+CUTLASS result was collected for FP16/BF16, so these are absolute rates rather
+than a third-party before/after ratio.
 Both FP8 outputs, the exact kernel, and CUDA 12.8 compatibility patch are in
 the same evidence directory. NVIDIA's official 706 AI TOPS 4070 Ti SUPER line
 does not state the same FP8/FP32 dense-GEMM mode. The [canary report](ada-2705-report.md)
@@ -23,10 +23,13 @@ expected result for this GEMM.
 
 The 2705 path is **experimental and opt-in**. `gpu_unlock.targets=all` never
 selects it. A test boot needs `gpu_unlock.targets=<exact full PCI address>`
-and `gpu_unlock.ad103_experimental=1`, with the module loaded before NVIDIA
-on a genuinely cold card. Preserve a normal boot entry so the option can be
-removed after any failed attempt. The code has not been qualified on other
-Ada IDs, every 2705 board, or every driver revision.
+and `gpu_unlock.ad103_experimental=1`, with the module loaded before NVIDIA.
+Start with a full power-off for first qualification. On the tested card, two
+later ordinary warm reboots also restored the unlock: the first used a
+one-shot Ada entry, and the second used that entry as the persistent EFI
+default. Both began with WPR2 clear. Preserve a normal boot entry so the
+option can be removed after any failed attempt. The code has not been
+qualified on other Ada IDs, every 2705 board, or every driver revision.
 
 Clone the GPL-2.0-only repository and use `make install` on a supported
 distribution; [Quick Start](../QUICKSTART.md) has copy-paste commands. The
