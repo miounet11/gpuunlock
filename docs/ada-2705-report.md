@@ -69,17 +69,52 @@ All three FP16/FP32 repetitions were 95.0 TF/s before and
 telemetry samples reported 2820 MHz SM clock before and 2670–2820 MHz after;
 the cap stayed 240 W. The brief kernels and 200 ms sensor interval do not
 establish comparable sustained board or wall power. This instruction benchmark
-does not predict the gain of every application. **FP8 was not measured** in
-this before/after test, so no FP8 performance claim follows from it.
+does not predict the gain of every application. **No stock FP8 run was made**,
+so the FP8 effect of the unlock remains unknown.
 
 An independent cuBLAS FP16/FP32 and BF16/FP32 GEMM correctness check compared
 65,536 output cells per mode with a CPU reference. Both the stock and unlocked
 runs had zero mismatches and maximum absolute error zero for these deterministic
 inputs. Other input distributions and larger workloads still need validation.
 
+NVIDIA's independently maintained **CUTLASS Profiler 4.8.1** also ran one
+FP16/FP32 and one BF16/FP32 Tensor Core GEMM on the unlocked card at
+`m=n=k=4096`, 240 W cap, 10 warmups and 20 profiling iterations. Its device
+reference verification passed for both. FP16/FP32 measured **177,543 GFLOP/s**
+(`0.774304 ms`), and BF16/FP32 measured **176,321 GFLOP/s** (`0.779674 ms`).
+The [complete color-stripped stdout](evidence/ada2705/README.md) includes
+the kernel names, arguments, disposition, timings and CSV rows. These are
+absolute unlocked GEMM results: a same-card stock CUTLASS run was not made,
+so they are not an independent CUTLASS before/after speedup claim. cuBLAS was
+not the CUTLASS reference provider in this run; a separate cuBLAS numerical
+check is described above.
+
+An unlocked-only **E4M3 FP8 input, FP32 accumulate** CUTLASS GEMM also passed
+device-reference verification at `m=n=k=4096`: **59,495 GFLOP/s**
+(`2.31066 ms`). It used one `sm_89` `128x128x64` kernel, the same 240 W cap,
+10 warmups and 20 profiling iterations. The NVIDIA CUTLASS 4.8.1 source was
+compiled with CUDA 12.8 and the small [compiler compatibility patch](evidence/ada2705/cutlass-cuda128-atomic.patch)
+included with the [full profiler output](evidence/ada2705/cutlass-unlocked-e4m3-fp32.txt).
+This GEMM rate is specific to that kernel and layout; it is **not an FP8
+instruction-issue peak** or an unlock speedup ratio.
+
+[NVIDIA lists 706 AI TOPS for RTX 4070 Ti SUPER](https://www.nvidia.com/en-eu/geforce/graphics-cards/40-series/rtx-4070-family/),
+without specifying the FP8 accumulation and sparsity mode for that line.
+Its [Ada architecture whitepaper](https://images.nvidia.com/aem-dam/Solutions/Data-Center/l4/nvidia-ada-gpu-architecture-whitepaper-V2.02.pdf)
+gives RTX 4090 FP8/FP32 dense and sparse peaks of 330.3 and 660.6 TFLOP/s
+at 128 SMs and 2.52 GHz boost. Scaling the dense value to this card's
+66 SMs and official 2.61 GHz boost gives about **176.4 TFLOP/s**. That is an
+**inferred theoretical stock specification**, not a same-card stock measurement
+or an expected result for this particular GEMM at the 240 W cap. The 706 AI
+TOPS figure is consistent with the whitepaper's FP8/FP16 sparse rate after
+the same scaling, but NVIDIA does not label it that way on the product page.
+Only a matched same-card stock FP8 benchmark can determine whether this
+unlock changes FP8 performance.
+
 The owner miner resumed after the benchmarks on the same GPU and 240 W cap,
 reconnected to its existing pool, and advanced from 2 to 3 accepted shares
-with zero rejected shares in its new process log. This shows workload recovery;
+with zero rejected shares in its new process log. A later status sample showed
+17 accepted and zero rejected at the same 240 W cap. This shows workload recovery;
 it is not evidence of a mining speedup from the tensor unlock.
 
 ## Limits and reproduction

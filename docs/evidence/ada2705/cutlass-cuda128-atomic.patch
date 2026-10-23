@@ -1,0 +1,40 @@
+diff --git a/include/cutlass/subbyte_reference.h b/include/cutlass/subbyte_reference.h
+index e3c91c5..5a99616 100644
+--- a/include/cutlass/subbyte_reference.h
++++ b/include/cutlass/subbyte_reference.h
+@@ -456,7 +456,7 @@ public:
+     //
+     Storage assumed;
+ #if (__CUDACC_VER_MAJOR__ > 12) || (__CUDACC_VER_MAJOR__ == 12 && __CUDACC_VER_MINOR__ >= 8)
+-    Storage original = __nv_atomic_load_n(ptr_, __NV_ATOMIC_RELAXED);
++    Storage original = __nv_atomic_load_n(ptr_, __NV_ATOMIC_RELAXED, __NV_THREAD_SCOPE_SYSTEM);
+ #else
+     Storage original = *const_cast<Storage const volatile *>(ptr_);
+ #endif
+@@ -817,7 +817,7 @@ public:
+       /// consider misaligned address issue, we need to do atomicCAS twice
+       StorageUnit assumed_low_bits, original_low_bits, update_low_bits;
+ #if (__CUDACC_VER_MAJOR__ > 12) || (__CUDACC_VER_MAJOR__ == 12 && __CUDACC_VER_MINOR__ >= 8)
+-      original_low_bits = __nv_atomic_load_n(&(*ptr_)[low_storage_unit_idx_], __NV_ATOMIC_RELAXED);
++      original_low_bits = __nv_atomic_load_n(&(*ptr_)[low_storage_unit_idx_], __NV_ATOMIC_RELAXED, __NV_THREAD_SCOPE_SYSTEM);
+ #else
+       original_low_bits = *const_cast<StorageUnit const volatile *>(&(*ptr_)[low_storage_unit_idx_]);
+ #endif
+@@ -828,7 +828,7 @@ public:
+       } while (original_low_bits != assumed_low_bits);
+       StorageUnit assumed_high_bits, original_high_bits, update_high_bits;
+ #if (__CUDACC_VER_MAJOR__ > 12) || (__CUDACC_VER_MAJOR__ == 12 && __CUDACC_VER_MINOR__ >= 8)
+-      original_high_bits = __nv_atomic_load_n(&(*ptr_)[high_storage_unit_idx_], __NV_ATOMIC_RELAXED);
++      original_high_bits = __nv_atomic_load_n(&(*ptr_)[high_storage_unit_idx_], __NV_ATOMIC_RELAXED, __NV_THREAD_SCOPE_SYSTEM);
+ #else
+       original_high_bits = *const_cast<StorageUnit const volatile *>(&(*ptr_)[high_storage_unit_idx_]);
+ #endif
+@@ -842,7 +842,7 @@ public:
+       /// Only need update 1 storage unit.
+       StorageUnit assumed, original, updated;
+ #if (__CUDACC_VER_MAJOR__ > 12) || (__CUDACC_VER_MAJOR__ == 12 && __CUDACC_VER_MINOR__ >= 8)
+-      original = __nv_atomic_load_n(&(*ptr_)[low_storage_unit_idx_], __NV_ATOMIC_RELAXED);
++      original = __nv_atomic_load_n(&(*ptr_)[low_storage_unit_idx_], __NV_ATOMIC_RELAXED, __NV_THREAD_SCOPE_SYSTEM);
+ #else
+       original = *const_cast<StorageUnit const volatile *>(&(*ptr_)[low_storage_unit_idx_]);
+ #endif

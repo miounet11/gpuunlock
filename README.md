@@ -26,6 +26,8 @@ at **95.0 → 189.9 TF/s** and BF16/FP32 at **95.0 → 189.7 TF/s** under the
 same 240 W power cap. INT8 stayed at 379.5 TOP/s. The stock driver loaded,
 the NVIDIA RM getter reported full FMLA32 rate, deterministic FP16/BF16 GEMM
 outputs matched exactly, and owner mining recovered with fresh accepted shares.
+An unlocked-only verified FP8/FP32 CUTLASS GEMM measured 59.5 TF/s; without
+a matched stock FP8 result, this does not establish an FP8 speedup.
 This is one card and one cold boot; see the [2705 canary report](docs/ada-2705-report.md)
 and its [sanitized raw benchmark output](docs/evidence/ada2705/README.md).
 
