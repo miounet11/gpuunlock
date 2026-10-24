@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /* main.c against mocked PCI and a mocked unlock: which cards are unlocked,
- * that they run concurrently, and that the shared firmware outlives them. */
+ * that they run concurrently, that the shared firmware outlives them, and
+ * that cards unlocked at boot are unlocked again after resume, before the
+ * notifier chain reaches nvidia. */
 #define _GNU_SOURCE
 #include <assert.h>
 #include <errno.h>
@@ -24,12 +26,17 @@ static char gsp_marker;
 #define fake_gsp ((const struct firmware *)&gsp_marker)
 static pthread_mutex_t fake_lock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t fake_cond = PTHREAD_COND_INITIALIZER;
+static struct pci_driver nvidia_driver = { "nvidia" }, vfio_driver = { "vfio-pci" };
 static struct {
 	int loads, releases, fail_load;
+	bool loaded;
 	struct pci_dev *load_dev;
 	int started, finished, in_flight, max_in_flight;
 	int expected_concurrent; /* unlocks that must overlap */
 	int unlocks[MAX_DEVICES], fail_unlock[MAX_DEVICES];
+	int resumes[MAX_DEVICES], fail_resume[MAX_DEVICES];
+	struct notifier_block *nb;
+	int registrations;
 	char log[16384];
 } fake;
 
@@ -128,14 +135,15 @@ void async_synchronize_full_domain(struct async_domain *domain)
 int gpu_unlock_610_load_shared(struct pci_dev *pdev, struct gpu_unlock_610_shared *shared)
 {
 	pthread_mutex_lock(&fake_lock);
-	/* Loaded once, before any unlock can use it. */
-	assert(!fake.started && !shared->gsp);
+	/* Loaded once per round, before any unlock can use it. */
+	assert(!fake.in_flight && !shared->gsp);
 	fake.loads++;
 	fake.load_dev = pdev;
 	pthread_mutex_unlock(&fake_lock);
 	if (fake.fail_load)
 		return fake.fail_load;
 	shared->gsp = fake_gsp;
+	fake.loaded = true;
 	return 0;
 }
 
@@ -144,24 +152,31 @@ void gpu_unlock_610_release_shared(struct gpu_unlock_610_shared *shared)
 	pthread_mutex_lock(&fake_lock);
 	/* Only after every unlock has returned. */
 	assert(!fake.in_flight && fake.finished == fake.started);
-	assert(shared->gsp == (fake.loads && !fake.fail_load ? fake_gsp : NULL));
+	assert(shared->gsp == (fake.loaded ? fake_gsp : NULL));
 	fake.releases++;
+	fake.loaded = false;
 	shared->gsp = NULL;
 	pthread_mutex_unlock(&fake_lock);
 }
 
-int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shared *shared)
+int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shared *shared,
+			  bool resume)
 {
 	unsigned int index = pdev - devices;
 	struct timespec deadline;
 	int ret;
 
 	assert(shared->gsp == fake_gsp);
-	assert(pdev->locked && pthread_equal(pdev->owner, pthread_self()) && !pdev->driver);
-	/* The initial reference, the worker's, and nothing dropped early. */
+	assert(pdev->locked && pthread_equal(pdev->owner, pthread_self()));
+	/* Unbound at boot; after resume only a card nvidia suspended. */
+	assert(resume ? pdev->driver == &nvidia_driver : !pdev->driver);
+	/* The initial reference, the card list's, and nothing dropped early. */
 	assert(__atomic_load_n(&pdev->refs, __ATOMIC_SEQ_CST) >= 2);
 	pthread_mutex_lock(&fake_lock);
-	fake.unlocks[index]++;
+	if (resume)
+		fake.resumes[index]++;
+	else
+		fake.unlocks[index]++;
 	fake.started++;
 	if (++fake.in_flight > fake.max_in_flight)
 		fake.max_in_flight = fake.in_flight;
@@ -180,19 +195,32 @@ int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shar
 	pthread_mutex_lock(&fake_lock);
 	fake.in_flight--;
 	fake.finished++;
-	ret = fake.fail_unlock[index];
+	ret = resume ? fake.fail_resume[index] : fake.fail_unlock[index];
 	pthread_mutex_unlock(&fake_lock);
 	return ret;
 }
 
-static int driver_marker;
+int register_pm_notifier(struct notifier_block *nb)
+{
+	assert(!fake.nb);
+	fake.nb = nb;
+	fake.registrations++;
+	return 0;
+}
+
+int unregister_pm_notifier(struct notifier_block *nb)
+{
+	assert(fake.nb == nb);
+	fake.nb = NULL;
+	return 0;
+}
 
 static void add(const char *name, unsigned short device, bool bound)
 {
 	struct pci_dev *pdev = &devices[device_count++];
 
 	*pdev = (struct pci_dev){ .name = name, .vendor = PCI_VENDOR_ID_NVIDIA, .device = device,
-				  .driver = bound ? &driver_marker : NULL, .refs = 1 };
+				  .driver = bound ? &nvidia_driver : NULL, .refs = 1 };
 	pthread_mutex_init(&pdev->lock, NULL);
 }
 
@@ -201,19 +229,40 @@ static void reset(char *list)
 	memset(&fake, 0, sizeof(fake));
 	device_count = 0;
 	targets = list;
+	resume = true;
 	ad103_experimental = false;
+}
+
+static void boot(void)
+{
+	assert(!test_module_init());
+	assert(!fake.in_flight && fake.finished == fake.started);
+	for (unsigned int i = 0; i < device_count; i++)
+		assert(!devices[i].locked && fake.unlocks[i] <= 1);
+}
+
+/* Calls the notifier as the PM core does; returns once it has. */
+static void notify(unsigned long event)
+{
+	assert(fake.nb && fake.nb->notifier_call(fake.nb, event, NULL) == NOTIFY_DONE);
+	/* nvidia's notifier runs next: no unlock may still be running. */
+	assert(!fake.in_flight && fake.finished == fake.started);
+}
+
+/* Unloads the module and checks every reference came back. */
+static void shutdown(void)
+{
+	test_module_exit();
+	assert(!fake.nb);
+	for (unsigned int i = 0; i < device_count; i++)
+		assert(devices[i].refs == 1 && !devices[i].locked);
 }
 
 /* Runs init, then checks what holds for every case. */
 static void run(void)
 {
-	assert(!test_module_init());
-	test_module_exit();
-	assert(!fake.in_flight && fake.finished == fake.started);
-	for (unsigned int i = 0; i < device_count; i++) {
-		assert(devices[i].refs == 1 && !devices[i].locked);
-		assert(fake.unlocks[i] <= 1);
-	}
+	boot();
+	shutdown();
 	assert(fake.loads <= 1 && fake.releases <= 1);
 }
 
@@ -270,7 +319,7 @@ int main(void)
 	add("0000:21:00.0", RTX_3090, false);
 	fake.fail_load = -ENOENT;
 	run();
-	assert(fake.loads == 1 && !fake.started && !fake.releases);
+	assert(fake.loads == 1 && !fake.started && fake.releases == 1 && !fake.registrations);
 	assert(logged("0000:01:00.0: gpu_unlock: firmware load failed (-2)"));
 	puts("firmware load failure: nothing attempted PASS");
 
@@ -279,7 +328,7 @@ int main(void)
 	add("0000:01:00.0", RTX_3090, false);
 	add("0000:31:00.0", RTX_A2000, false);
 	run();
-	assert(!fake.loads && !fake.started && fake.releases == 1);
+	assert(!fake.loads && !fake.started && fake.releases == 1 && !fake.registrations);
 	assert(logged("gpu_unlock: no supported card at \"0000:99:00.0\""));
 	assert(logged("gpu_unlock: no supported card at \"0000:31:00.0\""));
 	puts("unmatched target: reported, nothing loaded PASS");
@@ -334,7 +383,87 @@ int main(void)
 		add("0000:01:00.0", RTX_3090, false);
 		run();
 		assert(!fake.loads && !fake.started && !fake.releases && !fake.log[0]);
+		assert(!fake.registrations);
 	}
 	puts("no targets: idle PASS");
+
+	/* After resume, the cards unlocked at boot, concurrently, and all of them
+	 * finished before the notifier returns. A card that failed at boot is not
+	 * tried again; suspending does nothing. */
+	reset("all");
+	add("0000:01:00.0", RTX_3090, false);
+	add("0000:21:00.0", RTX_3070, false);
+	add("0000:41:00.0", RTX_3090, false);
+	fake.fail_unlock[2] = -EIO;
+	boot();
+	assert(fake.registrations == 1 && fake.nb->priority > 0);
+	for (unsigned int i = 0; i < device_count; i++)
+		devices[i].driver = &nvidia_driver;
+	notify(PM_SUSPEND_PREPARE);
+	assert(fake.loads == 1 && fake.started == 3);
+	fake.expected_concurrent = 2;
+	fake.max_in_flight = 0;
+	notify(PM_POST_SUSPEND);
+	assert(fake.max_in_flight == 2 && fake.started == 5);
+	assert(fake.resumes[0] == 1 && fake.resumes[1] == 1 && !fake.resumes[2]);
+	assert(fake.loads == 2 && fake.load_dev == &devices[0] && fake.releases == 2);
+	assert(logged("0000:01:00.0: gpu_unlock: unlocked again after resume"));
+	assert(logged("0000:21:00.0: gpu_unlock: unlocked again after resume"));
+	assert(!logged("0000:41:00.0: gpu_unlock: unlocked again"));
+	shutdown();
+	assert(fake.unlocks[0] == 1 && fake.unlocks[1] == 1 && fake.unlocks[2] == 1);
+	puts("resume: boot-unlocked cards unlocked again before nvidia PASS");
+
+	/* Only cards nvidia suspended are touched. A card that kept power, or one
+	 * that fails, stays listed for the next resume. */
+	reset("all");
+	add("0000:01:00.0", RTX_3090, false);
+	add("0000:21:00.0", RTX_3090, false);
+	add("0000:31:00.0", RTX_3090, false);
+	add("0000:61:00.0", RTX_3090, false);
+	boot();
+	devices[0].driver = &nvidia_driver;
+	devices[1].driver = &nvidia_driver;
+	devices[2].driver = &vfio_driver;
+	fake.fail_resume[0] = -EALREADY;
+	fake.fail_resume[1] = -EBUSY;
+	notify(PM_POST_SUSPEND);
+	assert(fake.resumes[0] == 1 && fake.resumes[1] == 1 && !fake.resumes[2] && !fake.resumes[3]);
+	assert(logged("0000:01:00.0: gpu_unlock: still unlocked after resume"));
+	assert(logged("0000:21:00.0: gpu_unlock: unlock after resume failed (-16)"));
+	assert(logged("0000:31:00.0: gpu_unlock: not bound to nvidia, left as is after resume"));
+	assert(logged("0000:61:00.0: gpu_unlock: not bound to nvidia, left as is after resume"));
+	notify(PM_POST_SUSPEND);
+	assert(fake.resumes[0] == 2 && fake.resumes[1] == 2 && !fake.resumes[2] && !fake.resumes[3]);
+	shutdown();
+	puts("resume: only nvidia-suspended cards, kept for the next resume PASS");
+
+	/* gpu_unlock.resume=0, and a firmware load failure, leave the cards to nvidia. */
+	reset("0000:01:00.0");
+	add("0000:01:00.0", RTX_3090, false);
+	boot();
+	devices[0].driver = &nvidia_driver;
+	resume = false;
+	notify(PM_POST_SUSPEND);
+	assert(fake.loads == 1 && !fake.resumes[0]);
+	resume = true;
+	fake.fail_load = -ENOENT;
+	notify(PM_POST_SUSPEND);
+	assert(fake.loads == 2 && fake.releases == 2 && !fake.resumes[0]);
+	assert(logged("0000:01:00.0: gpu_unlock: firmware load failed (-2)"));
+	fake.fail_load = 0;
+	notify(PM_POST_SUSPEND);
+	assert(fake.resumes[0] == 1);
+	shutdown();
+	puts("resume: switch off and firmware failure leave cards locked PASS");
+
+	/* Nothing unlocked at boot: no notifier at all. */
+	reset("all");
+	add("0000:01:00.0", RTX_3090, false);
+	fake.fail_unlock[0] = -EIO;
+	boot();
+	assert(!fake.registrations && !fake.nb);
+	shutdown();
+	puts("resume: no notifier without an unlocked card PASS");
 	return 0;
 }

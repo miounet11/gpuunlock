@@ -671,7 +671,7 @@ int main(int argc, char **argv) {
             /* As main.c: the GSP file is loaded once, ahead of every card. */
             struct gpu_unlock_610_shared shared={0};last_work=NULL;
             int ret=gpu_unlock_610_load_shared(&dev,&shared);
-            if(!ret)ret=gpu_unlock_610_unlock(&dev,&shared);
+            if(!ret)ret=gpu_unlock_610_unlock(&dev,&shared,false);
             gpu_unlock_610_release_shared(&shared);
             bool expected=scenario<2 || (scenario>=33 && scenario<=35) || scenario==39 || scenario==40 || scenario==43 || scenario==46 ||
                 scenario==58 || scenario==60;

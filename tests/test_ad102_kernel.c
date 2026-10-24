@@ -121,7 +121,7 @@ int main(int argc, char **argv)
             fake.fwsec_wpr=1;fake.fwsec_wpr_lo=0x5ff2000;fake.fwsec_wpr_hi=0x5ff2e00;
             struct gpu_unlock_610_shared shared={0};last_work=NULL;
             assert(!gpu_unlock_610_load_shared(&dev,&shared));
-            int ret=gpu_unlock_610_unlock(&dev,&shared);
+            int ret=gpu_unlock_610_unlock(&dev,&shared,false);
             gpu_unlock_610_release_shared(&shared);
             bool success=cases[i]==0 || cases[i]==6;
             if((!ret)!=success)fprintf(stderr,"%s\nfull AD mode=%d ret=%d\n",fake.log,cases[i],ret);
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
         fake.fwsec_wpr=1;fake.fwsec_wpr_lo=0x5ff2000;fake.fwsec_wpr_hi=0x5ff2e00;
         struct gpu_unlock_610_shared shared={0};last_work=NULL;
         assert(!gpu_unlock_610_load_shared(&dev,&shared));
-        int ret=gpu_unlock_610_unlock(&dev,&shared);
+        int ret=gpu_unlock_610_unlock(&dev,&shared,false);
         gpu_unlock_610_release_shared(&shared);
         assert(!ret && fake.starts==1 && fake.gsp_starts==1 && fake.flrs==1);
         assert(!fake.live && !fake.fw_live && dev.refs==1);
