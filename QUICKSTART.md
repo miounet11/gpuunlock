@@ -3,9 +3,10 @@
 This guide is for a Linux machine you control. The RTX 4070 Ti SUPER path is
 experimental and has been tested on **one** `10de:2705` card. RTX 4090
 `10de:2684` has a separate [single-card report](rtx4090-register-report.md).
-Other Ada IDs are not enabled. The measured gain is for FP16/BF16 tensor work
-with FP32 accumulation; INT8 did not speed up in the 2705 test. A matched
-FP8/FP32 GEMM was effectively unchanged (59.326 → 59.495 TF/s).
+Other Ada IDs are not enabled. The measured instruction-rate gain is for
+FP16, BF16 and TF32 tensor work with FP32 accumulation. INT8 and unsigned
+INT4 did not speed up in the 2705 tests. One matched FP8/FP32 GEMM was
+effectively unchanged (59.326 → 59.495 TF/s).
 
 ## 1. Find your GPU's PCI address
 
@@ -140,4 +141,4 @@ If you used `bootctl set-default` for a separate Ada entry, run
 default with `bootctl status` before rebooting.
 
 For licensing, provenance and distribution limits, see
-[firmware/NOTICE.md](firmware/NOTICE.md) and [the release notes](docs/release-1.1.0.md).
+[firmware/NOTICE.md](firmware/NOTICE.md) and [the release notes](docs/release-1.1.1.md).

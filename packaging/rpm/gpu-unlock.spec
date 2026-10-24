@@ -1,7 +1,7 @@
 %global nv 610.43.03
 
 Name: gpu-unlock
-Version: 1.1.0
+Version: 1.1.1
 Release: 1%{?dist}
 Summary: RTX 4090 and experimental RTX 4070 Ti SUPER tensor unlock before NVIDIA loads
 URL: https://github.com/JustAResearcher/gpu-unlock-ada
@@ -132,6 +132,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 23 2026 JustAResearcher <62031663+JustAResearcher@users.noreply.github.com> - 1.1.1-1
+- Publish matched TF32 and unsigned INT4 issue-rate evidence and benchmark source.
+
 * Fri Oct 23 2026 JustAResearcher <62031663+JustAResearcher@users.noreply.github.com> - 1.1.0-1
 - Add a guarded RTX 4070 Ti SUPER Ada path and validated cold-canary report.
 

@@ -1,0 +1,87 @@
+{
+  "card": "NVIDIA GeForce RTX 4070 Ti SUPER (10de:2705), 66 SMs",
+  "driver": "580.178.04",
+  "gpu_power_limit_w": 240,
+  "benchmark": "register-resident dense MMA issue rate, all-one inputs, 8 independent chains",
+  "source_sha256": "46cc852ec15ba2d12a259d7698e8fcd2104dfb07a5947a38d46c7bd6b5f5462f",
+  "cubin_sha256": "ceac13436fff8b7aa2d2dc0060ffe2cf3524a61184f4bf34e8164c6d2f56eba4",
+  "runner_sha256": "00997131a75e7189471e937299ccd30e88ab6b7b1fb7d181c726f5bf03d755a8",
+  "compiler": "CUDA 12.9.86; device-only PTX with -allow-unsupported-compiler using VS 18",
+  "assembler": "CUDA 12.9.86, -arch=sm_89 -O3",
+  "iterations": 20000,
+  "repetitions": 3,
+  "blocks": 1056,
+  "threads_per_block": 256,
+  "stock_rates": {
+    "fmla32": 1,
+    "imla2": 1,
+    "imla4": 1
+  },
+  "unlocked_rates": {
+    "fmla32": 0,
+    "imla2": 0,
+    "imla4": 0
+  },
+  "modes": {
+    "f16_f32": {
+      "unit": "TFLOP/s",
+      "stock_reps": [
+        94.95468830556017,
+        94.9516132695802,
+        94.95839103741079
+      ],
+      "unlocked_reps": [
+        188.95366244243857,
+        188.96789467213276,
+        188.9604646149213
+      ],
+      "stock_best": 94.95839103741079,
+      "unlocked_best": 188.96789467213276,
+      "stock_median": 94.95468830556017,
+      "unlocked_median": 188.9604646149213,
+      "best_ratio": 1.9900073348724392,
+      "cells_checked_per_state": 270336,
+      "mismatches_per_state": 0
+    },
+    "tf32": {
+      "unit": "TFLOP/s",
+      "stock_reps": [
+        47.484147700210535,
+        47.48341754579408,
+        47.488187258034614
+      ],
+      "unlocked_reps": [
+        94.49994867026786,
+        94.50696980485084,
+        94.49984406878816
+      ],
+      "stock_best": 47.488187258034614,
+      "unlocked_best": 94.50696980485084,
+      "stock_median": 47.484147700210535,
+      "unlocked_median": 94.49994867026786,
+      "best_ratio": 1.9901153373434155,
+      "cells_checked_per_state": 270336,
+      "mismatches_per_state": 0
+    },
+    "u4_s32": {
+      "unit": "TOP/s",
+      "stock_reps": [
+        754.7858981459201,
+        754.8122476992125,
+        754.7858981459201
+      ],
+      "unlocked_reps": [
+        754.6838048690901,
+        754.661584476351,
+        754.661584476351
+      ],
+      "stock_best": 754.8122476992125,
+      "unlocked_best": 754.6838048690901,
+      "stock_median": 754.7858981459201,
+      "unlocked_median": 754.661584476351,
+      "best_ratio": 0.9998298347297437,
+      "cells_checked_per_state": 270336,
+      "mismatches_per_state": 0
+    }
+  }
+}

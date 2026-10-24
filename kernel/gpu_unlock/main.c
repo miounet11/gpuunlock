@@ -157,4 +157,4 @@ module_init(gpu_unlock_init);
 module_exit(gpu_unlock_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("RTX 4090, experimental RTX 4070 Ti SUPER and supported GA10x pre-driver tensor unlock");
-MODULE_VERSION("1.1.0");
+MODULE_VERSION("1.1.1");

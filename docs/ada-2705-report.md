@@ -119,6 +119,34 @@ the same scaling, but NVIDIA does not label it that way on the product page.
 The matched measurement above is the relevant stock comparison for the tested
 kernel; it does not establish an FP8-wide performance effect.
 
+## TF32 and unsigned INT4 instruction checks
+
+A separate, register-resident SM89 `mma.sync` probe tested TF32 inputs with
+FP32 accumulation and unsigned INT4 inputs with INT32 accumulation. An
+FP16/FP32 mode served as a control. The **same cubin** ran on the same card,
+driver and 240 W cap in confirmed stock and unlocked boots, with 20,000 loop
+iterations and three timed repetitions per mode. Every one of the 270,336
+output cells per mode and state matched the all-ones reference. The best of
+three issue-rate measurements was:
+
+| Mode | Stock | Unlocked | Ratio |
+| --- | ---: | ---: | ---: |
+| FP16 inputs, FP32 accumulate (control) | 94.96 TF/s | 188.97 TF/s | 1.99× |
+| TF32 inputs, FP32 accumulate | 47.49 TF/s | 94.51 TF/s | 1.99× |
+| Unsigned INT4 inputs, INT32 accumulate | 754.81 TOP/s | 754.68 TOP/s | 1.00× |
+
+The three repetitions for each mode were tightly clustered; the full numeric
+series and zero-mismatch counts are in the [stock](evidence/ada2705/tensor-modes-stock.json)
+and [unlocked](evidence/ada2705/tensor-modes-unlocked.json) runner outputs.
+The active GPU snapshot after each benchmark reported 2820 MHz SM and
+10,251 MHz memory clocks; both retained the 240 W cap. The FP16 control
+reproduced the earlier 2× result. This establishes a **TF32 instruction-rate
+gain** on this card, while this unsigned INT4 instruction path was unchanged.
+These register-resident loops are not representative GEMM or inference
+workloads, and all-one inputs do not validate arbitrary numerical inputs.
+No TF32 or INT4 application-level speedup is claimed here. The
+[GPL source and reproduction steps](../diagnostics/bench/README.md) are included.
+
 The owner miner resumed after the benchmarks on the same GPU and 240 W cap,
 reconnected to its existing pool, and advanced from 2 to 3 accepted shares
 with zero rejected shares in its new process log. A later status sample showed
@@ -126,6 +154,8 @@ with zero rejected shares in its new process log. A later status sample showed
 it is not evidence of a mining speedup from the tensor unlock.
 After the second cold cycle restored the Ada override, the owner miner again
 connected to its pool at 240 W and logged a fresh accepted share (`1/0`).
+After the TF32/INT4 comparison, the Ada boot was restored and the owner miner
+advanced from one to two accepted shares with zero rejects at the same cap.
 
 ## Boot persistence on the tested card
 

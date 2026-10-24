@@ -65,5 +65,28 @@ records the second boot's EFI selection, read-only NVIDIA RM full-rate values,
 and a fresh accepted owner-mining share. This is evidence for one host and
 one GPU; a different board may need a full power cut before each attempt.
 
+`tensor-modes-stock.json` and `tensor-modes-unlocked.json` contain the runner's
+matched FP16/FP32 control, TF32/FP32, and unsigned INT4/INT32 instruction
+measurements. Only the private GPU UUID was removed from the runner's GPU
+identity; build and boot metadata were added. The repetition timings, rates,
+launch geometry, expected values, and per-cell mismatch counts are unchanged.
+`tensor-modes-comparison.json` derives the ratios and records the same cubin
+SHA-256 in both states. `tensor-modes-mining-recovery.txt` contains accepted
+`1/0` and `2/0` shares after returning the host to its persistent Ada boot.
+
+The benchmark's [GPL source](../../../diagnostics/bench/tensor_modes_issue.cu)
+SHA-256 is `46cc852ec15ba2d12a259d7698e8fcd2104dfb07a5947a38d46c7bd6b5f5462f`.
+The tested SM89 cubin SHA-256 is
+`ceac13436fff8b7aa2d2dc0060ffe2cf3524a61184f4bf34e8164c6d2f56eba4`;
+its disassembly contains `HMMA.1688.F32.TF32` and `IMMA.16864.U4.U4`.
+The source was compiled to PTX with CUDA 12.9.86 on Windows using
+`-allow-unsupported-compiler` for Visual Studio 18, then assembled with
+`ptxas -arch=sm_89 -O3`. The runner used in the test had SHA-256
+`00997131a75e7189471e937299ccd30e88ab6b7b1fb7d181c726f5bf03d755a8`.
+The published [runner](../../../diagnostics/bench/tensor_modes_driver_runner.py)
+generalizes its exact-GPU and power-cap guard to command-line arguments;
+the timed kernel launches and all-cell checks are the same. The cubin is not
+distributed; [rebuild it from source](../../../diagnostics/bench/README.md).
+
 The original RTX 4090 report belongs to a different card, driver and host.
 See [the 2705 report](../../ada-2705-report.md) for scope and limitations.

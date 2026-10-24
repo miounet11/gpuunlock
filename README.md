@@ -1,4 +1,4 @@
-# GPU unlock 1.1.0 — RTX 4090 and RTX 4070 Ti SUPER
+# GPU unlock 1.1.1 — RTX 4090 and RTX 4070 Ti SUPER
 
 New to this project? Start with the [copy-paste Quick Start](QUICKSTART.md).
 
@@ -26,6 +26,10 @@ at **95.0 → 189.9 TF/s** and BF16/FP32 at **95.0 → 189.7 TF/s** under the
 same 240 W power cap. INT8 stayed at 379.5 TOP/s. The stock driver loaded,
 the NVIDIA RM getter reported full FMLA32 rate, deterministic FP16/BF16 GEMM
 outputs matched exactly, and owner mining recovered with fresh accepted shares.
+A second matched instruction benchmark found **TF32/FP32 47.49 → 94.51 TF/s**
+(1.99×), with its FP16/FP32 control also near 2×. Unsigned INT4/INT32 stayed
+at approximately **754.8 TOP/s** in both states. These are register-resident
+issue rates, not application GEMM or inference speedups.
 A matched, verified E4M3 FP8/FP32 CUTLASS GEMM measured **59.326 TF/s stock →
 59.495 TF/s unlocked** on this card, a 0.3% difference. This single GEMM did
 not show a meaningful FP8 gain; other FP8 kernels remain untested.
@@ -50,9 +54,10 @@ RTX 3090 success; this branch does not revalidate every legacy board.
 The Ada port additionally recognizes RTX 4070 Ti SUPER
 `10de:2705` as an **experimental AD103 target validated on one card**. It requires both
 `gpu_unlock.ad103_experimental=1` and `gpu_unlock.targets=` set to that card's
-single exact PCI address. `targets=all` never selects it. A one-time cold boot
-on the tested 2705 confirmed driver 580.178.04 handoff, readbacks and matched
-tensor throughput; repeatability and other boards remain unverified.
+single exact PCI address. `targets=all` never selects it. On the tested 2705,
+two cold boots and later warm reboots confirmed driver 580.178.04 handoff and
+full-rate readbacks; matched throughput was measured across stock and unlocked
+boots. Other boards remain unverified.
 Other Ada IDs, professional RTX A-series and data-centre parts are not accepted.
 Shared firmware across Ada chips does not establish support for untested cards.
 

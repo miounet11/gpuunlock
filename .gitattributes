@@ -24,6 +24,7 @@
 *.cu export-ignore
 /diagnostics/bench/mma_bench.cu -export-ignore
 /diagnostics/bench/validate_gemm.cu -export-ignore
+/diagnostics/bench/tensor_modes_issue.cu -export-ignore
 /debian -export-ignore
 # Keep published evidence bytes identical on Windows and Linux clones.
 /docs/evidence/ada2705/* -text
