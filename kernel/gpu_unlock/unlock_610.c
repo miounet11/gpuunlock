@@ -2,7 +2,8 @@
 /*
  * Pre-driver V67 unlock, run before the stock driver binds: FWSEC-FRTS from
  * the board ROM, Booter with the V67 signature, the SS0/SS1 selector writes, then
- * FLR so the stock driver starts from a clean, halted GSP.
+ * FLR so the stock driver starts from a clean, halted GSP. After resume from
+ * suspend it runs again on the card nvidia has suspended, before nvidia resumes it.
  */
 #include <linux/delay.h>
 #include <linux/dma-mapping.h>
@@ -98,6 +99,7 @@ struct unlock_transaction_page {
 
 struct unlock_transaction_work {
 	struct pci_dev *pdev;
+	bool resume;	/* bound to nvidia, which suspended it before sleep */
 	void __iomem *bar;
 	resource_size_t bar_len;
 	u16 original_cmd;
@@ -775,9 +777,10 @@ static int unlock_transaction_unwind(struct unlock_transaction_work *work)
 		work->boot_fw = NULL;
 	}
 	/* Match the driver core's entry condition, not just BAR/mask cleanup.
-	 * Never release unrelated resources to make this check pass.
+	 * Never release unrelated resources to make this check pass. A bound
+	 * driver keeps its own resources and is not probed again.
 	 */
-	if (check_devres_empty(work, "handoff"))
+	if (!work->resume && check_devres_empty(work, "handoff"))
 		ret = -EBUSY;
 	if (work->streaming_set && work->streaming_ptr) {
 		if (work->pdev->dev.dma_mask != work->streaming_ptr)
@@ -803,6 +806,10 @@ static int unlock_transaction_unwind(struct unlock_transaction_work *work)
 	want = gpu_unlock_command_restore(work->original_cmd, now);
 	if (want != now && pci_write_config_word(work->pdev, PCI_COMMAND, want))
 		return GU_RESULT(-EIO);
+	/* nvidia does not set BME again on resume. pci_clear_master() before the
+	 * FLR also cleared the PCI core's record of it; set both back. */
+	if (work->resume && (want & PCI_COMMAND_MASTER))
+		pci_set_master(work->pdev);
 	if (diag_pci_word(work, false, PCI_COMMAND, &now))
 		return GU_RESULT(-EIO);
 	dev_info(&work->pdev->dev, "restore PCI command: actual=%#x original=%#x mask=%#x\n",
@@ -818,9 +825,11 @@ static int unlock_transaction_assets(struct unlock_transaction_work *work)
 	const struct firmware *desc;
 	int ret;
 
-	ret = check_devres_empty(work, "entry");
-	if (ret)
-		return ret;
+	if (!work->resume) {
+		ret = check_devres_empty(work, "entry");
+		if (ret)
+			return ret;
+	}
 	ret = request_asset(work, &work->v67_fw, unlock_assets(work->pdev)->payload);
 	if (ret)
 		return GU_RESULT(ret);
@@ -1038,18 +1047,24 @@ static int unlock_transaction_claim(struct unlock_transaction_work *work)
 		    diag_pci_word(work, false, PCI_COMMAND, &command) ||
 		    command == 0xffff || (command & PCI_COMMAND_MASTER))
 			return GU_RESULT(-EBUSY);
-		dev_info(&work->pdev->dev, "claim: cleared firmware BME\n");
-		work->original_cmd = command;
+		dev_info(&work->pdev->dev, "claim: cleared %s BME\n",
+			 work->resume ? "driver" : "firmware");
+		/* Firmware's BME stays off; the suspended driver gets its own back. */
+		if (!work->resume)
+			work->original_cmd = command;
 	}
 	dev_info(&work->pdev->dev, "claim: command=%#x capability=%#x BAR_mask=%#x\n",
 		command, cap, pci_select_bars(work->pdev, IORESOURCE_MEM));
 	/* Only BAR0 is mapped. On the display card the firmware framebuffer keeps
 	 * BAR1 until just before the FLR, as it does while the stock driver boots.
+	 * After resume nvidia keeps the BAR0 region it requested at probe.
 	 */
-	ret = pci_request_region(work->pdev, 0, "gpu_unlock");
-	if (ret)
-		return GU_RESULT(ret);
-	work->region = true;
+	if (!work->resume) {
+		ret = pci_request_region(work->pdev, 0, "gpu_unlock");
+		if (ret)
+			return GU_RESULT(ret);
+		work->region = true;
+	}
 	if (!(command & PCI_COMMAND_MEMORY)) {
 		ret = pci_enable_device_mem(work->pdev);
 		if (ret)
@@ -1065,6 +1080,8 @@ static int unlock_transaction_claim(struct unlock_transaction_work *work)
 	ret = pci_save_state(work->pdev);
 	if (ret)
 		return GU_RESULT(ret);
+	if (work->mapped)
+		return 0;
 	work->bar = pci_iomap(work->pdev, 0, 0);
 	if (!work->bar)
 		return GU_RESULT(-ENOMEM);
@@ -1285,6 +1302,43 @@ static int unlock_transaction_gfw(struct unlock_transaction_work *work)
 			return GU_RESULT(-ETIMEDOUT);
 		usleep_range(1000, 2000);
 	}
+}
+
+/* After resume nvidia has suspended the card: its GSP-RM is down and BAR0's
+ * region stays nvidia's, so BAR0 is mapped without a request. Nothing is
+ * written until the card is known to have lost power: WPR2 down, the selectors
+ * back at their power-on values and GFW finished again.
+ */
+static int unlock_transaction_suspended(struct unlock_transaction_work *work)
+{
+	u32 wpr_hi, ss0, ss1;
+	u16 command;
+
+	if (diag_pci_word(work, false, PCI_COMMAND, &command) || command == 0xffff ||
+	    !(command & PCI_COMMAND_MEMORY))
+		return GU_RESULT(-ENODEV);
+	work->bar_len = pci_resource_len(work->pdev, 0);
+	if (work->bar_len < SEC2_FALCON2 + 0x1000)
+		return GU_RESULT(-EINVAL);
+	work->bar = pci_iomap(work->pdev, 0, 0);
+	if (!work->bar)
+		return GU_RESULT(-ENOMEM);
+	work->mapped = true;
+	/* Read before GFW completes, so an unreadable value proves nothing yet. */
+	if (read_bar(work, 0x001fa828, &wpr_hi) ||
+	    read_bar(work, GU_FEAT_SS0_OFFSET, &ss0) ||
+	    read_bar(work, GU_FEAT_SS1_OFFSET, &ss1))
+		return GU_RESULT(-EIO);
+	dev_info(&work->pdev->dev, "resume entry: wpr2_hi=%#x ss0=%#x ss1=%#x\n",
+		 wpr_hi, ss0, ss1);
+	if (!inaccessible(wpr_hi) && (wpr_hi >> 4)) {
+		dev_info(&work->pdev->dev, "resume: GSP-RM already running (WPR2 enabled); card left as is\n");
+		return -EBUSY;
+	}
+	/* Sleep that kept the card powered (suspend to idle, an aborted suspend). */
+	if (ss0 == GU_SS0_UNLOCK && ss1 == GU_SS1_UNLOCK)
+		return -EALREADY;
+	return unlock_transaction_gfw(work);
 }
 
 static int unlock_transaction_boot(struct unlock_transaction_work *work)
@@ -1601,11 +1655,13 @@ static int unlock_transaction_reset(struct unlock_transaction_work *work)
 	 * with BME off until post-FLR containment is verified. */
 	/* FLR resets the display engine, so a firmware framebuffer (simpledrm,
 	 * efifb) on this card must go first; nvidia-drm replaces it later. This
-	 * does nothing on a card without one.
+	 * does nothing on a card without one. After resume nvidia-drm already has.
 	 */
-	ret = gpu_unlock_remove_apertures(work->pdev);
-	if (ret)
-		return GU_RESULT(ret);
+	if (!work->resume) {
+		ret = gpu_unlock_remove_apertures(work->pdev);
+		if (ret)
+			return GU_RESULT(ret);
+	}
 	dev_info(&work->pdev->dev, "PCIe FLR begin: BME=0 DMA retained, chip=%#x\n", chip);
 	ret = pcie_flr(work->pdev);
 	dev_info(&work->pdev->dev, "PCIe FLR returned: result=%d\n", ret);
@@ -1684,7 +1740,8 @@ void gpu_unlock_610_release_shared(struct gpu_unlock_610_shared *shared)
 	shared->gsp = NULL;
 }
 
-int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shared *shared)
+int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shared *shared,
+			  bool resume)
 {
 	struct unlock_transaction_work *work;
 	int ret, cleanup;
@@ -1694,7 +1751,12 @@ int gpu_unlock_610_unlock(struct pci_dev *pdev, const struct gpu_unlock_610_shar
 		return -ENOMEM;
 	work->pdev = pci_dev_get(pdev);
 	work->gsp_fw = shared->gsp;
-	ret = unlock_transaction_assets(work);
+	work->resume = resume;
+	/* After resume GFW may still be running: check and wait before reading
+	 * the layout, and before loading assets for a card that kept power. */
+	ret = resume ? unlock_transaction_suspended(work) : 0;
+	if (!ret)
+		ret = unlock_transaction_assets(work);
 	if (!ret)
 		ret = unlock_transaction_claim(work);
 	if (!ret)
