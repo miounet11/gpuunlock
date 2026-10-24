@@ -1,6 +1,13 @@
 export const SITE = "https://gpuunlock.com";
 export const SITE_NAME = "GPU Unlock";
 
+/**
+ * The companion install site. It owns the build, the boot order and the verification
+ * steps; this site owns the accepted device IDs and the same-card measurements. Keeping
+ * each half on one host is what stops the two pages from reading as the same article.
+ */
+export const INSTALL_SITE = "https://gpu-unlock.com";
+
 export const REPOS = {
   ampere: "https://github.com/Zagitta/gpu-unlock",
   ada: "https://github.com/JustAResearcher/gpu-unlock-ada",

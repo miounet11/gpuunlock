@@ -1,11 +1,10 @@
 {
   "nav": {
-    "label": "メイン",
-    "skip": "本文へ移動",
+    "label": "メインナビゲーション",
+    "skip": "本文へスキップ",
     "gpus": "カード",
     "benchmarks": "ベンチマーク",
-    "install": "インストール",
-    "faq": "FAQ"
+    "install": "導入ガイド"
   },
   "home": {
     "title": "GPU Unlock — 対応 NVIDIA カード、実測の高速化、導入手順",
@@ -34,9 +33,9 @@
     "cardsBody": "モジュールが受け付けるかどうかではなく、実際にどこまで分かっているかで分類しています。",
     "cardCount": "未検証・非対応 ID を含む全 {count} 枚",
     "startTitle": "どこから始めるか",
-    "startStep1": "自分のカードが受け付けられるか、どこまで分かっているかを確認する",
-    "startStep2": "導入手順を読む — initramfs の手順は省略できません",
-    "startStep3": "何かを書き込む前に、既知の失敗モードを読む",
+    "startStep1": "受け付けリストで自分のカードを確認し、既知の程度を見る",
+    "startStep2": "実測されたカードの同一カード実測値を読む",
+    "startStep3": "gpu-unlock.com の導入順序を読む —— initramfs の手順は省略不可",
     "upstreamTitle": "上流プロジェクト",
     "upstreamBody": "本サイトはこれらのリポジトリを文書化するものであり、フォークではありません。",
     "upstreamAmpere": "Ampere モジュール: GA102、GA103、GA104、GA106（v1.0.0）",
@@ -70,8 +69,9 @@
       "unsupported": "非対応"
     },
     "idsTitle": "自分のカードを確認する方法",
-    "idsBody": "`lspci -nn | grep -i nvidia` を実行し、`10de:xxxx` のデバイス ID を上のリストと照合してください。GeForce と CMP の GA102/GA104 ID は受け付けリストに含まれますが、プロ向け RTX A シリーズやデータセンター向け製品は含まれません。AD102 は RTX 4090 のみ、AD103 は RTX 4070 Ti SUPER のカナリア用アドレスに限定されます。",
-    "installLink": "導入手順"
+    "idsBody": "`lspci -nn | grep -i nvidia` を実行し、`10de:xxxx` のデバイス ID を下の受け付けリストと照合してください。GeForce と CMP の GA102/GA104 ID は受け付けリストに含まれますが、プロ向け RTX A シリーズやデータセンター向け製品は含まれません。AD102 は RTX 4090 のみ、AD103 は RTX 4070 Ti SUPER のTester canary のアドレスのみを受け付けます。Turing の ID（TU102、TU104、TU106）は別のモジュールが受け付けるため、20 系は統合版ではなく Turing 版を導入します。",
+    "installLink": "導入手順",
+    "acceptedIdsTitle": "受け付けているすべてのデバイス ID"
   },
   "device": {
     "metaTitle": "{name}（{id}）— GPU Unlock 対応状況",

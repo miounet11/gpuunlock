@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { SITE_NAME, REPOS } from "@/lib/site";
+import { SITE_NAME, REPOS , INSTALL_SITE } from "@/lib/site";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -37,8 +37,14 @@ export default async function LocaleLayout({
               <nav className="site-nav" aria-label={nav.label ?? "Main"}>
                 <Link href="/gpus">{nav.gpus ?? "Cards"}</Link>
                 <Link href="/benchmarks">{nav.benchmarks ?? "Benchmarks"}</Link>
-                <Link href="/install">{nav.install ?? "Install"}</Link>
-                <Link href="/faq">{nav.faq ?? "FAQ"}</Link>
+                {/* The build-and-install walkthrough is the other half of the project and
+                    lives on gpu-unlock.com. One page per topic, on one host each. */}
+                <a href={`${INSTALL_SITE}/${locale}/install`} rel="noopener noreferrer">
+                  {nav.install ?? "Install guide"}
+                </a>
+                <a href={`${INSTALL_SITE}/${locale}/faq`} rel="noopener noreferrer">
+                  {nav.faq ?? "FAQ"}
+                </a>
                 <a href={REPOS.usage} rel="noopener noreferrer">
                   GitHub
                 </a>

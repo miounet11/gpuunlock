@@ -17,6 +17,18 @@ const nextConfig: NextConfig = {
         destination: "https://gpuunlock.com/:path*",
         permanent: true,
       },
+      // The build-and-install walkthrough belongs to gpu-unlock.com. Keeping a second copy
+      // here made the two hosts serve the same article under two names.
+      {
+        source: "/:locale/install",
+        destination: "https://gpu-unlock.com/:locale/install",
+        statusCode: 301,
+      },
+      {
+        source: "/:locale/faq",
+        destination: "https://gpu-unlock.com/:locale/faq",
+        statusCode: 301,
+      },
     ];
   },
   async headers() {

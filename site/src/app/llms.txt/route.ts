@@ -1,6 +1,6 @@
 import { DEVICES, ACCEPTED_IDS } from "@/data/devices";
 import { BENCH_RUNS } from "@/data/benchmarks";
-import { REPOS, SITE } from "@/lib/site";
+import { INSTALL_SITE, REPOS, SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -33,8 +33,12 @@ export function GET() {
   lines.push(`- [Home](${SITE}/en): overview, headline numbers, quick table`);
   lines.push(`- [Cards](${SITE}/en/gpus): every device the module matches, with status per card`);
   lines.push(`- [Benchmarks](${SITE}/en/benchmarks): full stock-vs-unlocked rows, including the rows that did not move`);
-  lines.push(`- [Install](${SITE}/en/install): initramfs ordering, kernel parameters, verification, rollback`);
-  lines.push(`- [FAQ](${SITE}/en/faq): Windows support, safety, driver requirements, failure modes`);
+  lines.push(
+    `- [Install guide](${INSTALL_SITE}/en/install): initramfs ordering, kernel parameters, verification, rollback`,
+  );
+  lines.push(
+    `- [FAQ](${INSTALL_SITE}/en/faq): module choice, Windows support, safety, failure modes`,
+  );
   lines.push("");
   lines.push("## Confirmed cards");
   lines.push("");

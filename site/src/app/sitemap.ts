@@ -4,12 +4,13 @@ import { SITE } from "@/lib/site";
 
 const LOCALES = ["en", "zh", "ja", "de", "fr", "es", "pt"] as const;
 
+// The card list and the same-card measurements live on this site; the build-and-install
+// walkthrough lives on gpu-unlock.com. Each host keeps its own half of the project, so the
+// two sitemaps do not overlap.
 const PATHS = [
   "",
   "/gpus",
   "/benchmarks",
-  "/install",
-  "/faq",
   ...DEVICES.map((d) => `/gpus/${d.slug}`),
 ];
 

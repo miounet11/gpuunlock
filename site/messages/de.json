@@ -1,11 +1,10 @@
 {
   "nav": {
-    "label": "Hauptmenü",
+    "label": "Hauptnavigation",
     "skip": "Zum Inhalt springen",
     "gpus": "Karten",
     "benchmarks": "Benchmarks",
-    "install": "Installation",
-    "faq": "FAQ"
+    "install": "Installationsanleitung"
   },
   "home": {
     "title": "GPU Unlock — unterstützte NVIDIA-Karten, gemessene Beschleunigung, Installationsschritte",
@@ -34,9 +33,9 @@
     "cardsBody": "Gruppiert danach, was tatsächlich bekannt ist — nicht danach, was das Modul akzeptiert.",
     "cardCount": "Alle {count} Karten, inklusive ungetesteter und nicht unterstützter IDs",
     "startTitle": "Wo anfangen",
-    "startStep1": "Prüfe, ob deine Karte in der akzeptierten Liste steht und wie gut sie belegt ist",
-    "startStep2": "Lies die Installationsreihenfolge — der initramfs-Schritt ist nicht optional",
-    "startStep3": "Lies die Fehlermodi, bevor du etwas flashst",
+    "startStep1": "Finde deine Karte in der akzeptierten Liste und sieh, wie gut sie belegt ist",
+    "startStep2": "Lies die Messwerte der tatsächlich gemessenen Karten",
+    "startStep3": "Lies die Installationsreihenfolge auf gpu-unlock.com — der initramfs-Schritt ist nicht optional",
     "upstreamTitle": "Upstream-Projekte",
     "upstreamBody": "Diese Seite dokumentiert diese Repositories; sie forkt sie nicht.",
     "upstreamAmpere": "das Ampere-Modul: GA102, GA103, GA104, GA106 (v1.0.0)",
@@ -70,8 +69,9 @@
       "unsupported": "nicht unterstützt"
     },
     "idsTitle": "Die eigene Karte prüfen",
-    "idsBody": "Führe `lspci -nn | grep -i nvidia` aus und vergleiche die Geräte-ID `10de:xxxx` mit der Liste oben. GeForce- und CMP-IDs für GA102/GA104 stehen in der akzeptierten Liste; professionelle RTX-A-Serie und Datenzentrum-Teile nicht. AD102 akzeptiert nur die RTX 4090, AD103 ist auf die exakte Kanarien-Adresse der RTX 4070 Ti SUPER begrenzt.",
-    "installLink": "Installationsschritte"
+    "idsBody": "Führe `lspci -nn | grep -i nvidia` aus und vergleiche die Geräte-ID `10de:xxxx` mit der untenstehenden akzeptierten Liste. GeForce- und CMP-IDs für GA102/GA104 stehen in der akzeptierten Liste; professionelle RTX-A-Serie und Data-Center-Teile nicht. AD102 akzeptiert nur die RTX 4090, AD103 ist auf die exakte Canary-Adresse der RTX 4070 Ti SUPER begrenzt. Die Turing-IDs (TU102, TU104, TU106) akzeptiert ein separates Modul – eine Turing-Karte braucht daher die Turing-Installation, nicht die zusammengeführte.",
+    "installLink": "Installationsschritte",
+    "acceptedIdsTitle": "Alle akzeptierten Geräte-IDs"
   },
   "device": {
     "metaTitle": "{name} ({id}) — GPU-Unlock-Unterstützung",

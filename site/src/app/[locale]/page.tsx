@@ -4,7 +4,7 @@ import { DEVICES, acceptedCount } from "@/data/devices";
 import { BENCH_RUNS } from "@/data/benchmarks";
 import { jsonLdGraph, organizationLd, pageLd, websiteLd } from "@/lib/jsonld";
 import { pageMeta } from "@/lib/seo";
-import { REPOS, SITE } from "@/lib/site";
+import { REPOS, SITE , INSTALL_SITE } from "@/lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -163,10 +163,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <Link href="/gpus">{t("startStep1")}</Link>
         </li>
         <li>
-          <Link href="/install">{t("startStep2")}</Link>
+          <Link href="/benchmarks">{t("startStep2")}</Link>
         </li>
         <li>
-          <Link href="/faq">{t("startStep3")}</Link>
+          <a href={`${INSTALL_SITE}/${locale}/install`} rel="noopener noreferrer">
+            {t("startStep3")}
+          </a>
         </li>
       </ol>
 

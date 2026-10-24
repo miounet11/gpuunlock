@@ -3,9 +3,8 @@
     "label": "主导航",
     "skip": "跳到正文",
     "gpus": "显卡",
-    "benchmarks": "性能实测",
-    "install": "安装",
-    "faq": "常见问题"
+    "benchmarks": "基准",
+    "install": "安装指南"
   },
   "home": {
     "title": "GPU Unlock — 支持的 NVIDIA 显卡、实测提速与安装步骤",
@@ -34,9 +33,9 @@
     "cardsBody": "按「实际已知多少」分组，而不是按「模块接受多少」。",
     "cardCount": "全部 {count} 张卡，含未测试与不支持的 ID",
     "startTitle": "从哪里开始",
-    "startStep1": "确认你的卡在被接受的列表中，以及它被了解得多深",
-    "startStep2": "阅读安装顺序——initramfs 这一步不可省略",
-    "startStep3": "动手前先看失败模式",
+    "startStep1": "在接受列表里找到你的显卡，并看清它的可信程度",
+    "startStep2": "看真正实测过的几张卡的同卡数据",
+    "startStep3": "到 gpu-unlock.com 读安装顺序 —— initramfs 那一步不能省",
     "upstreamTitle": "上游项目",
     "upstreamBody": "本站是对这些仓库的文档整理，不是它们的分支。",
     "upstreamAmpere": "Ampere 模块：GA102、GA103、GA104、GA106（v1.0.0）",
@@ -70,8 +69,9 @@
       "unsupported": "不支持"
     },
     "idsTitle": "如何查自己的卡",
-    "idsBody": "运行 `lspci -nn | grep -i nvidia`，把 `10de:xxxx` 设备 ID 与上表对照。GeForce 与 CMP 的 GA102/GA104 ID 在接受列表中；专业卡 RTX A 系列与数据中心产品不在其中。AD102 只接受 RTX 4090，AD103 仅限那一张 RTX 4070 Ti SUPER 金丝雀的具体地址。",
-    "installLink": "安装步骤"
+    "idsBody": "运行 `lspci -nn | grep -i nvidia`，把 `10de:xxxx` 设备 ID 与下方的接受列表对照。GeForce 与 CMP 的 GA102/GA104 ID 在接受列表中；专业卡 RTX A 系列与数据中心产品不在其中。AD102 只接受 RTX 4090，AD103 仅限那一张 RTX 4070 Ti SUPER 金丝雀的具体地址。Turing 的 ID（TU102、TU104、TU106）由另一个模块接受，所以 20 系显卡要装 Turing 那套，而不是合并版。",
+    "installLink": "安装步骤",
+    "acceptedIdsTitle": "全部接受的设备 ID"
   },
   "device": {
     "metaTitle": "{name}（{id}）— GPU Unlock 支持情况",
