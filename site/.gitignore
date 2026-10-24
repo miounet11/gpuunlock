@@ -1,0 +1,7 @@
+node_modules
+.next
+.next-build
+*.log
+.env
+.env.*
+!.env.example

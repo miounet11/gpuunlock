@@ -2,6 +2,41 @@
 
 New to this project? Start with the [copy-paste Quick Start](QUICKSTART.md).
 
+## This repository is the merge of two upstream projects
+
+`miounet11/gpuunlock` combines both upstream NVIDIA kernel modules into one
+tree, so a single clone covers Ampere and Ada:
+
+| Upstream | Version | What it adds |
+|---|---|---|
+| [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) | 1.0.0 | GA102 / GA103 / GA104 / GA106 support, packaging, and the suspend/resume re-unlock path |
+| [JustAResearcher/gpu-unlock-ada](https://github.com/JustAResearcher/gpu-unlock-ada) | 1.1.1 | AD102 (RTX 4090) support, the experimental AD103 (RTX 4070 Ti SUPER) canary, TF32 and INT4 evidence |
+
+The two upstream trees have no shared history, so the merge was done by hand
+rather than by `git merge`. The Ada tree is the base; the Ampere fork's
+suspend/resume path was ported onto it:
+
+- `unlock_610.c` / `unlock_610.h` — a resume transaction that reuses the BAR0
+  mapping the suspended driver already owns, instead of taking the region or
+  the BME bit away from it.
+- `main.c` — a card list plus a power-management notifier, so a card that was
+  suspended and resumed is unlocked again with the NVIDIA driver still bound.
+- The Ada fork's AD102/AD103 architecture abstraction and device list are kept
+  as they were.
+
+The merged module builds against the running kernel's headers:
+
+```sh
+make -C kernel/gpu_unlock
+```
+
+### Website
+
+The documentation site for this module lives at
+**<https://gpuunlock.com/>** — supported cards, the measured stock-vs-unlocked
+rows, the install order and the failure modes, in seven languages. The site
+source is in [`site/`](site/).
+
 This Linux kernel module enables the SM speed-select override before the stock
 NVIDIA driver starts. RTX 4090 (`10de:2684`, AD102) support has demonstrated
 approximately **2× FP16 and BF16 tensor throughput with FP32 accumulation**:
@@ -75,8 +110,8 @@ Clone the GPL-2.0-only source and build the packages locally so the pinned
 NVIDIA firmware is downloaded and generated on your own machine:
 
 ```sh
-git clone https://github.com/JustAResearcher/gpu-unlock-ada.git
-cd gpu-unlock-ada
+git clone https://github.com/miounet11/gpuunlock.git
+cd gpuunlock
 make install
 ```
 
