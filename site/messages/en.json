@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — supported NVIDIA cards, measured speedups, install steps",
-    "description": "Which NVIDIA cards the GPU Unlock kernel module supports, what same-card benchmarks actually measured on RTX 4090 and RTX 4070 Ti SUPER, and how to install it on Ampere and Ada.",
+    "description": "Which NVIDIA cards the GPU Unlock kernel module supports, what same-card benchmarks actually measured on RTX 4090, RTX 4070 Ti SUPER and RTX 2080 Ti, and how to install it on Ampere, Ada and Turing.",
     "h1": "Unlock NVIDIA SM speed-select, with the numbers attached",
-    "lead": "Two upstream kernel modules let consumer GeForce cards reach tensor throughput NVIDIA reserves for other parts. This site collects what they support, what was measured on the same card before and after, and what breaks.",
+    "lead": "Three upstream kernel modules let consumer GeForce cards reach tensor throughput NVIDIA reserves for other parts. This site collects what they support, what was measured on the same card before and after, and what breaks.",
     "statIds": "PCI IDs accepted",
-    "statIdsNote": "Across AD102, GA102, GA103, GA104 and GA106. Acceptance is not the same as a confirmed result.",
+    "statIdsNote": "Across AD102, GA102, GA103, GA104 and GA106 from the merged Ampere/Ada module, plus TU102, TU104 and TU106 from the separate Turing module. Acceptance is not the same as a confirmed result.",
     "statMeasured": "cards with published same-card numbers",
-    "statMeasuredNote": "RTX 4090 and RTX 4070 Ti SUPER. Everything else rests on user reports or is untested.",
+    "statMeasuredNote": "RTX 4090, RTX 4070 Ti SUPER and RTX 2080 Ti. Everything else rests on user reports or is untested.",
     "statGain": "peak tensor gain",
     "statGainNote": "f16/f32 and bf16/f32 on RTX 4090. FP32 and INT8 were never rate-limited and do not move.",
     "whatTitle": "What the unlock does",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "Supported NVIDIA cards",
     "description": "The PCI IDs the GPU Unlock module accepts, split by how well each one is actually known: measured on the same card, reported by a user, partial, untested, or deliberately unsupported.",
-    "summary": "{total} PCI IDs accepted across AD102, GA102, GA103, GA104 and GA106; {cards} cards described here.",
+    "summary": "{total} PCI IDs accepted across AD102, GA102, GA103, GA104, GA106 (merged module) and TU102, TU104, TU106 (Turing module); {cards} cards described here.",
     "statusHeading": {
       "measured": "Measured on the same card",
       "reported": "Reported by users",

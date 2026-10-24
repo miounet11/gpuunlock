@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — unterstützte NVIDIA-Karten, gemessene Beschleunigung, Installationsschritte",
-    "description": "Welche NVIDIA-Karten das GPU-Unlock-Kernelmodul unterstützt, was Messungen auf derselben Karte mit RTX 4090 und RTX 4070 Ti SUPER ergaben und wie die Installation auf Ampere und Ada abläuft.",
+    "description": "Welche NVIDIA-Karten das GPU-Unlock-Kernelmodul unterstützt, was Messungen auf derselben Karte mit RTX 4090, RTX 4070 Ti SUPER und RTX 2080 Ti ergaben und wie die Installation auf Ampere, Ada und Turing abläuft.",
     "h1": "NVIDIAs SM-Speed-Select freischalten — mit den Zahlen dazu",
-    "lead": "Zwei Upstream-Kernelmodule bringen Consumer-Grafikkarten von GeForce auf Tensor-Durchsatz, den NVIDIA anderen Produkten vorbehält. Diese Seite sammelt, was sie unterstützen, was auf derselben Karte vorher und nachher gemessen wurde und was kaputtgeht.",
+    "lead": "Drei Upstream-Kernelmodule bringen Consumer-Grafikkarten von GeForce auf Tensor-Durchsatz, den NVIDIA anderen Produkten vorbehält. Diese Seite sammelt, was sie unterstützen, was auf derselben Karte vorher und nachher gemessen wurde und was kaputtgeht.",
     "statIds": "akzeptierte PCI-IDs",
-    "statIdsNote": "Über AD102, GA102, GA103, GA104 und GA106. Akzeptiert zu werden ist nicht dasselbe wie ein bestätigtes Ergebnis.",
+    "statIdsNote": "Über AD102, GA102, GA103, GA104 und GA106 aus dem zusammengeführten Ampere/Ada-Modul sowie TU102, TU104 und TU106 aus dem eigenständigen Turing-Modul. Akzeptiert zu werden ist nicht dasselbe wie ein bestätigtes Ergebnis.",
     "statMeasured": "Karten mit veröffentlichten Messwerten auf derselben Karte",
-    "statMeasuredNote": "RTX 4090 und RTX 4070 Ti SUPER. Alles andere beruht auf Nutzerberichten oder ist ungetestet.",
+    "statMeasuredNote": "RTX 4090, RTX 4070 Ti SUPER und RTX 2080 Ti. Alles andere beruht auf Nutzerberichten oder ist ungetestet.",
     "statGain": "maximaler Tensor-Gewinn",
     "statGainNote": "f16/f32 und bf16/f32 auf der RTX 4090. FP32 und INT8 waren nie gedrosselt und bewegen sich nicht.",
     "whatTitle": "Was das Unlock bewirkt",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "Unterstützte NVIDIA-Karten",
     "description": "Die PCI-IDs, die das GPU-Unlock-Modul akzeptiert, geteilt danach, wie gut jede tatsächlich belegt ist: auf derselben Karte gemessen, von Nutzern berichtet, teilweise, ungetestet oder bewusst nicht unterstützt.",
-    "summary": "{total} PCI-IDs über AD102, GA102, GA103, GA104 und GA106 akzeptiert; {cards} Karten werden hier beschrieben.",
+    "summary": "{total} PCI-IDs über AD102, GA102, GA103, GA104, GA106 (zusammengeführtes Modul) und TU102, TU104, TU106 (Turing-Modul) akzeptiert; {cards} Karten werden hier beschrieben.",
     "statusHeading": {
       "measured": "Auf derselben Karte gemessen",
       "reported": "Von Nutzern berichtet",

@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — tarjetas NVIDIA compatibles, aceleraciones medidas y pasos de instalación",
-    "description": "Qué tarjetas NVIDIA admite el módulo de kernel GPU Unlock, qué midieron las pruebas en la misma tarjeta con RTX 4090 y RTX 4070 Ti SUPER, y cómo instalarlo en Ampere y Ada.",
+    "description": "Qué tarjetas NVIDIA admite el módulo de kernel GPU Unlock, qué midieron las pruebas en la misma tarjeta con RTX 4090, RTX 4070 Ti SUPER y RTX 2080 Ti, y cómo instalarlo en Ampere, Ada y Turing.",
     "h1": "Desbloquea el SM speed-select de NVIDIA, con las cifras delante",
-    "lead": "Dos módulos de kernel upstream permiten que tarjetas GeForce de consumo alcancen un rendimiento tensorial que NVIDIA reserva para otros productos. Este sitio reúne qué admiten, qué se midió en la misma tarjeta antes y después, y qué se rompe.",
+    "lead": "Tres módulos de kernel upstream permiten que tarjetas GeForce de consumo alcancen un rendimiento tensorial que NVIDIA reserva para otros productos. Este sitio reúne qué admiten, qué se midió en la misma tarjeta antes y después, y qué se rompe.",
     "statIds": "ID PCI aceptados",
-    "statIdsNote": "En AD102, GA102, GA103, GA104 y GA106. Ser aceptado no es lo mismo que un resultado confirmado.",
+    "statIdsNote": "En AD102, GA102, GA103, GA104 y GA106 del módulo Ampere/Ada fusionado, más TU102, TU104 y TU106 del módulo Turing independiente. Ser aceptado no es lo mismo que un resultado confirmado.",
     "statMeasured": "tarjetas con cifras publicadas en la misma tarjeta",
-    "statMeasuredNote": "RTX 4090 y RTX 4070 Ti SUPER. Todo lo demás depende de informes de usuarios o no se ha probado.",
+    "statMeasuredNote": "RTX 4090, RTX 4070 Ti SUPER y RTX 2080 Ti. Todo lo demás depende de informes de usuarios o no se ha probado.",
     "statGain": "ganancia tensorial máxima",
     "statGainNote": "f16/f32 y bf16/f32 en RTX 4090. FP32 e INT8 nunca estuvieron limitados y no se mueven.",
     "whatTitle": "Qué hace el desbloqueo",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "Tarjetas NVIDIA compatibles",
     "description": "Los ID PCI que acepta el módulo GPU Unlock, separados por lo que realmente se sabe de cada uno: medido en la misma tarjeta, informado por un usuario, parcial, no probado o deliberadamente no compatible.",
-    "summary": "{total} ID PCI aceptados en AD102, GA102, GA103, GA104 y GA106; aquí se describen {cards} tarjetas.",
+    "summary": "{total} ID PCI aceptados en AD102, GA102, GA103, GA104, GA106 (módulo fusionado) y TU102, TU104, TU106 (módulo Turing); aquí se describen {cards} tarjetas.",
     "statusHeading": {
       "measured": "Medido en la misma tarjeta",
       "reported": "Informado por usuarios",

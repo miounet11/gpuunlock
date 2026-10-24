@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — 対応 NVIDIA カード、実測の高速化、導入手順",
-    "description": "GPU Unlock カーネルモジュールが対応する NVIDIA カード、RTX 4090 と RTX 4070 Ti SUPER で同一カード実測された数値、Ampere と Ada への導入手順をまとめています。",
+    "description": "GPU Unlock カーネルモジュールが対応する NVIDIA カード、RTX 4090・RTX 4070 Ti SUPER・RTX 2080 Ti で同一カード実測された数値、Ampere・Ada・Turing への導入手順をまとめています。",
     "h1": "NVIDIA の SM speed-select を、数字付きで解放する",
-    "lead": "2 つの上流カーネルモジュールにより、コンシューマー向け GeForce カードが、NVIDIA が他の製品向けに確保しているテンソルスループットに到達できるようになります。本サイトは、対応範囲、同一カードでの導入前後の実測値、そして壊れる箇所をまとめたものです。",
+    "lead": "3 つの上流カーネルモジュールにより、コンシューマー向け GeForce カードが、NVIDIA が他の製品向けに確保しているテンソルスループットに到達できるようになります。本サイトは、対応範囲、同一カードでの導入前後の実測値、そして壊れる箇所をまとめたものです。",
     "statIds": "受け付ける PCI ID",
-    "statIdsNote": "AD102、GA102、GA103、GA104、GA106 にまたがります。受け付けることと、結果が確認されていることは別です。",
+    "statIdsNote": "統合 Ampere/Ada モジュールの AD102、GA102、GA103、GA104、GA106 と、独立した Turing モジュールの TU102、TU104、TU106 にまたがります。受け付けることと、結果が確認されていることは別です。",
     "statMeasured": "同一カードの公開実測があるカード",
-    "statMeasuredNote": "RTX 4090 と RTX 4070 Ti SUPER。それ以外はユーザー報告に依存するか、未検証です。",
+    "statMeasuredNote": "RTX 4090、RTX 4070 Ti SUPER、RTX 2080 Ti。それ以外はユーザー報告に依存するか、未検証です。",
     "statGain": "テンソル性能の最大向上",
     "statGainNote": "RTX 4090 の f16/f32 と bf16/f32。FP32 と INT8 は元々制限されておらず、変化しません。",
     "whatTitle": "アンロックが行うこと",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "対応 NVIDIA カード",
     "description": "GPU Unlock モジュールが受け付ける PCI ID を、実際にどこまで分かっているかで分類しています: 同一カード実測、ユーザー報告、部分対応、未検証、意図的非対応。",
-    "summary": "AD102、GA102、GA103、GA104、GA106 にわたり {total} 個の PCI ID を受け付け、ここでは {cards} 枚を解説しています。",
+    "summary": "統合モジュールの AD102、GA102、GA103、GA104、GA106 と Turing モジュールの TU102、TU104、TU106 にわたり {total} 個の PCI ID を受け付け、ここでは {cards} 枚を解説しています。",
     "statusHeading": {
       "measured": "同一カードで実測",
       "reported": "ユーザー報告",

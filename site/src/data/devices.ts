@@ -1,4 +1,4 @@
-// Every entry here is taken from one of the two upstream repositories, not invented.
+// Every entry here is taken from one of the three upstream repositories, not invented.
 //
 //   Zagitta/gpu-unlock        v1.0.0  — GA102/GA103/GA104/GA106 module + packaging
 //   JustAResearcher/gpu-unlock-ada v1.1.1 — adds AD102 (RTX 4090) and an experimental AD103 canary
@@ -193,7 +193,7 @@ export const DEVICES: Device[] = [
     vendor: "NVIDIA",
     status: "measured",
     gainMin: 36,
-    gainMax: 61,
+    gainMax: 64,
     fork: "turing",
     notes:
       "Turing is a separate module, not a build of the GA10x/AD10x one: the booter payload constants, code addresses and teardown differ per architecture. Measured on a 22 GB board with driver 575.51.03, where FP16 accumulate went from 88-98% of peak to 120-161% of peak depending on matrix size. Same-card rows are on the benchmarks page.",

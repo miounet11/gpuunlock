@@ -10,15 +10,15 @@ export const FAQS: FaqEntry[] = [
   },
   {
     q: "Which cards are confirmed to work?",
-    a: "Two cards have published same-card stock-vs-unlocked measurements: RTX 4090 (10de:2684) and RTX 4070 Ti SUPER (10de:2705, experimental, one card). RTX 3090 Ti, RTX 3090, RTX 3080 10 GB, RTX 3080 20 GB, RTX 3070 and RTX 3060 12 GB have user compatibility reports. RTX 3070 Ti has not been tested with this module on Linux; the same unlock worked from a UEFI port on Windows. GA103 (10de:2414) has no reports at all.",
+    a: "Three cards have published same-card stock-vs-unlocked measurements: RTX 4090 (10de:2684), RTX 4070 Ti SUPER (10de:2705, experimental, one card) and RTX 2080 Ti (10de:1e07, on the separate Turing module). RTX 3090 Ti, RTX 3090, RTX 3080 10 GB, RTX 3080 20 GB, RTX 3070 and RTX 3060 12 GB have user compatibility reports. RTX 3070 Ti has not been tested with this module on Linux; the same unlock worked from a UEFI port on Windows. GA103 (10de:2414) has no reports at all. The remaining Turing ids are accepted by the module but untested.",
   },
   {
     q: "How much faster is it?",
-    a: "On RTX 4090, f16/f32 and bf16/f32 go from about 165.6 TF/s to about 330 TF/s — roughly 2×. On RTX 4070 Ti SUPER, f16/f32 goes from 94.96 to 188.97 TFLOP/s and tf32 from 47.49 to 94.51 TFLOP/s, both 1.99×. Paths that were not rate-limited do not move: FP32 FFMA stays at 79.1 TF/s, INT8 S8/S32 stays around 660 TF/s, and the E4M3 FP8 CUTLASS GEMM measured 1.0029× on the 4070 Ti SUPER.",
+    a: "On RTX 4090, f16/f32 and bf16/f32 go from about 165.6 TF/s to about 330 TF/s — roughly 2×. On RTX 4070 Ti SUPER, f16/f32 goes from 94.96 to 188.97 TFLOP/s and tf32 from 47.49 to 94.51 TFLOP/s, both 1.99×. On RTX 2080 Ti, cuBLAS FP16 with FP32 accumulate goes from 50.3-55.7 to 68.3-91.4 TFLOP/s across matrix sizes, a gain of 36% to 64%. Paths that were not rate-limited do not move: FP32 FFMA stays at 79.1 TF/s, INT8 S8/S32 stays around 660 TF/s, and the E4M3 FP8 CUTLASS GEMM measured 1.0029× on the 4070 Ti SUPER.",
   },
   {
     q: "Does it work on Windows?",
-    a: "These two forks are Linux kernel modules. The RTX 3070 Ti report notes that the same unlock worked from a UEFI port on Windows, but that is a separate implementation, not something this module does. Nothing here should be read as a Windows tool.",
+    a: "These modules are Linux kernel modules. The RTX 3070 Ti report notes that the same unlock worked from a UEFI port on Windows, but that is a separate implementation, not something this module does. Nothing here should be read as a Windows tool.",
   },
   {
     q: "Is it safe? Will it damage my card?",
@@ -26,7 +26,7 @@ export const FAQS: FaqEntry[] = [
   },
   {
     q: "Why do I need the initramfs at all?",
-    a: "Because the override has to happen before the NVIDIA driver binds the card. Loading the module manually after the driver is bound cannot unlock anything. The packages put gpu_unlock and its firmware into the initramfs and load it there, ahead of nvidia.",
+    a: "Because the override has to happen before the NVIDIA driver binds the card. Loading the module manually after the driver is bound cannot unlock anything. The packages put gpu_unlock and its firmware into the initramfs and load it there, ahead of nvidia. The Turing package does the same with turing_unlock.",
   },
   {
     q: "Do I need a patched NVIDIA driver?",
@@ -38,6 +38,6 @@ export const FAQS: FaqEntry[] = [
   },
   {
     q: "How do I turn it off?",
-    a: "Remove gpu_unlock.targets= from the kernel command line; for a one-off boot, delete it in the bootloader's edit screen. Removing the packages also removes the module and the initramfs drop-ins.",
+    a: "Remove gpu_unlock.targets= from the kernel command line; for a one-off boot, delete it in the bootloader's edit screen. On Turing, remove turing_unlock.targets= instead. Removing the packages also removes the module and the initramfs drop-ins.",
   },
 ];

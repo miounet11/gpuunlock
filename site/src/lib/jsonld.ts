@@ -25,7 +25,7 @@ export function organizationLd() {
     name: SITE_NAME,
     url: SITE,
     description:
-      "Documentation for the GPU Unlock NVIDIA kernel module, covering the Ampere and Ada forks.",
+      "Documentation for the GPU Unlock NVIDIA kernel module, covering the Ampere and Ada forks plus the separate Turing module for RTX 20 series cards.",
     sameAs: [
       "https://github.com/Zagitta/gpu-unlock",
       "https://github.com/JustAResearcher/gpu-unlock-ada",

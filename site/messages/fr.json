@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — cartes NVIDIA prises en charge, accélérations mesurées, étapes d'installation",
-    "description": "Quelles cartes NVIDIA le module noyau GPU Unlock prend en charge, ce que les mesures sur carte identique ont donné sur RTX 4090 et RTX 4070 Ti SUPER, et comment l'installer sur Ampere et Ada.",
+    "description": "Quelles cartes NVIDIA le module noyau GPU Unlock prend en charge, ce que les mesures sur carte identique ont donné sur RTX 4090, RTX 4070 Ti SUPER et RTX 2080 Ti, et comment l'installer sur Ampere, Ada et Turing.",
     "h1": "Débloquer le SM speed-select de NVIDIA, chiffres à l'appui",
-    "lead": "Deux modules noyau en amont permettent à des cartes GeForce grand public d'atteindre un débit tensoriel que NVIDIA réserve à d'autres produits. Ce site rassemble ce qu'ils prennent en charge, ce qui a été mesuré sur la même carte avant et après, et ce qui casse.",
+    "lead": "Trois modules noyau en amont permettent à des cartes GeForce grand public d'atteindre un débit tensoriel que NVIDIA réserve à d'autres produits. Ce site rassemble ce qu'ils prennent en charge, ce qui a été mesuré sur la même carte avant et après, et ce qui casse.",
     "statIds": "ID PCI acceptés",
-    "statIdsNote": "Sur AD102, GA102, GA103, GA104 et GA106. Être accepté n'équivaut pas à un résultat confirmé.",
+    "statIdsNote": "Sur AD102, GA102, GA103, GA104 et GA106 du module Ampere/Ada fusionné, plus TU102, TU104 et TU106 du module Turing séparé. Être accepté n'équivaut pas à un résultat confirmé.",
     "statMeasured": "cartes avec des chiffres publiés sur carte identique",
-    "statMeasuredNote": "RTX 4090 et RTX 4070 Ti SUPER. Tout le reste repose sur des rapports d'utilisateurs ou n'est pas testé.",
+    "statMeasuredNote": "RTX 4090, RTX 4070 Ti SUPER et RTX 2080 Ti. Tout le reste repose sur des rapports d'utilisateurs ou n'est pas testé.",
     "statGain": "gain tensoriel maximal",
     "statGainNote": "f16/f32 et bf16/f32 sur RTX 4090. FP32 et INT8 n'ont jamais été bridés et ne bougent pas.",
     "whatTitle": "Ce que fait le déblocage",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "Cartes NVIDIA prises en charge",
     "description": "Les ID PCI que le module GPU Unlock accepte, répartis selon ce qui est réellement connu de chacun : mesuré sur carte identique, rapporté par un utilisateur, partiel, non testé ou volontairement non pris en charge.",
-    "summary": "{total} ID PCI acceptés sur AD102, GA102, GA103, GA104 et GA106 ; {cards} cartes décrites ici.",
+    "summary": "{total} ID PCI acceptés sur AD102, GA102, GA103, GA104, GA106 (module fusionné) et TU102, TU104, TU106 (module Turing) ; {cards} cartes décrites ici.",
     "statusHeading": {
       "measured": "Mesuré sur carte identique",
       "reported": "Rapporté par des utilisateurs",

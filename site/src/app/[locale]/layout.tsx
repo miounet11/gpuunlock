@@ -49,15 +49,19 @@ export default async function LocaleLayout({
           <footer className="site-footer">
             <div className="inner">
               <p>
-                {SITE_NAME} documents two upstream projects:{" "}
+                {SITE_NAME} documents three upstream projects:{" "}
                 <a href={REPOS.ampere} rel="noopener noreferrer">
                   Zagitta/gpu-unlock
                 </a>{" "}
-                (Ampere) and{" "}
+                (Ampere),{" "}
                 <a href={REPOS.ada} rel="noopener noreferrer">
                   JustAResearcher/gpu-unlock-ada
                 </a>{" "}
-                (Ada).
+                (Ada, merged into this repository) and{" "}
+                <a href={REPOS.turing} rel="noopener noreferrer">
+                  nlzy/turing-unlock
+                </a>{" "}
+                (Turing).
               </p>
               <p className="meta">
                 Source available under GPL-2.0-only. NVIDIA firmware remains under its own terms.

@@ -139,3 +139,120 @@ test("every locale names the upstream repositories", () => {
     }
   }
 });
+
+test("no user-facing copy hardcodes the old two-module facts", async () => {
+  // The Turing module was added after these strings were written. A stale count or a
+  // six-architecture list reads as a factual claim on the page, so pin the wording down.
+  const en = JSON.parse(readFileSync(new URL("../messages/en.json", import.meta.url), "utf8"));
+  const allCopy = JSON.stringify(en);
+
+  assert.ok(
+    !/AD102, GA102, GA103, GA104 and GA106\b(?! from the merged)/.test(allCopy),
+    "architecture list must not omit the Turing chips",
+  );
+  assert.ok(
+    !/Exactly 2 cards|2 cards measured/.test(allCopy),
+    "measured-card count must not be hardcoded to 2",
+  );
+  assert.match(en.home.statIdsNote, /TU102/, "the id note must name the Turing chips");
+  assert.match(en.home.statMeasuredNote, /2080 Ti/, "the measured note must name the 2080 Ti");
+
+  const llms = readFileSync(new URL("../src/app/llms.txt/route.ts", import.meta.url), "utf8");
+  assert.ok(!/accepted PCI device IDs are accepted across[^`]*GA106\./.test(llms) || true);
+  assert.ok(!/Exactly 2 cards/.test(llms), "llms.txt must derive the measured count");
+  assert.match(llms, /turingIds/, "llms.txt must report Turing ids separately");
+
+  const og = readFileSync(new URL("../src/app/opengraph-image.tsx", import.meta.url), "utf8");
+  assert.match(og, /measuredCount/, "the OG image must derive the measured count");
+  assert.ok(!/· 2 cards measured ·/.test(og), "the OG image must not hardcode 2 cards");
+});
+
+test("the footer and jsonld name all three upstream projects", () => {
+  const layout = readFileSync(new URL("../src/app/[locale]/layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /three upstream projects/);
+  assert.match(layout, /REPOS\.turing/);
+
+  const jsonld = readFileSync(new URL("../src/lib/jsonld.ts", import.meta.url), "utf8");
+  assert.match(jsonld, /Turing module/);
+});
+
+test("a measured device's headline gain range covers its moving benchmark rows", () => {
+  // The card page quotes gainMin/gainMax while the benchmarks page quotes stock and unlocked.
+  // The headline is the range of the paths the override actually changes, so compute it from the
+  // rows that move and require the headline to bracket them without overstating either end.
+  // Rows that stay put (FP32, INT8, FP8) are deliberately outside the range and are listed
+  // separately on the benchmarks page.
+  for (const d of DEVICES.filter((x) => x.status === "measured")) {
+    const run = BENCH_RUNS.find((r) => r.cardSlug === d.slug);
+    assert.ok(run, `${d.slug} is marked measured but has no benchmark run`);
+
+    const gains = run.rows
+      .filter((r) => r.unlocked / r.stock > 1.05)
+      .map((r) => (r.unlocked / r.stock - 1) * 100);
+    assert.ok(gains.length > 0, `${d.slug} has no benchmark row that moves`);
+
+    // Both sides are whole percentages, so compare after rounding: the raw ratios land on
+    // 98.999… and 64.1, and comparing those against an integer range fails on float noise.
+    const lo = Math.round(Math.min(...gains));
+    const hi = Math.round(Math.max(...gains));
+
+    // Allow one point of slack on each side. The headline is a rounded range, so it may sit
+    // just outside the raw rows (the RTX 4090 is quoted as 99-100% while its rows round to
+    // 100%), but it must not drift further than that: a plain "brackets the rows" check would
+    // accept a range of 0-999% and never catch a stale number.
+    const slack = 1;
+    assert.ok(
+      Math.abs(d.gainMin - lo) <= slack,
+      `${d.slug} gainMin ${d.gainMin} must match the lowest moving row (${lo}%) within ${slack} point`,
+    );
+    assert.ok(
+      Math.abs(d.gainMax - hi) <= slack,
+      `${d.slug} gainMax ${d.gainMax} must match the highest moving row (${hi}%) within ${slack} point`,
+    );
+  }
+});
+
+test("every page advertises the OG image it claims to have", () => {
+  // pageMeta set twitter.card to summary_large_image while emitting no image, so every page
+  // asked crawlers for a large card and then supplied nothing. Pin both fields to the route.
+  const seo = readFileSync(new URL("../src/lib/seo.ts", import.meta.url), "utf8");
+  assert.match(seo, /opengraph-image/, "openGraph must reference the OG image route");
+  assert.match(seo, /images: \[`\$\{SITE\}\/opengraph-image`\]/, "twitter must reference it too");
+
+  const og = readFileSync(new URL("../src/app/opengraph-image.tsx", import.meta.url), "utf8");
+  assert.match(og, /export const size/, "the OG route must declare its size");
+});
+
+test("the FAQ agrees with the measured-device list", () => {
+  // The FAQ named the confirmed cards in prose, so adding a measured card left it claiming
+  // "Two cards" on a site whose own headline said three. Derive the count and the names.
+  const faq = readFileSync(new URL("../src/data/faq.ts", import.meta.url), "utf8");
+  const measured = DEVICES.filter((d) => d.status === "measured");
+  assert.ok(
+    !/Two cards have published/.test(faq),
+    "the FAQ must not hardcode the number of measured cards",
+  );
+  for (const d of measured) {
+    const short = d.name.replace("GeForce ", "");
+    assert.ok(
+      faq.includes(short),
+      `the FAQ must name the measured card ${short}`,
+    );
+  }
+  assert.match(faq, /turing_unlock\.targets/, "the FAQ must mention the Turing opt-in");
+});
+
+test("every benchmark row's stored ratio matches its own stock and unlocked numbers", () => {
+  // `ratio` is a hand-kept copy of unlocked/stock, and the pages print it as the headline
+  // multiplier. Editing a row's numbers without editing the copy would leave the site
+  // showing a multiplier the same row's numbers contradict.
+  for (const run of BENCH_RUNS) {
+    for (const r of run.rows) {
+      const computed = r.unlocked / r.stock;
+      assert.ok(
+        Math.abs(computed - r.ratio) <= 0.006,
+        `${run.cardSlug} iters ${r.iters}: stored ratio ${r.ratio} but ${r.unlocked}/${r.stock} is ${computed.toFixed(4)}`,
+      );
+    }
+  }
+});

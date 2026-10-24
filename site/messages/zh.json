@@ -9,13 +9,13 @@
   },
   "home": {
     "title": "GPU Unlock — 支持的 NVIDIA 显卡、实测提速与安装步骤",
-    "description": "GPU Unlock 内核模块支持哪些 NVIDIA 显卡，RTX 4090 与 RTX 4070 Ti SUPER 在同卡上的实测数据，以及在 Ampere 与 Ada 上如何安装。",
+    "description": "GPU Unlock 内核模块支持哪些 NVIDIA 显卡，RTX 4090、RTX 4070 Ti SUPER 与 RTX 2080 Ti 在同卡上的实测数据，以及在 Ampere、Ada 与 Turing 上如何安装。",
     "h1": "解锁 NVIDIA SM 速率选择，并附上实测数字",
-    "lead": "两个上游内核模块让消费级 GeForce 显卡达到 NVIDIA 保留给其他产品的张量吞吐。本站收集它们支持什么、同一张卡在解锁前后的实测结果，以及会出什么问题。",
+    "lead": "三个上游内核模块让消费级 GeForce 显卡达到 NVIDIA 保留给其他产品的张量吞吐。本站收集它们支持什么、同一张卡在解锁前后的实测结果，以及会出什么问题。",
     "statIds": "个 PCI ID 被接受",
-    "statIdsNote": "覆盖 AD102、GA102、GA103、GA104 与 GA106。「被接受」不等于「已验证」。",
+    "statIdsNote": "覆盖合并版 Ampere/Ada 模块的 AD102、GA102、GA103、GA104、GA106，以及独立 Turing 模块的 TU102、TU104、TU106。「被接受」不等于「已验证」。",
     "statMeasured": "张卡有公开的同卡实测",
-    "statMeasuredNote": "RTX 4090 与 RTX 4070 Ti SUPER。其余依据用户报告，或根本没有报告。",
+    "statMeasuredNote": "RTX 4090、RTX 4070 Ti SUPER 与 RTX 2080 Ti。其余依据用户报告，或根本没有报告。",
     "statGain": "峰值张量提升",
     "statGainNote": "RTX 4090 的 f16/f32 与 bf16/f32。FP32 与 INT8 本来就没有被限速，不会变化。",
     "whatTitle": "解锁做了什么",
@@ -47,7 +47,7 @@
   "gpus": {
     "title": "支持的 NVIDIA 显卡",
     "description": "GPU Unlock 模块接受的 PCI ID，按「已知程度」划分：同卡实测、用户报告、部分生效、未测试、明确不支持。",
-    "summary": "共接受 {total} 个 PCI ID，覆盖 AD102、GA102、GA103、GA104 与 GA106；本页描述 {cards} 张卡。",
+    "summary": "共接受 {total} 个 PCI ID，覆盖合并版模块的 AD102、GA102、GA103、GA104、GA106 与 Turing 模块的 TU102、TU104、TU106；本页描述 {cards} 张卡。",
     "statusHeading": {
       "measured": "同卡实测",
       "reported": "用户报告",

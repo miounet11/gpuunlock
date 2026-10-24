@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description:
-    "Which NVIDIA cards the GPU Unlock kernel module supports, what the same-card benchmarks actually measured, and how to install it on Ampere and Ada.",
+    "Which NVIDIA cards the GPU Unlock kernel module supports, what the same-card benchmarks actually measured, and how to install it on Ampere, Ada and Turing.",
   robots: { index: true, follow: true },
   icons: { icon: "/favicon.svg" },
 };

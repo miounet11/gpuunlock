@@ -29,7 +29,15 @@ export function pageMeta(opts: {
       title: opts.title,
       description: opts.description,
       locale: opts.locale,
+      // The route lives at the app root, so the URL is absolute and shared by every page.
+      // Without this the pages advertised summary_large_image with no image at all.
+      images: [{ url: `${SITE}/opengraph-image`, width: 1200, height: 630, alt: SITE_NAME }],
     },
-    twitter: { card: "summary_large_image", title: opts.title, description: opts.description },
+    twitter: {
+      card: "summary_large_image",
+      title: opts.title,
+      description: opts.description,
+      images: [`${SITE}/opengraph-image`],
+    },
   };
 }
