@@ -41,7 +41,8 @@
     "upstreamBody": "Diese Seite dokumentiert diese Repositories; sie forkt sie nicht.",
     "upstreamAmpere": "das Ampere-Modul: GA102, GA103, GA104, GA106 (v1.0.0)",
     "upstreamAda": "der Ada-Fork: ergänzt AD102 RTX 4090 und eine experimentelle AD103-Kanarie (v1.1.1)",
-    "upstreamUsage": "das zusammengeführte öffentliche Repository mit den Nutzungshinweisen der Website"
+    "upstreamUsage": "das zusammengeführte öffentliche Repository mit den Nutzungshinweisen der Website",
+    "upstreamTuring": "das eigenständige Turing-Modul für RTX-20-Serie (TU102/TU104/TU106)"
   },
   "gpus": {
     "title": "Unterstützte NVIDIA-Karten",
@@ -124,7 +125,8 @@
     "repoAmpere": "Ampere: GA102, GA103, GA104, GA106. Keine Ada-Unterstützung.",
     "repoAda": "Ada: ergänzt AD102 RTX 4090 und die experimentelle AD103-Kanarie und behält die Ampere-Geräteliste.",
     "faqLink": "Häufige Fragen",
-    "repoMerged": "Zusammengeführt: beide Upstream-Forks plus erneutes Entsperren nach Suspend/Resume. Ein Clone deckt Ampere und Ada ab."
+    "repoMerged": "Zusammengeführt: beide Upstream-Forks plus erneutes Entsperren nach Suspend/Resume. Ein Clone deckt Ampere und Ada ab.",
+    "repoTuring": "das eigenständige Modul für RTX-20-Serie, mit eigenem turing_unlock.targets-Schalter"
   },
   "faq": {
     "title": "GPU Unlock FAQ",

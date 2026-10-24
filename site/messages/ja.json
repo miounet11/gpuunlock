@@ -41,7 +41,8 @@
     "upstreamBody": "本サイトはこれらのリポジトリを文書化するものであり、フォークではありません。",
     "upstreamAmpere": "Ampere モジュール: GA102、GA103、GA104、GA106（v1.0.0）",
     "upstreamAda": "Ada フォーク: AD102 RTX 4090 と実験的な AD103 カナリアを追加（v1.1.1）",
-    "upstreamUsage": "統合された公開リポジトリ（本站の使用手順付き）"
+    "upstreamUsage": "統合された公開リポジトリ（本站の使用手順付き）",
+    "upstreamTuring": "RTX 20 シリーズ（TU102/TU104/TU106）向けの独立した Turing モジュール"
   },
   "gpus": {
     "title": "対応 NVIDIA カード",
@@ -124,7 +125,8 @@
     "repoAmpere": "Ampere: GA102、GA103、GA104、GA106。Ada 非対応。",
     "repoAda": "Ada: AD102 RTX 4090 と実験的な AD103 カナリアを追加し、Ampere のデバイスリストも維持。",
     "faqLink": "よくある質問",
-    "repoMerged": "統合版：2つの上流ブランチとサスペンド／復帰後の再アンロックに対応。Ampere と Ada をひとつのクローンで扱えます。"
+    "repoMerged": "統合版：2つの上流ブランチとサスペンド／復帰後の再アンロックに対応。Ampere と Ada をひとつのクローンで扱えます。",
+    "repoTuring": "RTX 20 シリーズ向けの独立モジュール。独自の turing_unlock.targets で有効化します"
   },
   "faq": {
     "title": "GPU Unlock FAQ",

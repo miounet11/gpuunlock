@@ -2,6 +2,7 @@
 //
 //   Zagitta/gpu-unlock        v1.0.0  — GA102/GA103/GA104/GA106 module + packaging
 //   JustAResearcher/gpu-unlock-ada v1.1.1 — adds AD102 (RTX 4090) and an experimental AD103 canary
+//   nlzy/turing-unlock        v2.0.0  — a separate module for TU102/TU104/TU106 (RTX 20 series)
 //
 // `status` records what the upstream reports say, and nothing stronger:
 //   measured   the fork published a same-card stock-vs-unlocked measurement
@@ -23,7 +24,7 @@ export interface Device {
   gainMin: number | null;
   gainMax: number | null;
   /** Which upstream fork carries support. */
-  fork: "both" | "ada" | "ampere";
+  fork: "both" | "ada" | "ampere" | "turing";
   notes: string;
   sources: string[];
 }
@@ -184,6 +185,62 @@ export const DEVICES: Device[] = [
       "The module accepts this id. Upstream marks it untested and there are no compatibility reports, so there is nothing to promise.",
     sources: ["https://github.com/Zagitta/gpu-unlock"],
   },
+  {
+    slug: "rtx-2080-ti",
+    chip: "TU102",
+    name: "GeForce RTX 2080 Ti",
+    pciId: "10de:1e07",
+    vendor: "NVIDIA",
+    status: "measured",
+    gainMin: 36,
+    gainMax: 61,
+    fork: "turing",
+    notes:
+      "Turing is a separate module, not a build of the GA10x/AD10x one: the booter payload constants, code addresses and teardown differ per architecture. Measured on a 22 GB board with driver 575.51.03, where FP16 accumulate went from 88-98% of peak to 120-161% of peak depending on matrix size. Same-card rows are on the benchmarks page.",
+    sources: ["https://github.com/nlzy/turing-unlock"],
+  },
+  {
+    slug: "tu102-1e04",
+    chip: "TU102",
+    name: "TU102 (other boards)",
+    pciId: "10de:1e04",
+    vendor: "NVIDIA",
+    status: "untested",
+    gainMin: null,
+    gainMax: null,
+    fork: "turing",
+    notes:
+      "The Turing module accepts this id. Only the RTX 2080 Ti board has a published measurement, so the rest of the TU102 list carries no result.",
+    sources: ["https://github.com/nlzy/turing-unlock"],
+  },
+  {
+    slug: "tu104-1e82",
+    chip: "TU104",
+    name: "TU104 (RTX 2080 / 2070 SUPER class)",
+    pciId: "10de:1e82",
+    vendor: "NVIDIA",
+    status: "untested",
+    gainMin: null,
+    gainMax: null,
+    fork: "turing",
+    notes:
+      "Upstream marks the whole TU104 list untested: the module matches the id, but the payload was validated on TU102 only.",
+    sources: ["https://github.com/nlzy/turing-unlock"],
+  },
+  {
+    slug: "tu106-1f08",
+    chip: "TU106",
+    name: "TU106 (RTX 2060 / 2070 class)",
+    pciId: "10de:1f08",
+    vendor: "NVIDIA",
+    status: "untested",
+    gainMin: null,
+    gainMax: null,
+    fork: "turing",
+    notes:
+      "Upstream marks the whole TU106 list untested. Nothing has been reported for these ids.",
+    sources: ["https://github.com/nlzy/turing-unlock"],
+  },
 ];
 
 /** Every device id the module matches, including ones with no report and no page. */
@@ -205,6 +262,9 @@ export const ACCEPTED_IDS = {
     "0x2501", "0x2503", "0x2504", "0x2505", "0x2507", "0x2508", "0x2509", "0x252f",
     "0x2544",
   ],
+  TU102: ["0x1e03", "0x1e04", "0x1e07", "0x1e2d", "0x1e2e"],
+  TU104: ["0x1e81", "0x1e82", "0x1e84", "0x1e87", "0x1e89", "0x1ec2", "0x1ec7"],
+  TU106: ["0x1f02", "0x1f03", "0x1f06", "0x1f07", "0x1f08", "0x1f42", "0x1f47"],
 } as const;
 
 export function getDevice(slug: string): Device | undefined {

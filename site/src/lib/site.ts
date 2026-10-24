@@ -6,6 +6,8 @@ export const REPOS = {
   ada: "https://github.com/JustAResearcher/gpu-unlock-ada",
   // The merged public repository: both upstream forks plus the site's own usage notes.
   usage: "https://github.com/miounet11/gpuunlock",
+  // RTX 20 series: a separate module, not a build of the merged one.
+  turing: "https://github.com/nlzy/turing-unlock",
 } as const;
 
 export function absUrl(path: string): string {

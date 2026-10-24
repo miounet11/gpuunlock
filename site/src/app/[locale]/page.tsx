@@ -191,6 +191,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </a>{" "}
           — {t("upstreamUsage")}
         </li>
+        <li>
+          <a href={REPOS.turing} rel="noopener noreferrer">
+            nlzy/turing-unlock
+          </a>{" "}
+          — {t("upstreamTuring")}
+        </li>
       </ul>
     </div>
   );

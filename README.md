@@ -12,6 +12,13 @@ tree, so a single clone covers Ampere and Ada:
 | [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) | 1.0.0 | GA102 / GA103 / GA104 / GA106 support, packaging, and the suspend/resume re-unlock path |
 | [JustAResearcher/gpu-unlock-ada](https://github.com/JustAResearcher/gpu-unlock-ada) | 1.1.1 | AD102 (RTX 4090) support, the experimental AD103 (RTX 4070 Ti SUPER) canary, TF32 and INT4 evidence |
 
+RTX 20 series cards are **not** part of this module. Turing has its own
+project, [nlzy/turing-unlock](https://github.com/nlzy/turing-unlock) (v2.0.0),
+because the Turing booter payload constants, code addresses and teardown
+differ per architecture — the two cannot share a payload. Install it
+separately; its opt-in is `turing_unlock.targets`, not `gpu_unlock.targets`.
+Only the RTX 2080 Ti (TU102, `10de:1e07`) has a published measurement.
+
 The two upstream trees have no shared history, so the merge was done by hand
 rather than by `git merge`. The Ada tree is the base; the Ampere fork's
 suspend/resume path was ported onto it:
@@ -36,6 +43,11 @@ The documentation site for this module lives at
 **<https://gpuunlock.com/>** — supported cards, the measured stock-vs-unlocked
 rows, the install order and the failure modes, in seven languages. The site
 source is in [`site/`](site/).
+
+`gpu-unlock.com` is a separate, independently deployed sibling of the same
+site, served from its own process and certificate on the same host. The two are
+kept as parallel deployments: the apex domain in this repository's `site/` is
+`gpuunlock.com`, and nothing in this tree rewrites or redirects the sibling.
 
 This Linux kernel module enables the SM speed-select override before the stock
 NVIDIA driver starts. RTX 4090 (`10de:2684`, AD102) support has demonstrated

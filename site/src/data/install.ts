@@ -1,8 +1,8 @@
-// Reconstructed from the two upstream READMEs. Command lines are copied from them; the prose is
-// condensed, not invented. Where the upstreams differ the Ada fork is named explicitly.
+// Reconstructed from the upstream READMEs. Command lines are copied from them; the prose is
+// condensed, not invented. Where the upstreams differ the relevant fork is named explicitly.
 
 export const REQUIREMENTS: string[] = [
-  "Linux with kernel headers and a working DKMS toolchain (both forks).",
+  "Linux with kernel headers and a working DKMS toolchain (any of the three upstream modules).",
   "GPL-2.0-only source built locally — the pinned NVIDIA firmware is downloaded and generated on your own machine.",
   "An unmodified stock boot entry kept available, so a failed unlock is recoverable.",
   "A card whose PCI ID is in the module's accepted list (see the cards index).",
@@ -19,11 +19,11 @@ export interface InstallStep {
 export const INSTALL_STEPS: InstallStep[] = [
   {
     id: "pick-fork",
-    title: "One repository covers both card families",
+    title: "Ampere and Ada share one module; Turing has its own",
     body:
-      "The Ampere fork (Zagitta/gpu-unlock, v1.0.0) covers GA102, GA103, GA104 and GA106. The Ada fork (JustAResearcher/gpu-unlock-ada, v1.1.1) is that same module with AD102 (RTX 4090) and an experimental AD103 canary added. This repository merges the two, and additionally carries the suspend/resume re-unlock path, so a single clone covers Ampere and Ada.",
+      "The Ampere fork (Zagitta/gpu-unlock, v1.0.0) covers GA102, GA103, GA104 and GA106. The Ada fork (JustAResearcher/gpu-unlock-ada, v1.1.1) is that same module with AD102 (RTX 4090) and an experimental AD103 canary added. This repository merges those two and additionally carries the suspend/resume re-unlock path. RTX 20 series cards are a different module — nlzy/turing-unlock, v2.0.0 — because the Turing booter payload constants, code addresses and teardown differ, so it is installed from its own repository.",
     note:
-      "The merged module keeps the original GeForce/CMP GA102 and GA104 lists plus the GA103/GA106 list and the AD102/AD103 entries. Professional RTX A-series and data-centre parts are not accepted.",
+      "The merged module keeps the original GeForce/CMP GA102 and GA104 lists plus the GA103/GA106 list and the AD102/AD103 entries. Professional RTX A-series and data-centre parts are not accepted. Turing covers TU102, TU104 and TU106 ids, but only the RTX 2080 Ti board has a published measurement.",
   },
   {
     id: "clone",
@@ -33,6 +33,16 @@ export const INSTALL_STEPS: InstallStep[] = [
     code: "git clone https://github.com/miounet11/gpuunlock.git\ncd gpuunlock\nmake install",
     note:
       "`make install` detects the distribution family. Explicit targets are `make install-arch`, `make install-deb` and `make install-rpm`. Kernel headers and a DKMS toolchain must already be present.",
+  },
+  {
+    id: "turing",
+    title: "RTX 20 series (Turing) installs from its own repository",
+    body:
+      "Turing is a separate module with its own payload constants. It installs the same way, from nlzy/turing-unlock, and puts `turing_unlock` into the initramfs ahead of `nvidia`. Its opt-in parameter is `turing_unlock.targets`, not `gpu_unlock.targets`.",
+    code:
+      "git clone https://github.com/nlzy/turing-unlock.git\ncd turing-unlock\nmake install\n# kernel command line:\n#   turing_unlock.targets=all\n#   turing_unlock.targets=0000:21:00.0",
+    note:
+      "The packages add drop-ins for mkinitcpio, initramfs-tools and dracut, and rebuild the initramfs on install and removal. The module skips a card that already has a driver bound, so it must load from the initramfs to take effect. On TU102 the cards are unlocked one at a time, with a PCIe FLR before the NVIDIA driver binds.",
   },
   {
     id: "initramfs",

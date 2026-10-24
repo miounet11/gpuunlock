@@ -123,6 +123,12 @@ export default async function Install({ params }: { params: Promise<{ locale: st
           </a>{" "}
           — {t("repoMerged")}
         </li>
+        <li>
+          <a href={REPOS.turing} rel="noopener noreferrer">
+            nlzy/turing-unlock
+          </a>{" "}
+          — {t("repoTuring")}
+        </li>
       </ul>
       <p className="meta">
         <Link href="/faq">{t("faqLink")}</Link>

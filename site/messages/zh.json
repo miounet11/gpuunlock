@@ -41,7 +41,8 @@
     "upstreamBody": "本站是对这些仓库的文档整理，不是它们的分支。",
     "upstreamAmpere": "Ampere 模块：GA102、GA103、GA104、GA106（v1.0.0）",
     "upstreamAda": "Ada 分支：新增 AD102 RTX 4090 与实验性 AD103 金丝雀（v1.1.1）",
-    "upstreamUsage": "合并后的公开仓库，含本站的使用说明"
+    "upstreamUsage": "合并后的公开仓库，含本站的使用说明",
+    "upstreamTuring": "面向 RTX 20 系（TU102/TU104/TU106）的独立 Turing 模块"
   },
   "gpus": {
     "title": "支持的 NVIDIA 显卡",
@@ -124,7 +125,8 @@
     "repoAmpere": "Ampere：GA102、GA103、GA104、GA106，不支持 Ada。",
     "repoAda": "Ada：新增 AD102 RTX 4090 与实验性 AD103 金丝雀，并保留 Ampere 设备表。",
     "faqLink": "常见问题",
-    "repoMerged": "合并版：包含两个上游分支与挂起/恢复后重新解锁的能力，一次克隆即可覆盖 Ampere 与 Ada。"
+    "repoMerged": "合并版：包含两个上游分支与挂起/恢复后重新解锁的能力，一次克隆即可覆盖 Ampere 与 Ada。",
+    "repoTuring": "RTX 20 系显卡的独立模块，使用自己的 turing_unlock.targets 开关"
   },
   "faq": {
     "title": "GPU Unlock 常见问题",

@@ -3,6 +3,7 @@
 //
 //   RTX 4090    docs/evidence/rtx4090/{baseline,unlocked-20000,unlocked-40000}.txt
 //   RTX 4070 Ti SUPER  docs/evidence/ada2705/tensor-modes-comparison.json
+//   RTX 2080 Ti  nlzy/turing-unlock README, cuBLAS FP16-with-FP32-accumulate table
 
 export interface BenchRow {
   card: string;
@@ -59,6 +60,21 @@ export const BENCH_RUNS: BenchRun[] = [
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "f16/f32", unit: "TFLOP/s", stock: 94.96, unlocked: 188.97, ratio: 1.99, iters: 20000 },
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "tf32", unit: "TFLOP/s", stock: 47.49, unlocked: 94.51, ratio: 1.99, iters: 20000 },
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "u4/s32", unit: "TOP/s", stock: 754.81, unlocked: 754.68, ratio: 1.0, iters: 20000, note: "integer path, unaffected" },
+    ],
+  },
+  {
+    card: "GeForce RTX 2080 Ti",
+    cardSlug: "rtx-2080-ti",
+    chip: "TU102",
+    sms: 68,
+    driver: "575.51.03",
+    powerLimitW: 250,
+    source: "https://github.com/nlzy/turing-unlock",
+    rows: [
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 50.3, unlocked: 68.3, ratio: 1.36, iters: 1024, note: "M.N.K 1024: 88.4% to 120.0% of the 56.9 TFLOP/s peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 55.7, unlocked: 91.4, ratio: 1.64, iters: 2048, note: "M.N.K 2048: 97.9% to 160.6% of peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 53.7, unlocked: 81.7, ratio: 1.52, iters: 4096, note: "M.N.K 4096: 94.4% to 143.6% of peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 52.8, unlocked: 77.9, ratio: 1.48, iters: 8192, note: "M.N.K 8192: 92.8% to 136.9% of peak" },
     ],
   },
 ];
