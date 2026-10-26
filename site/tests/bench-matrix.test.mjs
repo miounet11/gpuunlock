@@ -188,6 +188,21 @@ test("family membership follows the chip prefix, not a hand-kept list", async ()
   assert.equal(amp.measured, 0, "no Ampere board has a same-card run in this repo");
 });
 
+test("a ceiling basis shows a number or a source, not a bare claim", () => {
+  // "the same rate" is an assertion; "189.6–189.7 vs 189.8–189.9, docs/..." is evidence.
+  // Every basis must carry at least one figure or a path, so a later edit cannot replace
+  // the derivation with prose that asserts the conclusion.
+  for (const r of allRows) {
+    if (!r.ceilingBasis) continue;
+    const hasFigure = /\d/.test(r.ceilingBasis);
+    const hasSource = /\.md|whitepaper|README/i.test(r.ceilingBasis);
+    assert.ok(
+      hasFigure || hasSource,
+      `${r.cardSlug} ${r.mode}: ceilingBasis states no figure and cites no source`,
+    );
+  }
+});
+
 test("a ceiling is never published alone", () => {
   for (const r of allRows) {
     if (r.ceiling === undefined) continue;
