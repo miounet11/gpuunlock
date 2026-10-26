@@ -6,7 +6,7 @@
 // that lost its ids, and locale files that fell out of sync after an edit.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 
 import { DEVICES, ACCEPTED_IDS, acceptedCount, getDevice } from "../src/data/devices.ts";
 import { BENCH_RUNS, FP8_CUTLASS } from "../src/data/benchmarks.ts";
@@ -286,4 +286,33 @@ test("the locale layout is the only place that renders a document", () => {
 
   const locale = readFileSync(new URL("../src/app/[locale]/layout.tsx", import.meta.url), "utf8");
   assert.match(locale, /<html[\s>]/, "the locale layout supplies the document");
+});
+
+// Locale-prefixed 404s are served in English with lang="en". That is a known, measured
+// limitation, and every attempt to localize them has made things worse:
+//
+//   * `[locale]/not-found.tsx` alone compiles to no boundary at all — the route still
+//     answered with the root document.
+//   * `[locale]/[...rest]/page.tsx` catches the paths, but calling notFound() from inside it
+//     throws `Error: Internal: NoFallbackError` and answers with an empty shell.
+//   * Reading the locale in the root boundary (`getLocale()`/`getTranslations`) turns the
+//     statically prerendered 404 into a dynamic one, and 6 of 7 locales lose the body.
+//
+// Each was built and fetched before being reverted. Re-adding any of the three looks like a
+// plausible fix and silently breaks the 404 that works today, so pin the working shape.
+test("the 404 boundary stays the single static root document", () => {
+  const root = readFileSync(new URL("../src/app/not-found.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(
+    root,
+    /getLocale|getTranslations|useLocale|useTranslations/,
+    "the root 404 must stay statically renderable — reading the locale here degrades 6 of 7 locales to an empty shell",
+  );
+  assert.doesNotMatch(root, /next-intl/, "the root 404 must not depend on next-intl");
+
+  for (const dead of ["src/app/[locale]/not-found.tsx", "src/app/[locale]/[...rest]/page.tsx"]) {
+    assert.ok(
+      !existsSync(new URL(`../${dead}`, import.meta.url)),
+      `${dead} was measured to break or blank the 404; see the note above`,
+    );
+  }
 });
