@@ -207,7 +207,11 @@ export default async function DevicePage({
                         <td>
                           <code>{r.mode}</code>
                         </td>
-                        <td className="num">{r.iters}</td>
+                        <td className="num">
+                          {r.unlockedIters && r.unlockedIters !== r.iters
+                            ? `${r.iters} → ${r.unlockedIters}`
+                            : r.iters}
+                        </td>
                         <td className="num">
                           {r.stock.toFixed(2)} {r.unit}
                         </td>
@@ -250,7 +254,11 @@ export default async function DevicePage({
                           <code>{r.mode}</code>
                         </Link>
                       </td>
-                      <td className="num">{r.iters}</td>
+                      <td className="num">
+                        {r.unlockedIters && r.unlockedIters !== r.iters
+                          ? `${r.iters} → ${r.unlockedIters}`
+                          : r.iters}
+                      </td>
                       <td className="num">
                         {r.stock.toFixed(2)} {r.unit}
                       </td>
