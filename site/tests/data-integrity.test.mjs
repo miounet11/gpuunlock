@@ -256,3 +256,34 @@ test("every benchmark row's stored ratio matches its own stock and unlocked numb
     }
   }
 });
+
+// A 404 for a mistyped card or mode used to render as an empty `__next_error__` shell:
+// status 404 but no header, no text, no way back. Root cause was `dynamicParams` defaulting
+// to true on the two dynamic routes, so an unknown slug rendered through notFound() at
+// render time instead of 404ing the way an unmatched path does. These assertions are cheap
+// and catch the exact revert.
+for (const [name, file] of [
+  ["card", "../src/app/[locale]/gpus/[slug]/page.tsx"],
+  ["mode", "../src/app/[locale]/benchmarks/[mode]/page.tsx"],
+]) {
+  test(`the ${name} route 404s unknown slugs during routing, not rendering`, () => {
+    const src = readFileSync(new URL(file, import.meta.url), "utf8");
+    assert.match(
+      src,
+      /export const dynamicParams = false;/,
+      `${name} route must set dynamicParams = false, or an unknown slug renders an empty 404 shell`,
+    );
+  });
+}
+
+test("the locale layout is the only place that renders a document", () => {
+  // Two <html> elements make React drop the body entirely. The root layout must stay a
+  // pass-through; it previously carried its own <html>, and the 404 boundary nested a
+  // second pair.
+  const root = readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(root, /<html[\s>]/, "root layout must not render <html>");
+  assert.doesNotMatch(root, /<body[\s>]/, "root layout must not render <body>");
+
+  const locale = readFileSync(new URL("../src/app/[locale]/layout.tsx", import.meta.url), "utf8");
+  assert.match(locale, /<html[\s>]/, "the locale layout supplies the document");
+});

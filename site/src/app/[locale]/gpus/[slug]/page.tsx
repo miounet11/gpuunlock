@@ -13,6 +13,18 @@ export function generateStaticParams() {
   return DEVICES.map((d) => ({ slug: d.slug }));
 }
 
+/**
+ * Cards are a closed set: generateStaticParams lists every one, and there is nothing to
+ * derive on demand.
+ *
+ * Leaving this at the default (true) made an unknown slug render through notFound() at
+ * render time, and that path answered with an empty `__next_error__` shell: status 404, no
+ * text, no header, no way back. A path that matches no route at all (/en/nope) renders the
+ * root 404 properly, so the fix is to route unknown slugs the same way instead of trying to
+ * make the error-boundary path draw a document.
+ */
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {

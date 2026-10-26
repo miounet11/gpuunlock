@@ -55,6 +55,11 @@ export function generateStaticParams() {
   return MEASURED_GROUPS.map((g) => ({ mode: g.id }));
 }
 
+// Same reason as the card route: the set of mode slugs is closed, and an unknown one should
+// 404 the way an unmatched path does rather than render through notFound() at render time,
+// which returns an empty error shell. See the note in [locale]/gpus/[slug]/page.tsx.
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {
