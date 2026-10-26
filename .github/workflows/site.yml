@@ -21,6 +21,10 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Only the alert step below writes anything, and it writes an issue.
+      issues: write
     defaults:
       run:
         working-directory: site
@@ -61,3 +65,26 @@ jobs:
       - name: Deployed site matches this build
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: npm run verify:deploy
+
+      # A red run on a schedule is easy to never look at, and this repository had exactly
+      # that: the live host lagged the build by 77 URLs while every local check stayed green.
+      # Turning the failure into an issue puts it where someone will see it, and keeps one
+      # issue per problem instead of one per night.
+      #
+      # Only scheduled and manual runs get here, and the step is skipped on success, so a
+      # green pipeline never touches the issue tracker.
+      - name: Open or update an issue when the live host is stale
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Live site does not match this build"
+          body=$(printf 'The scheduled check found the deployed host out of date.\n\nRun: %s\n\n%s\n' "$RUN_URL" "$(git log -1 --format='Build commit: %h %s')")
+          existing=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
