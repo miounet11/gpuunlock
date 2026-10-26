@@ -28,5 +28,4 @@ Module.symvers
 # Site build artifacts
 site/node_modules/
 site/.next/
-site/package-lock.json
 site/tsconfig.tsbuildinfo
