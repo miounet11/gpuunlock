@@ -198,13 +198,23 @@ test("a ceiling is never published alone", () => {
   }
 });
 
-test("a measured value does not exceed its own ceiling", () => {
+test("an unlocked value above the ceiling only happens where the notes already say so", () => {
+  // The ceiling is the stock specification, so an unlock that clears it is a result,
+  // not a data error: the 2080 Ti rows reach 160.6% of spec. What must never happen is
+  // a row silently overshooting with no note recording it. The margin below is generous
+  // (3×) so this catches a typo, not a legitimate result.
   for (const r of allRows) {
     if (r.ceiling === undefined) continue;
-    assert.ok(
-      r.unlocked <= r.ceiling * 1.05,
-      `${r.cardSlug} ${r.mode}: ${r.unlocked} is above the ${r.ceiling} ceiling`,
-    );
+    if (r.unlocked > r.ceiling * 1.05) {
+      assert.ok(
+        r.note && /%/.test(r.note),
+        `${r.cardSlug} ${r.mode}: ${r.unlocked} exceeds the ${r.ceiling} ceiling but no note records it`,
+      );
+      assert.ok(
+        r.unlocked <= r.ceiling * 3,
+        `${r.cardSlug} ${r.mode}: ${r.unlocked} is beyond any plausible reading of the ceiling`,
+      );
+    }
   }
 });
 
@@ -240,9 +250,40 @@ test("the ceiling block has labels in every locale", async () => {
   }
 });
 
-test("only quantities this repository has a peak for carry a ceiling", () => {
-  // TF/s rows and the GFLOP/s row are different quantities; a ceiling placed on the
-  // wrong one would invite a comparison across them.
+test("a ceiling is only placed on a row whose unit matches it", () => {
+  // Two quantities carry a peak here: FP8 in GFLOP/s and Turing FP16→FP32 in TFLOP/s.
+  // A ceiling on any other row would compare across quantities that share no unit.
   const withCeiling = allRows.filter((r) => r.ceiling !== undefined);
-  assert.deepEqual(withCeiling.map((r) => r.mode), ["e4m3/f32"]);
+  const allowed = new Set(["e4m3/f32", "f16/f32"]);
+  for (const r of withCeiling) {
+    assert.ok(allowed.has(r.mode), `${r.cardSlug} ${r.mode} should not carry a ceiling`);
+    // The 2080 Ti f16/f32 ceiling is TFLOP/s; the FP8 one is GFLOP/s. A TFLOP/s peak
+    // on a GFLOP/s row would be off by 1000.
+    if (r.unit === "GFLOP/s") assert.ok(r.ceiling > 1000, "GFLOP/s ceiling looks like TFLOP/s");
+    if (r.unit === "TFLOP/s") assert.ok(r.ceiling < 1000, "TFLOP/s ceiling looks like GFLOP/s");
+  }
+  // The 2080 Ti is the only card with a Turing peak; the FP8 ceiling belongs to the
+  // 4070 Ti SUPER alone.
+  assert.deepEqual(
+    [...new Set(withCeiling.map((r) => r.cardSlug))].sort(),
+    ["rtx-2080-ti", "rtx-4070-ti-super"],
+  );
+});
+
+test("the Turing ceiling reproduces from its stated arithmetic", () => {
+  const row = allRows.find((r) => r.cardSlug === "rtx-2080-ti" && r.ceiling !== undefined);
+  assert.ok(row?.ceiling);
+  const derived = (68 * 512 * 1.635) / 1000; // SMs × FLOP/cycle/SM × GHz -> TFLOP/s
+  assert.ok(
+    Math.abs(row.ceiling - derived) < 0.1,
+    `ceiling ${row.ceiling} vs recomputed ${derived.toFixed(2)}`,
+  );
+  // Every percentage the notes quote must come back out of the same divisor.
+  for (const r of allRows.filter((x) => x.cardSlug === "rtx-2080-ti")) {
+    for (const pct of (r.note ?? "").matchAll(/(\d+\.\d)%/g)) {
+      const value = (Number(pct[1]) / 100) * r.ceiling;
+      const measured = [r.stock, r.unlocked].some((v) => Math.abs(v - value) < 0.08);
+      assert.ok(measured, `${r.cardSlug} ${r.mode}: ${pct[1]}% does not map to a measured value`);
+    }
+  }
 });

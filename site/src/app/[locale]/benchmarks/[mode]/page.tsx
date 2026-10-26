@@ -42,6 +42,14 @@ function unitOf(r: { unit: string }): string {
   return r.unit === "TF/s" ? "TFLOP/s" : r.unit;
 }
 
+/**
+ * Measured values keep one decimal because the source reports them that way (68.3).
+ * A spec figure that happens to be whole (176400 GFLOP/s) should not grow a ".0".
+ */
+function num(n: number): string {
+  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+}
+
 export function generateStaticParams() {
   return MEASURED_GROUPS.map((g) => ({ mode: g.id }));
 }
@@ -148,24 +156,33 @@ export default async function ModePage({
       </div>
 
       {/* Only shown when a row carries a ceiling, and always with its derivation. The
-          distance to the peak is the finding: one GEMM at a third of the dense rate is
-          not the same statement as an issue-rate loop at the limit. */}
+          distance to the peak is the finding: one GEMM at a third of the spec rate is
+          not the same statement as an issue-rate loop at the limit. The percent may
+          exceed 100 — the ceiling is the stock specification, so clearing it is a
+          result, shown rather than trimmed. */}
       {ceilingRows.length > 0 && (
         <div className="callout">
           <p>
             <strong>{t("ceilingTitle")}</strong>
           </p>
-          {ceilingRows.map((r) => (
-            <p key={`${r.cardSlug}-${r.mode}`} className="meta">
-              {t("ceilingRow", {
-                card: r.card,
-                value: r.unlocked.toFixed(0),
-                unit: r.unit,
-                ceiling: r.ceiling!.toFixed(0),
-                pct: ((r.unlocked / r.ceiling!) * 100).toFixed(1),
-              })}
-              <br />
-              <span className="meta">{r.ceilingBasis}</span>
+          <ul>
+            {ceilingRows.map((r) => (
+              <li key={`${r.cardSlug}-${r.mode}`}>
+                {t("ceilingRow", {
+                  card: r.card,
+                  value: num(r.unlocked),
+                  unit: r.unit,
+                  ceiling: num(r.ceiling!),
+                  pct: ((r.unlocked / r.ceiling!) * 100).toFixed(1),
+                })}
+              </li>
+            ))}
+          </ul>
+          {/* One derivation per distinct basis, not one per row: the four 2080 Ti rows
+              share a single spec figure, and repeating it four times reads as noise. */}
+          {[...new Set(ceilingRows.map((r) => r.ceilingBasis))].map((basis) => (
+            <p key={basis} className="meta">
+              {basis}
             </p>
           ))}
         </div>

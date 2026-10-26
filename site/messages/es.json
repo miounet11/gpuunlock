@@ -256,8 +256,8 @@
         "name": "FP16/FP32 como GEMM de cuBLAS",
         "body": "Una medición distinta de las filas de tasa de emisión: un GEMM real de cuBLAS en Turing con cuatro tamaños M.N.K. Su 1,36–1,64× no debe promediarse con los valores de Ada."
       },
-      "ceilingTitle": "Distancia al pico denso",
-      "ceilingRow": "{card}: {value} {unit} medidos frente a un pico denso de {ceiling} {unit} — {pct}% de él."
+      "ceilingTitle": "Distancia al pico de especificación",
+      "ceilingRow": "{card}: {value} {unit} medidos frente a un pico de especificación de {ceiling} {unit} — {pct}% de él."
     },
     "modesTitle": "Benchmarks por ruta de cálculo",
     "modesBody": "Cada tarjeta se midió en varias rutas de instrucciones, y el desbloqueo solo mueve algunas. Agrupar las filas por lo que realmente miden evita leer un 2,0× en una ruta de multiply-add fusionado como un 2,0× en todo."

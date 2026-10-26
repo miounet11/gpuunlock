@@ -100,10 +100,17 @@ export const BENCH_RUNS: BenchRun[] = [
     powerLimitW: 250,
     source: "https://github.com/nlzy/turing-unlock",
     rows: [
-      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 50.3, unlocked: 68.3, ratio: 1.36, iters: 1024, note: "M.N.K 1024: 88.4% to 120.0% of the 56.9 TFLOP/s peak" },
-      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 55.7, unlocked: 91.4, ratio: 1.64, iters: 2048, note: "M.N.K 2048: 97.9% to 160.6% of peak" },
-      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 53.7, unlocked: 81.7, ratio: 1.52, iters: 4096, note: "M.N.K 4096: 94.4% to 143.6% of peak" },
-      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 52.8, unlocked: 77.9, ratio: 1.48, iters: 8192, note: "M.N.K 8192: 92.8% to 136.9% of peak" },
+      // The ceiling these four rows already quote as a percentage. It derives exactly:
+      // 68 SMs × 512 FLOP/cycle/SM (Turing tensor core, FP16 in / FP32 accumulate) ×
+      // 1.635 GHz = 56.92 TFLOP/s. Every percentage in the notes below reproduces from
+      // this divisor to one decimal, which is why it is trusted despite the number
+      // itself living only in the upstream README rather than a file in this repo.
+      // Unlocked values above 100% are real: the ceiling is the stock spec, and that is
+      // the finding, so it is shown rather than trimmed.
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 50.3, unlocked: 68.3, ratio: 1.36, iters: 1024, ceiling: 56.9, ceilingKind: "derived", ceilingBasis: "68 SMs × 512 FLOP/cycle/SM × 1.635 GHz = 56.92 TFLOP/s (Turing FP16→FP32 tensor rate)", note: "M.N.K 1024: 88.4% to 120.0% of the 56.9 TFLOP/s peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 55.7, unlocked: 91.4, ratio: 1.64, iters: 2048, ceiling: 56.9, ceilingKind: "derived", ceilingBasis: "68 SMs × 512 FLOP/cycle/SM × 1.635 GHz = 56.92 TFLOP/s (Turing FP16→FP32 tensor rate)", note: "M.N.K 2048: 97.9% to 160.6% of peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 53.7, unlocked: 81.7, ratio: 1.52, iters: 4096, ceiling: 56.9, ceilingKind: "derived", ceilingBasis: "68 SMs × 512 FLOP/cycle/SM × 1.635 GHz = 56.92 TFLOP/s (Turing FP16→FP32 tensor rate)", note: "M.N.K 4096: 94.4% to 143.6% of peak" },
+      { card: "RTX 2080 Ti", cardSlug: "rtx-2080-ti", pciId: "10de:1e07", mode: "f16/f32", unit: "TFLOP/s", stock: 52.8, unlocked: 77.9, ratio: 1.48, iters: 8192, ceiling: 56.9, ceilingKind: "derived", ceilingBasis: "68 SMs × 512 FLOP/cycle/SM × 1.635 GHz = 56.92 TFLOP/s (Turing FP16→FP32 tensor rate)", note: "M.N.K 8192: 92.8% to 136.9% of peak" },
     ],
   },
 ];

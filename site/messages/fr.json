@@ -256,8 +256,8 @@
         "name": "FP16/FP32 en GEMM cuBLAS",
         "body": "Une mesure différente des lignes de débit d'émission ci-dessus : un vrai GEMM cuBLAS sur Turing à quatre tailles M.N.K. Son 1,36–1,64× ne doit pas être moyenné avec les valeurs Ada."
       },
-      "ceilingTitle": "Distance au pic dense",
-      "ceilingRow": "{card} : {value} {unit} mesurés face à un pic dense de {ceiling} {unit} — {pct}% de celui-ci."
+      "ceilingTitle": "Distance au pic de spécification",
+      "ceilingRow": "{card} : {value} {unit} mesurés face à un pic de spécification de {ceiling} {unit} — {pct}% de celui-ci."
     },
     "modesTitle": "Benchmarks par chemin de calcul",
     "modesBody": "Chaque carte a été mesurée sur plusieurs chemins d'instructions, et le déverrouillage n'en modifie qu'une partie. Regrouper les lignes selon ce qu'elles mesurent réellement évite de lire un 2,0× sur un chemin multiply-add fusionné comme un 2,0× sur tout."
