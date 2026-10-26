@@ -223,6 +223,26 @@ test("every page advertises the OG image it claims to have", () => {
   assert.match(og, /export const size/, "the OG route must declare its size");
 });
 
+test("a title that already names the site opts out of the template", () => {
+  // The root layout appends "· GPU Unlock" to whatever a page returns. Titles that already
+  // say "GPU Unlock" therefore rendered it twice — 111 pages served
+  // "GeForce RTX 4090 (10de:2684) — GPU Unlock support · GPU Unlock". The fix is in one
+  // place (pageMeta) rather than in each locale's copy, so pin the mechanism, not a string.
+  const seo = readFileSync(new URL("../src/lib/seo.ts", import.meta.url), "utf8");
+  assert.match(
+    seo,
+    /absolute: opts\.title/,
+    "a title containing the site name must be returned as `absolute` so the layout template does not append it again",
+  );
+  // The copy spells the brand three ways: "GPU Unlock", "GPU UNLOCK" (Windows) and
+  // "GPU-Unlock" (German). A case-sensitive substring check missed two thirds of them.
+  assert.match(
+    seo,
+    /toLowerCase\(\)\.replace\(/,
+    "the site-name check must normalize case and separators, or some locales echo the brand",
+  );
+});
+
 test("the FAQ agrees with the measured-device list", () => {
   // The FAQ named the confirmed cards in prose, so adding a measured card left it claiming
   // "Two cards" on a site whose own headline said three. Derive the count and the names.

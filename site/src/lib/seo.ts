@@ -9,8 +9,19 @@ export function pageMeta(opts: {
   keywords?: string[];
 }): Metadata {
   const url = `${SITE}/${opts.locale}${opts.path}`;
+  // The root layout appends "· GPU Unlock" to every title. A title that already names the
+  // site would come out as "… — GPU Unlock support · GPU Unlock", which is what happened on
+  // 111 pages before this check. `absolute` opts out of the template instead of asking every
+  // locale's copy to avoid the brand name — copy changes then cannot reintroduce the echo.
+  // Compared on a normalized copy: the copy calls the site "GPU UNLOCK" in the Windows
+  // title and "GPU-Unlock" in German, and a plain substring check missed both, leaving 22
+  // pages with the echo still in place.
+  const norm = (s: string) => s.toLowerCase().replace(/[\s-]+/g, " ");
+  const title = norm(opts.title).includes(norm(SITE_NAME))
+    ? { absolute: opts.title }
+    : opts.title;
   return {
-    title: opts.title,
+    title,
     description: opts.description,
     keywords: opts.keywords,
     alternates: {
