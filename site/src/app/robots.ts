@@ -11,6 +11,9 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Google-Extended", allow: "/" },
     ],
     sitemap: `${SITE}/sitemap.xml`,
-    host: SITE,
+    // No `host`. It was emitted as `Host: https://gpuunlock.com` — the directive takes a
+    // bare hostname, not a URL, so even the one crawler that once read it would have
+    // rejected the value. Yandex retired `Host` in favour of the search console, and no
+    // other crawler consumes it, so the line could only ever be wrong.
   };
 }
