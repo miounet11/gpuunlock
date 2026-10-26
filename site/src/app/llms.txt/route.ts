@@ -1,5 +1,6 @@
 import { DEVICES, ACCEPTED_IDS } from "@/data/devices";
 import { BENCH_RUNS } from "@/data/benchmarks";
+import { MODE_GROUPS, groupSlug } from "@/data/modes";
 import { INSTALL_SITE, REPOS, SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -46,6 +47,17 @@ export function GET() {
     `- [FAQ](${INSTALL_SITE}/en/faq): module choice, Windows support, safety, failure modes`,
   );
   lines.push("");
+  // One line per mode, generated from MODE_GROUPS so a new measured mode appears here
+  // without a second edit. These pages answer "what can this card do on this path", which
+  // is the question the flat benchmark table does not answer directly.
+  lines.push("## Mode pages");
+  lines.push("");
+  for (const g of MODE_GROUPS) {
+    lines.push(
+      `- [${g.id}](${SITE}/en/benchmarks/${groupSlug(g.id)}): ${g.exercises}${g.gated ? " (rate-limited by the speed-select fuse)" : " (not rate-limited)"}`,
+    );
+  }
+  lines.push("");
   lines.push("## Confirmed cards");
   lines.push("");
   for (const d of measured) {
@@ -60,8 +72,17 @@ export function GET() {
   lines.push("");
   for (const run of BENCH_RUNS) {
     lines.push(`### ${run.card} (${run.chip})`);
+    // The 2080 Ti rows are four GEMM sizes of the same mode, so printing mode alone gives
+    // four identical lines and the reader cannot tell them apart. When a mode repeats, the
+    // row's own leading note ("M.N.K 1024: ...") is the discriminator the data already
+    // carries; it is used rather than the iteration count, which means something different
+    // per card (M.N.K size here, timed iterations elsewhere).
+    const counts = new Map<string, number>();
+    for (const r of run.rows) counts.set(r.mode, (counts.get(r.mode) ?? 0) + 1);
     for (const r of run.rows) {
-      lines.push(`- ${r.mode}: ${r.stock} -> ${r.unlocked} ${r.unit} (${r.ratio}x)`);
+      const repeated = (counts.get(r.mode) ?? 0) > 1;
+      const label = repeated && r.note ? ` [${r.note.split(":")[0].trim()}]` : "";
+      lines.push(`- ${r.mode}${label}: ${r.stock} -> ${r.unlocked} ${r.unit} (${r.ratio}x)`);
     }
     lines.push("");
   }
