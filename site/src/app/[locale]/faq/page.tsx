@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { FAQS } from "@/data/faq";
+import { FaqList } from "@/components/faq-list";
 import { breadcrumbLd, jsonLdGraph, pageLd } from "@/lib/jsonld";
 import { pageMeta } from "@/lib/seo";
 
@@ -53,12 +54,7 @@ export default async function Faq({ params }: { params: Promise<{ locale: string
       <h1>{t("title")}</h1>
       <p className="page-intro">{t("description")}</p>
 
-      {FAQS.map((f) => (
-        <section key={f.q} className="faq-item">
-          <h2>{f.q}</h2>
-          <p>{f.a}</p>
-        </section>
-      ))}
+      <FaqList items={FAQS} expandAll={t("expandAll")} collapseAll={t("collapseAll")} />
     </div>
   );
 }

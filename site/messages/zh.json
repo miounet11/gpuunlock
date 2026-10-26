@@ -4,7 +4,23 @@
     "skip": "跳到正文",
     "gpus": "显卡",
     "benchmarks": "基准",
-    "install": "安装指南"
+    "install": "安装指南",
+    "faq": "常见问题",
+    "windows": "Windows 移植",
+    "close": "关闭菜单",
+    "theme": "主题",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "language": "语言",
+    "footerExplore": "浏览",
+    "footerUpstream": "上游项目",
+    "footerTagline": "GPU Unlock 项目的证据侧：模块接受的设备 ID，以及同卡实测数据。",
+    "footerLegal": "源码以 GPL-2.0-only 提供。NVIDIA 固件仍受其自身条款约束。与 NVIDIA 无隶属关系。",
+    "footerSister": "姊妹站点",
+    "installHome": "gpu-unlock.com",
+    "sisterInstall": "构建与安装指南",
+    "sisterFaq": "常见问题"
   },
   "home": {
     "title": "GPU Unlock — 支持的 NVIDIA 显卡、实测提速与安装步骤",
@@ -41,7 +57,13 @@
     "upstreamAmpere": "Ampere 模块：GA102、GA103、GA104、GA106（v1.0.0）",
     "upstreamAda": "Ada 分支：新增 AD102 RTX 4090 与实验性 AD103 金丝雀（v1.1.1）",
     "upstreamUsage": "合并后的公开仓库，含本站的使用说明",
-    "upstreamTuring": "面向 RTX 20 系（TU102/TU104/TU106）的独立 Turing 模块"
+    "upstreamTuring": "面向 RTX 20 系（TU102/TU104/TU106）的独立 Turing 模块",
+    "chartTitle": "算力真正提升的位置",
+    "chartCaption": "同一张卡、同一套二进制下的实测。柱状从原厂基线起算。",
+    "chartStock": "原厂 = 1.00×",
+    "chartPeak": "峰值",
+    "faqExpand": "全部展开",
+    "faqCollapse": "全部收起"
   },
   "gpus": {
     "title": "支持的 NVIDIA 显卡",
@@ -71,7 +93,30 @@
     "idsTitle": "如何查自己的卡",
     "idsBody": "运行 `lspci -nn | grep -i nvidia`，把 `10de:xxxx` 设备 ID 与下方的接受列表对照。GeForce 与 CMP 的 GA102/GA104 ID 在接受列表中；专业卡 RTX A 系列与数据中心产品不在其中。AD102 只接受 RTX 4090，AD103 仅限那一张 RTX 4070 Ti SUPER 金丝雀的具体地址。Turing 的 ID（TU102、TU104、TU106）由另一个模块接受，所以 20 系显卡要装 Turing 那套，而不是合并版。",
     "installLink": "安装步骤",
-    "acceptedIdsTitle": "全部接受的设备 ID"
+    "acceptedIdsTitle": "全部接受的设备 ID",
+    "explorer": {
+      "searchPlaceholder": "按名称、芯片或 PCI ID 搜索…",
+      "searchLabel": "搜索显卡",
+      "filterLabel": "按状态筛选",
+      "all": "全部",
+      "sortLabel": "排序",
+      "sortName": "显卡",
+      "sortChip": "芯片",
+      "sortStatus": "状态",
+      "sortGain": "增益",
+      "sortPci": "PCI ID",
+      "resultOne": "{count} 张显卡",
+      "resultMany": "{count} 张显卡",
+      "emptyTitle": "没有匹配该筛选条件的显卡。",
+      "emptyBody": "试试更短的关键词，或清除筛选查看完整列表。",
+      "clear": "清除筛选",
+      "noGain": "—"
+    },
+    "statIds": "接受的 PCI ID 数量",
+    "statDescribed": "张已记录显卡",
+    "statMeasured": "有同卡实测",
+    "explorerTitle": "查找显卡",
+    "legendTitle": "状态含义"
   },
   "device": {
     "metaTitle": "{name}（{id}）— GPU Unlock 支持情况",
@@ -87,7 +132,27 @@
     "noBench": "这张卡没有公开的同卡实测。它的状态来自用户兼容性报告，而不是维护者主导的基准测试。",
     "sourcesTitle": "数据来源",
     "installLink": "如何安装",
-    "backLink": "全部显卡"
+    "backLink": "全部显卡",
+    "familyRef": "这张卡没有同卡实测。使用同一解锁模块且已实测的最近参照是 {name}（{family}）；它的增益只能当参照，不是这张卡的数字。",
+    "familyNone": "这张卡属于 {family} 代，本站列了 {total} 张该代显卡，但没有一张有同卡实测。本站任何数字都不应被当作它的预期增益。",
+    "cutlassTitle": "经 CUTLASS profiler 的 FP8",
+    "cutlassNote": "与上表不是同一个程序：单个 4096³ kernel，由 CUTLASS profiler 计时，单位是 GFLOP/s。单独成表，因为两组数字的方法不同。",
+    "colIters": "迭代次数",
+    "peakLine": "这张卡在本组的峰值增益 {peak}×。",
+    "factsTitle": "卡片信息",
+    "factPci": "PCI ID",
+    "factChip": "芯片",
+    "factModule": "解锁模块",
+    "factStatus": "状态",
+    "factGain": "已报告增益",
+    "factFamily": "代际",
+    "factCoverage": "本代已实测",
+    "moduleBoth": "Ampere + Ada 模块",
+    "moduleAda": "Ada 模块",
+    "moduleAmpere": "Ampere 模块",
+    "moduleTuring": "Turing 模块",
+    "gainNone": "未公布同卡数字",
+    "coverageOf": "{total} 张中的 {measured} 张"
   },
   "bench": {
     "title": "性能实测：解锁前后",
@@ -108,7 +173,92 @@
     "stock": "解锁前",
     "unlocked": "解锁后",
     "readTitle": "如何理解 1.00×",
-    "readBody": "1.00× 不代表解锁失败。它说明那条路径本来就没有被限速，覆盖没有可恢复的东西。如果你在自己的卡上测出你关心的模式是 1.00×，解锁很可能确实生效了，只是对这个负载没有帮助。"
+    "readBody": "1.00× 不代表解锁失败。它说明那条路径本来就没有被限速，覆盖没有可恢复的东西。如果你在自己的卡上测出你关心的模式是 1.00×，解锁很可能确实生效了，只是对这个负载没有帮助。",
+    "explorer": {
+      "colCard": "显卡",
+      "colMode": "模式",
+      "colStock": "原厂",
+      "colUnlocked": "解锁后",
+      "colGain": "增益",
+      "filterLabel": "显示行",
+      "viewAll": "全部",
+      "viewChanged": "仅变化",
+      "viewFlat": "仅未变化",
+      "searchLabel": "搜索模式或显卡",
+      "searchPlaceholder": "bf16、f16、4090…",
+      "resultOne": "{n} 行",
+      "resultMany": "{n} 行",
+      "sortLabel": "排序",
+      "emptyTitle": "没有匹配的行",
+      "emptyBody": "试试 bf16 之类的模式名，或清除筛选。",
+      "clear": "清除筛选"
+    },
+    "tableTitle": "全部数据行，可筛选",
+    "runsTitle": "这些数据来自哪里",
+    "statRows": "行数据",
+    "statCards": "张实测显卡",
+    "statPeak": "最高增益",
+    "statFlat": "未变化的行",
+    "modes": {
+      "metaSuffix": "在真实显卡上实测",
+      "gatedYes": "受熔丝限速",
+      "gatedNo": "从未被限速",
+      "statRows": "行实测",
+      "statChanged": "行有变化",
+      "statPeak": "最高增益",
+      "methodTitle": "这个模式是怎么测的",
+      "colStock": "原厂",
+      "colUnlocked": "解锁后",
+      "colGain": "增益",
+      "colCard": "显卡",
+      "tableTitle": "该模式下所有实测显卡",
+      "tableNote": "同一张卡、同一驱动、同一二进制，唯一变量是是否解锁。",
+      "coverageTitle": "覆盖范围",
+      "coverageBody": "表中只出现有同卡实测的显卡。未出现在表里的卡表示这条路径尚未测过，不等于测失败。",
+      "otherModes": "其他已实测模式",
+      "tensor-f16-f16": {
+        "name": "FP16 配 FP16 累加器",
+        "body": "全速张量核心路径。Ada 架构上这条路径在解锁前就已达到硬件上限，所以实测的 1.02× 属于三次取最佳的测量噪声，而非真实增益。"
+      },
+      "tensor-f16-f32": {
+        "name": "FP16 配 FP32 累加器",
+        "body": "多数推理内核使用的形状。Ada 上正是这条路径被 SM speed-select 熔丝限速，所以解锁能让它翻倍。"
+      },
+      "tensor-bf16-f32": {
+        "name": "BF16 配 FP32 累加器",
+        "body": "限速机理与 FP16/FP32 相同，但 BF16 指数位更宽。训练和许多推理栈更偏好这个形状。"
+      },
+      "tensor-tf32": {
+        "name": "TF32 配 FP32 累加器",
+        "body": "19 位 TF32 输入，面向训练吞吐。Ada 上同样受熔丝限制，解锁后同样接近翻倍。"
+      },
+      "tensor-int8": {
+        "name": "INT8 配 INT32 累加器",
+        "body": "量化推理。从不受该熔丝限速，所以这一行是 1.00×，而这正是正确结果。"
+      },
+      "tensor-int4": {
+        "name": "INT4 配 INT32 累加器",
+        "body": "最密集的量化路径。和 INT8 一样从不受熔丝限制，所以解锁对此毫无作用。"
+      },
+      "tensor-fp8": {
+        "name": "经 CUTLASS 的 FP8 E4M3",
+        "body": "真实的 GEMM 内核，而非发射率循环。实测 1.0029×，是「FP8 从未被限速」最清晰的一条证据。"
+      },
+      "dp4a": {
+        "name": "dp4a 整数点积",
+        "body": "每个 lane 做 4 次 INT8 乘加。属于整数路径，SM 速率熔丝不干预，保持 1.00×。"
+      },
+      "fp32-ffma": {
+        "name": "标量 FP32 融合乘加",
+        "body": "CUDA 核心路径，而非张量核心。作为对照纳入：它在每张卡上都保持 1.00×，说明解锁只作用于张量路径。"
+      },
+      "gemm-f16-f32": {
+        "name": "以 cuBLAS GEMM 测得的 FP16/FP32",
+        "body": "与上面发射率行是不同测量：Turing 上真实 cuBLAS GEMM，四个 M.N.K 尺寸。其 1.36–1.64× 不可与 Ada 的发射率数字混算。"
+      }
+    },
+    "modesTitle": "按计算路径分组的跑分",
+    "modesBody": "每张卡都在多条指令路径上做过测量，而解锁只让其中一部分变化。按「实际测的是什么」把数据行分组，可以避免把某一条融合乘加路径上的 2.0× 误读成所有路径都 2.0×。"
   },
   "install": {
     "title": "安装 GPU Unlock",
@@ -126,10 +276,56 @@
     "repoAda": "Ada：新增 AD102 RTX 4090 与实验性 AD103 金丝雀，并保留 Ampere 设备表。",
     "faqLink": "常见问题",
     "repoMerged": "合并版：包含两个上游分支与挂起/恢复后重新解锁的能力，一次克隆即可覆盖 Ampere 与 Ada。",
-    "repoTuring": "RTX 20 系显卡的独立模块，使用自己的 turing_unlock.targets 开关"
+    "repoTuring": "RTX 20 系显卡的独立模块，使用自己的 turing_unlock.targets 开关",
+    "stepsTitle": "分步操作",
+    "copyLabel": "复制",
+    "copiedLabel": "已复制",
+    "verifyCopy": "复制",
+    "reqHint": "以下每条都从显卡本身核实，不做假设。",
+    "markDone": "标记完成",
+    "done": "已完成",
+    "progress": "已完成 {done} / {total} 步（仅本浏览器标签有效）"
   },
   "faq": {
     "title": "GPU Unlock 常见问题",
-    "description": "解锁改了什么、哪些卡已确认、能快多少、能否在 Windows 上使用、硬件风险有多大、以及如何关闭。"
+    "description": "解锁改了什么、哪些卡已确认、能快多少、能否在 Windows 上使用、硬件风险有多大、以及如何关闭。",
+    "expandAll": "全部展开",
+    "collapseAll": "全部收起"
+  },
+  "windows": {
+    "title": "Windows GPU UNLOCK — Windows 的 UEFI 移植版，以及它到底覆盖了什么",
+    "description": "impacifist/Windows-GPU-UNLOCK 把解锁做成在 Windows 启动前运行的 EFI 载荷，而不是 Linux 内核模块。这里记录已归档的硬件配置、四条启动路径、前置条件与版本范围。",
+    "h1": "Windows 路线：在 Windows 启动之前执行的 EFI 载荷",
+    "lead": "本站记录的三项上游项目都是 Linux 内核模块。Windows-GPU-UNLOCK 是另一套实现：它单独建立一个 EFI 系统分区，把寄存器操作放进一个交给 Windows Boot Manager 的载荷里执行。该项目也没有公布同一张卡的原厂/解锁对照，所以这一页给的是已归档配置与启动路径，而不是提升倍数。",
+    "linuxTitle": "这不是 Linux 模块，也不能替代它",
+    "linuxBody": "这里的内容不适用于 Linux 安装，内核模块也不适用于 Windows。两者共享同一个思路——在 NVIDIA 驱动绑定之前写入速率选择寄存器——但启动路径、工具链和失败模式都不同。如果你在 Linux 上，请使用本站的显卡列表与实测数据。",
+    "scopeTitle": "截至目前，这个发布是什么",
+    "scopeBody": "最新标签是 {release}，是一个只提供源码的预发布版本。在假定某张卡受支持之前，请先读下面的范围说明。",
+    "cardsTitle": "已归档与已上报的硬件",
+    "cardsBody": "一个配置只覆盖某个特定系统里的某一张卡。同一型号的 GPU 换一块主板就不再被该配置覆盖，并且只有第一行是维护者自己在测试中归档的。",
+    "colCard": "显卡",
+    "colChip": "核心",
+    "colStatus": "状态",
+    "colRoute": "路径",
+    "statusRecorded": "维护者已归档",
+    "statusReported": "已上报硬件成功",
+    "statusUpstream": "仅上游目标",
+    "pathsTitle": "四条启动路径，彼此不能互换",
+    "pathsBody": "走哪条路径取决于显示是否留在独立显卡上，以及你能否使用 U 盘。每条路径在仓库里都有各自的指南。",
+    "colPath": "路径",
+    "colDisplay": "显示与输入",
+    "colGuide": "指南",
+    "guideLink": "打开指南",
+    "reqTitle": "开始前需要满足的条件",
+    "stepsTitle": "真正重要的顺序",
+    "measureTitle": "那次归档测试测到了什么",
+    "measureBody": "原始 B650M / RTX 3090 FE 测试给出了这些 CUDA 12.6 / cuBLAS 12.6、4096 x 4096 下的数值，取三次运行的中位数。这是解锁后显卡的绝对值——项目没有公布对应的原厂数值，因此这不是提升数据。",
+    "colMode": "项目",
+    "colValue": "数值",
+    "teardownTitle": "那次归档测试留下了什么状态",
+    "teardownBody": "成功的那一次子载荷在解锁后上报了如下状态，这是显卡被干净地交给驱动的证据。",
+    "licenseTitle": "许可证",
+    "repoLink": "GitHub 上的 impacifist/Windows-GPU-UNLOCK",
+    "faqLink": "常见问题"
   }
 }

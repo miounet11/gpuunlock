@@ -1,4 +1,4 @@
-import { SITE, SITE_NAME } from "./site";
+import { SITE, SITE_NAME, INSTALL_SITE } from "./site";
 
 export const ORG_ID = `${SITE}/#organization`;
 export const SITE_ID = `${SITE}/#website`;
@@ -30,6 +30,9 @@ export function organizationLd() {
       "https://github.com/Zagitta/gpu-unlock",
       "https://github.com/JustAResearcher/gpu-unlock-ada",
       "https://github.com/miounet11/gpuunlock",
+      // The install half of this project. It is a separate host but the same publisher,
+      // which is exactly what sameAs is for.
+      INSTALL_SITE,
     ],
   };
 }

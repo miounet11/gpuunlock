@@ -3,7 +3,9 @@ import { Link } from "@/i18n/navigation";
 import { INSTALL_STEPS, REQUIREMENTS, FAILURE_MODES } from "@/data/install";
 import { breadcrumbLd, jsonLdGraph, pageLd } from "@/lib/jsonld";
 import { pageMeta } from "@/lib/seo";
-import { REPOS } from "@/lib/site";
+import { REPOS, installUrl } from "@/lib/site";
+import { StepTimeline } from "@/components/step-timeline";
+import { CopyButton } from "@/components/copy-button";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -74,21 +76,23 @@ export default async function Install({ params }: { params: Promise<{ locale: st
         ))}
       </ul>
 
-      {INSTALL_STEPS.map((s, i) => (
-        <section key={s.id} id={`step-${s.id}`}>
-          <h2>
-            {i + 1}. {s.title}
-          </h2>
-          <p>{s.body}</p>
-          {s.code ? <pre><code>{s.code}</code></pre> : null}
-          {s.note ? <p className="meta">{s.note}</p> : null}
-        </section>
-      ))}
+      <h2>{t("stepsTitle")}</h2>
+      <StepTimeline
+        steps={INSTALL_STEPS}
+        labels={{
+          copy: t("copyLabel"),
+          copied: t("copiedLabel"),
+          markDone: t("markDone"),
+          done: t("done"),
+          progress: t("progress"),
+        }}
+      />
 
       <h2>{t("verifyTitle")}</h2>
       <p>{t("verifyBody")}</p>
       <pre>
         <code>{`journalctl -k -b | grep gpu_unlock\nlspci -nnk -s 0000:21:00.0`}</code>
+        <CopyButton label={t("copyLabel")} copiedLabel={t("copiedLabel")} />
       </pre>
 
       <h2>{t("failTitle")}</h2>
@@ -131,7 +135,9 @@ export default async function Install({ params }: { params: Promise<{ locale: st
         </li>
       </ul>
       <p className="meta">
-        <Link href="/faq">{t("faqLink")}</Link>
+        <a href={installUrl(locale, "/faq")} rel="noopener noreferrer">
+          {t("faqLink")}
+        </a>
       </p>
     </div>
   );

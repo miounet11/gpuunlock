@@ -27,12 +27,18 @@ export function GET() {
   lines.push(`- ${turingIds} more PCI device IDs are accepted by the separate Turing module across TU102, TU104 and TU106.`);
   lines.push(`- Exactly ${measured.length} cards have published same-card stock-vs-unlocked measurements: ${measured.map((d) => d.name.replace("GeForce ", "")).join(", ")}.`);
   lines.push("- Peak tensor gain is 2x, and only on f16/f32 and bf16/f32 on RTX 4090. FP32, INT8 and FP8 paths were never rate-limited.");
-  lines.push("- Linux only. The module must load before the stock NVIDIA driver, via initramfs.");
+  lines.push("- The kernel modules are Linux only. They must load before the stock NVIDIA driver, via initramfs.");
+  lines.push(
+    "- Windows is covered by a separate EFI implementation, impacifist/Windows-GPU-UNLOCK, which runs before Windows boots instead of inside it. It publishes no stock-vs-unlocked pair, so no gain is quoted for it.",
+  );
   lines.push("");
   lines.push("## Pages");
   lines.push(`- [Home](${SITE}/en): overview, headline numbers, quick table`);
   lines.push(`- [Cards](${SITE}/en/gpus): every device the module matches, with status per card`);
   lines.push(`- [Benchmarks](${SITE}/en/benchmarks): full stock-vs-unlocked rows, including the rows that did not move`);
+  lines.push(
+    `- [Windows port](${SITE}/en/windows): the UEFI route for Windows, its recorded profiles, boot paths and requirements`,
+  );
   lines.push(
     `- [Install guide](${INSTALL_SITE}/en/install): initramfs ordering, kernel parameters, verification, rollback`,
   );

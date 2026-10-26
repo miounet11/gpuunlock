@@ -4,7 +4,23 @@
     "skip": "Ir para o conteúdo",
     "gpus": "Placas",
     "benchmarks": "Benchmarks",
-    "install": "Guia de instalação"
+    "install": "Instalação",
+    "faq": "Perguntas frequentes",
+    "windows": "Porta Windows",
+    "close": "Fechar menu",
+    "theme": "Tema",
+    "themeSystem": "Sistema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "language": "Idioma",
+    "footerExplore": "Explorar",
+    "footerUpstream": "Upstream",
+    "footerTagline": "O lado de evidências do projeto GPU Unlock: IDs aceitos e medições na mesma placa.",
+    "footerLegal": "Código sob GPL-2.0-only. O firmware da NVIDIA segue seus próprios termos. Sem vínculo com a NVIDIA.",
+    "footerSister": "Site irmão",
+    "installHome": "gpu-unlock.com",
+    "sisterInstall": "Compilar e instalar",
+    "sisterFaq": "Perguntas frequentes"
   },
   "home": {
     "title": "GPU Unlock — placas NVIDIA suportadas, ganhos medidos e passos de instalação",
@@ -41,7 +57,13 @@
     "upstreamAmpere": "o módulo Ampere: GA102, GA103, GA104, GA106 (v1.0.0)",
     "upstreamAda": "o fork Ada: adiciona AD102 RTX 4090 e um canário AD103 experimental (v1.1.1)",
     "upstreamUsage": "o repositório público mesclado, com as notas de uso do site",
-    "upstreamTuring": "o módulo Turing separado para a série RTX 20 (TU102/TU104/TU106)"
+    "upstreamTuring": "o módulo Turing separado para a série RTX 20 (TU102/TU104/TU106)",
+    "chartTitle": "Onde a taxa realmente muda",
+    "chartCaption": "Medido na mesma placa com os mesmos binários. As barras partem da série.",
+    "chartStock": "série = 1,00×",
+    "chartPeak": "pico",
+    "faqExpand": "Expandir tudo",
+    "faqCollapse": "Recolher tudo"
   },
   "gpus": {
     "title": "Placas NVIDIA suportadas",
@@ -71,7 +93,30 @@
     "idsTitle": "Como verificar sua própria placa",
     "idsBody": "Execute `lspci -nn | grep -i nvidia` e compare o ID de dispositivo `10de:xxxx` com a lista aceita abaixo. IDs GeForce e CMP de GA102/GA104 estão na lista aceita; as RTX profissionais série A e os produtos de data center não. AD102 aceita apenas a RTX 4090, e AD103 fica limitada ao endereço canary exato da RTX 4070 Ti SUPER. Os IDs Turing (TU102, TU104, TU106) são aceitos por um módulo separado, então uma placa Turing precisa da instalação Turing, não da do módulo unificado.",
     "installLink": "Passos de instalação",
-    "acceptedIdsTitle": "Todos os IDs de dispositivo aceitos"
+    "acceptedIdsTitle": "Todos os IDs de dispositivo aceitos",
+    "explorer": {
+      "searchPlaceholder": "Buscar por nome, chip ou PCI ID…",
+      "searchLabel": "Buscar placas",
+      "filterLabel": "Filtrar por estado",
+      "all": "Todas",
+      "sortLabel": "Ordenar",
+      "sortName": "Placa",
+      "sortChip": "Chip",
+      "sortStatus": "Estado",
+      "sortGain": "Ganho",
+      "sortPci": "PCI ID",
+      "resultOne": "{count} placa",
+      "resultMany": "{count} placas",
+      "emptyTitle": "Nenhuma placa corresponde a esse filtro.",
+      "emptyBody": " Tente uma busca mais curta ou limpe os filtros.",
+      "clear": "Limpar filtros",
+      "noGain": "—"
+    },
+    "statIds": "PCI IDs aceitos",
+    "statDescribed": "placas descritas",
+    "statMeasured": "medidas na mesma placa",
+    "explorerTitle": "Encontrar uma placa",
+    "legendTitle": "O que cada estado significa"
   },
   "device": {
     "metaTitle": "{name} ({id}) — suporte do GPU Unlock",
@@ -87,7 +132,27 @@
     "noBench": "Nenhuma medição na mesma placa foi publicada para esta placa. Seu estado vem de relatos de compatibilidade de usuários, não de um benchmark sob controle dos mantenedores.",
     "sourcesTitle": "Fontes",
     "installLink": "Como instalar",
-    "backLink": "Todas as placas"
+    "backLink": "Todas as placas",
+    "familyRef": "Não existe medição na mesma placa para esta placa. A placa medida mais próxima no mesmo módulo de desbloqueio é {name} ({family}); os ganhos dela são um ponto de referência, não os números desta placa.",
+    "familyNone": "Esta placa pertence à geração {family}. Há {total} placas dessa geração listadas aqui, mas nenhuma tem medição na mesma placa. Nada neste site deve ser lido como o ganho esperado desta placa.",
+    "cutlassTitle": "FP8 pelo profiler CUTLASS",
+    "cutlassNote": "Um programa diferente do laço acima: um único kernel 4096³ cronometrado pelo profiler CUTLASS, em GFLOP/s. Tabela separada porque os dois números não compartilham o mesmo método.",
+    "colIters": "Iterações",
+    "peakLine": "Ganho máximo {peak}× desta placa neste grupo.",
+    "factsTitle": "Dados da placa",
+    "factPci": "PCI ID",
+    "factChip": "Chip",
+    "factModule": "Módulo de desbloqueio",
+    "factStatus": "Status",
+    "factGain": "Ganho reportado",
+    "factFamily": "Geração",
+    "factCoverage": "Medidas nesta geração",
+    "moduleBoth": "Módulos Ampere + Ada",
+    "moduleAda": "Módulo Ada",
+    "moduleAmpere": "Módulo Ampere",
+    "moduleTuring": "Módulo Turing",
+    "gainNone": "Nenhum número publicado para a mesma placa",
+    "coverageOf": "{measured} de {total} placas"
   },
   "bench": {
     "title": "Benchmarks: original contra desbloqueado",
@@ -108,7 +173,92 @@
     "stock": "original",
     "unlocked": "desbloqueado",
     "readTitle": "Como ler uma razão de 1,00×",
-    "readBody": "Uma linha de 1,00× não é um desbloqueio falho. Ela diz que aquele caminho específico nunca foi limitado, então a substituição não tinha nada a restaurar. Se você medir sua própria placa e ver 1,00× no modo que lhe importa, o desbloqueio pode ter sido aplicado corretamente e simplesmente não ajudar aquela carga de trabalho."
+    "readBody": "Uma linha de 1,00× não é um desbloqueio falho. Ela diz que aquele caminho específico nunca foi limitado, então a substituição não tinha nada a restaurar. Se você medir sua própria placa e ver 1,00× no modo que lhe importa, o desbloqueio pode ter sido aplicado corretamente e simplesmente não ajudar aquela carga de trabalho.",
+    "explorer": {
+      "colCard": "Placa",
+      "colMode": "Modo",
+      "colStock": "Original",
+      "colUnlocked": "Desbloqueado",
+      "colGain": "Ganho",
+      "filterLabel": "Mostrar",
+      "viewAll": "Todas",
+      "viewChanged": "Só alteradas",
+      "viewFlat": "Só sem mudança",
+      "searchLabel": "Procurar modos ou placas",
+      "searchPlaceholder": "bf16, f16, 4090…",
+      "resultOne": "{n} linha",
+      "resultMany": "{n} linhas",
+      "sortLabel": "Ordem",
+      "emptyTitle": "Nenhuma linha corresponde",
+      "emptyBody": "Tente um modo como bf16 ou limpe o filtro.",
+      "clear": "Limpar filtros"
+    },
+    "tableTitle": "Todas as linhas, filtráveis",
+    "runsTitle": "De onde vêm estas medições",
+    "statRows": "linhas",
+    "statCards": "placas medidas",
+    "statPeak": "maior ganho",
+    "statFlat": "linhas sem mudança",
+    "modes": {
+      "metaSuffix": "medido em uma placa real",
+      "gatedYes": "limitado pelo fusível",
+      "gatedNo": "nunca limitado",
+      "statRows": "linhas",
+      "statChanged": "com mudança",
+      "statPeak": "maior ganho",
+      "methodTitle": "Como este modo foi medido",
+      "colStock": "Original",
+      "colUnlocked": "Desbloqueado",
+      "colGain": "Ganho",
+      "colCard": "Placa",
+      "tableTitle": "Todas as placas medidas neste modo",
+      "tableNote": "Mesma placa, mesmo driver, mesmo binário. O desbloqueio é a única variável.",
+      "coverageTitle": "Cobertura",
+      "coverageBody": "A tabela lista apenas placas com medição na mesma placa. Uma placa ausente não foi medida nesta rota, o que não significa falha.",
+      "otherModes": "Outros modos medidos",
+      "tensor-f16-f16": {
+        "name": "FP16 com acumulador FP16",
+        "body": "O caminho de tensor cores em taxa máxima. Em Ada já atinge o limite do hardware antes do desbloqueio, então um 1,02× medido é ruído de medição."
+      },
+      "tensor-f16-f32": {
+        "name": "FP16 com acumulador FP32",
+        "body": "A forma usada pela maioria dos kernels de inferência. É esta rota que o fusível SM speed-select limita em Ada, por isso o desbloqueio a dobra."
+      },
+      "tensor-bf16-f32": {
+        "name": "BF16 com acumulador FP32",
+        "body": "Mesmo limite do FP16/FP32, com o expoente mais amplo do BF16. Treino e muitas pilhas de inferência preferem esta forma."
+      },
+      "tensor-tf32": {
+        "name": "TF32 com acumulador FP32",
+        "body": "Entradas TF32 de 19 bits, voltadas ao throughput de treino. Também limitado pelo fusível em Ada e quase dobrado."
+      },
+      "tensor-int8": {
+        "name": "INT8 com acumulador INT32",
+        "body": "Inferência quantizada. Nunca limitado pelo fusível, então marca 1,00× e esse é o resultado correto."
+      },
+      "tensor-int4": {
+        "name": "INT4 com acumulador INT32",
+        "body": "A rota quantizada mais densa. Como o INT8, nunca limitada: o desbloqueio não traz nada."
+      },
+      "tensor-fp8": {
+        "name": "FP8 E4M3 via CUTLASS",
+        "body": "Um kernel GEMM real, não um laço de taxa de emissão. Mediu 1,0029×: a evidência mais clara de que o FP8 nunca foi limitado."
+      },
+      "dp4a": {
+        "name": "O produto escalar inteiro dp4a",
+        "body": "Quatro MAC INT8 por lane. Uma rota inteira, o fusível de taxa o deixa em 1,00×."
+      },
+      "fp32-ffma": {
+        "name": "FMA escalar FP32",
+        "body": "A rota dos núcleos CUDA, não os tensor cores. Incluída como controle: fica em 1,00× em todas as placas, mostrando que o desbloqueio só afeta rotas tensor."
+      },
+      "gemm-f16-f32": {
+        "name": "FP16/FP32 como GEMM do cuBLAS",
+        "body": "Uma medição diferente das linhas de taxa de emissão: um GEMM real do cuBLAS em Turing com quatro tamanhos M.N.K. Seu 1,36–1,64× não deve ser promediado com os valores de Ada."
+      }
+    },
+    "modesTitle": "Benchmarks por caminho de cálculo",
+    "modesBody": "Cada placa foi medida em vários caminhos de instrução, e o desbloqueio move apenas alguns deles. Agrupar as linhas pelo que elas realmente medem evita ler um 2,0× em um caminho de multiply-add fusionado como um 2,0× em tudo."
   },
   "install": {
     "title": "Instalar o GPU Unlock",
@@ -126,10 +276,56 @@
     "repoAda": "Ada: adiciona AD102 RTX 4090 e o canário AD103 experimental, e mantém a lista de dispositivos Ampere.",
     "faqLink": "Perguntas comuns",
     "repoMerged": "Mesclado: os dois forks upstream mais o desbloqueio após suspensão/retomada. Um único clone cobre Ampere e Ada.",
-    "repoTuring": "o módulo separado para placas RTX 20, com seu próprio interruptor turing_unlock.targets"
+    "repoTuring": "o módulo separado para placas RTX 20, com seu próprio interruptor turing_unlock.targets",
+    "stepsTitle": "Passo a passo",
+    "copyLabel": "Copiar",
+    "copiedLabel": "Copiado",
+    "verifyCopy": "Copiar",
+    "reqHint": "Tudo aqui é verificado na placa, não presumido.",
+    "markDone": "Marcar como feito",
+    "done": "Feito",
+    "progress": "{done} de {total} passos concluídos (só nesta aba)"
   },
   "faq": {
     "title": "FAQ do GPU Unlock",
-    "description": "O que o desbloqueio muda, quais placas estão confirmadas, quanto mais rápido fica, se funciona no Windows, qual é o risco de hardware e como desativá-lo."
+    "description": "O que o desbloqueio muda, quais placas estão confirmadas, quanto mais rápido fica, se funciona no Windows, qual é o risco de hardware e como desativá-lo.",
+    "expandAll": "Expandir tudo",
+    "collapseAll": "Recolher tudo"
+  },
+  "windows": {
+    "title": "Windows GPU UNLOCK — a porta UEFI para Windows e o que ela realmente cobre",
+    "description": "impacifist/Windows-GPU-UNLOCK executa o desbloqueio como um payload EFI antes do Windows iniciar, não como módulo do kernel Linux. Perfis de hardware registrados, quatro rotas de boot, requisitos e escopo da versão.",
+    "h1": "A rota Windows: um payload EFI que roda antes do Windows iniciar",
+    "lead": "Os três projetos upstream documentados aqui são módulos do kernel Linux. Windows-GPU-UNLOCK é outra implementação: cria sua própria partição de sistema EFI e faz o trabalho nos registradores em um payload que passa o controle ao Windows Boot Manager. Ele também não publica comparação de origem/desbloqueado no mesmo cartão, então esta página traz os perfis registrados e as rotas de boot, não um ganho.",
+    "linuxTitle": "Este não é o módulo de Linux e não o substitui",
+    "linuxBody": "Nada aqui se aplica a uma instalação Linux, e o módulo do kernel não se aplica ao Windows. Os dois compartilham a ideia de base — gravar o registrador de seleção de taxa antes de o driver NVIDIA se ligar —, mas o caminho de boot, as ferramentas e os modos de falha são diferentes. Se você usa Linux, veja a lista de cartões e as medições deste site.",
+    "scopeTitle": "O que esta versão é hoje",
+    "scopeBody": "A tag mais recente é {release}, uma pré-versão que traz apenas código-fonte. Leia a lista de escopo antes de considerar um cartão coberto.",
+    "cardsTitle": "Hardware registrado e reportado",
+    "cardsBody": "Um perfil cobre um cartão em um sistema específico. O mesmo modelo de GPU em outra placa-mãe não é coberto por esse perfil, e apenas a primeira linha foi registrada pelo mantenedor no próprio teste.",
+    "colCard": "Cartão",
+    "colChip": "Chip",
+    "colStatus": "Estado",
+    "colRoute": "Rota",
+    "statusRecorded": "Registrado pelo mantenedor",
+    "statusReported": "Sucesso de hardware reportado",
+    "statusUpstream": "Apenas alvo upstream",
+    "pathsTitle": "Quatro rotas de boot, não intercambiáveis",
+    "pathsBody": "A rota depende de a saída de vídeo ficar no cartão dedicado e de você poder usar um pendrive. Cada uma tem seu próprio guia no repositório.",
+    "colPath": "Rota",
+    "colDisplay": "Tela e entrada",
+    "colGuide": "Guia",
+    "guideLink": "Abrir guia",
+    "reqTitle": "Requisitos antes de começar",
+    "stepsTitle": "A ordem que importa",
+    "measureTitle": "O que a execução registrada mediu",
+    "measureBody": "A execução original de B650M / RTX 3090 FE reportou estes valores com CUDA 12.6 / cuBLAS 12.6 em 4096 x 4096, mediana de três execuções. São números absolutos do cartão desbloqueado — não há valor de origem publicado ao lado, então não são um ganho.",
+    "colMode": "Caminho",
+    "colValue": "Valor",
+    "teardownTitle": "O estado que a execução registrada deixou",
+    "teardownBody": "O payload filho bem-sucedido reportou este estado após o desbloqueio, o que comprova que o cartão foi entregue limpo ao driver.",
+    "licenseTitle": "Licença",
+    "repoLink": "impacifist/Windows-GPU-UNLOCK no GitHub",
+    "faqLink": "Perguntas frequentes"
   }
 }

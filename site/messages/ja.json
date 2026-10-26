@@ -4,7 +4,23 @@
     "skip": "本文へスキップ",
     "gpus": "カード",
     "benchmarks": "ベンチマーク",
-    "install": "導入ガイド"
+    "install": "インストール",
+    "faq": "よくある質問",
+    "windows": "Windows 移植",
+    "close": "メニューを閉じる",
+    "theme": "テーマ",
+    "themeSystem": "システム",
+    "themeLight": "ライト",
+    "themeDark": "ダーク",
+    "language": "言語",
+    "footerExplore": "見る",
+    "footerUpstream": "上流プロジェクト",
+    "footerTagline": "GPU Unlock プロジェクトの証拠側：受け付けられるデバイス ID と同一カードでの実測値。",
+    "footerLegal": "ソースは GPL-2.0-only で提供されます。NVIDIA ファームウェアは独自の条件に従います。NVIDIA とは関係ありません。",
+    "footerSister": "姉妹サイト",
+    "installHome": "gpu-unlock.com",
+    "sisterInstall": "ビルドとインストール",
+    "sisterFaq": "よくある質問"
   },
   "home": {
     "title": "GPU Unlock — 対応 NVIDIA カード、実測の高速化、導入手順",
@@ -41,7 +57,13 @@
     "upstreamAmpere": "Ampere モジュール: GA102、GA103、GA104、GA106（v1.0.0）",
     "upstreamAda": "Ada フォーク: AD102 RTX 4090 と実験的な AD103 カナリアを追加（v1.1.1）",
     "upstreamUsage": "統合された公開リポジトリ（本站の使用手順付き）",
-    "upstreamTuring": "RTX 20 シリーズ（TU102/TU104/TU106）向けの独立した Turing モジュール"
+    "upstreamTuring": "RTX 20 シリーズ（TU102/TU104/TU106）向けの独立した Turing モジュール",
+    "chartTitle": "実際に速度が変わる箇所",
+    "chartCaption": "同一カード・同一バイナリでの実測。棒は純正を基準に伸びます。",
+    "chartStock": "純正 = 1.00×",
+    "chartPeak": "最大",
+    "faqExpand": "すべて開く",
+    "faqCollapse": "すべて閉じる"
   },
   "gpus": {
     "title": "対応 NVIDIA カード",
@@ -71,7 +93,30 @@
     "idsTitle": "自分のカードを確認する方法",
     "idsBody": "`lspci -nn | grep -i nvidia` を実行し、`10de:xxxx` のデバイス ID を下の受け付けリストと照合してください。GeForce と CMP の GA102/GA104 ID は受け付けリストに含まれますが、プロ向け RTX A シリーズやデータセンター向け製品は含まれません。AD102 は RTX 4090 のみ、AD103 は RTX 4070 Ti SUPER のTester canary のアドレスのみを受け付けます。Turing の ID（TU102、TU104、TU106）は別のモジュールが受け付けるため、20 系は統合版ではなく Turing 版を導入します。",
     "installLink": "導入手順",
-    "acceptedIdsTitle": "受け付けているすべてのデバイス ID"
+    "acceptedIdsTitle": "受け付けているすべてのデバイス ID",
+    "explorer": {
+      "searchPlaceholder": "名前・チップ・PCI ID で検索…",
+      "searchLabel": "カードを検索",
+      "filterLabel": "状態で絞り込む",
+      "all": "すべて",
+      "sortLabel": "並び順",
+      "sortName": "カード",
+      "sortChip": "チップ",
+      "sortStatus": "状態",
+      "sortGain": "向上率",
+      "sortPci": "PCI ID",
+      "resultOne": "{count} 件",
+      "resultMany": "{count} 件",
+      "emptyTitle": "条件に一致するカードはありません。",
+      "emptyBody": "検索語を短くするか、絞り込みを解除してください。",
+      "clear": "絞り込みを解除",
+      "noGain": "—"
+    },
+    "statIds": "受け付ける PCI ID",
+    "statDescribed": "記録済みカード",
+    "statMeasured": "同一カードで実測",
+    "explorerTitle": "カードを探す",
+    "legendTitle": "状態の意味"
   },
   "device": {
     "metaTitle": "{name}（{id}）— GPU Unlock 対応状況",
@@ -87,7 +132,27 @@
     "noBench": "このカードについて同一カードの実測は公開されていません。状況はメンテナの管理下で行われたベンチマークではなく、ユーザーの互換性報告に基づきます。",
     "sourcesTitle": "出典",
     "installLink": "導入手順",
-    "backLink": "すべてのカード"
+    "backLink": "すべてのカード",
+    "familyRef": "このカードの同一カード実測はありません。同じアンロックモジュールで実測済みの最も近い参照は {name}（{family}）です。そのゲインは参照値であり、このカードの数値ではありません。",
+    "familyNone": "このカードは {family} 世代で、本サイトには {total} 枚の該当カードがありますが、同一カード実測は 1 件もありません。本サイトのいかなる数値も、このカードの予想ゲインとして読むべきではありません。",
+    "cutlassTitle": "CUTLASS profiler による FP8",
+    "cutlassNote": "上の表とは別のプログラムです。単一の 4096³ カーネルを CUTLASS profiler で計時し、GFLOP/s で示します。計測手法が異なるため別表にしています。",
+    "colIters": "反復回数",
+    "peakLine": "このカードのこのグループでの最大ゲイン {peak}×。",
+    "factsTitle": "カード情報",
+    "factPci": "PCI ID",
+    "factChip": "チップ",
+    "factModule": "アンロックモジュール",
+    "factStatus": "状態",
+    "factGain": "報告済みゲイン",
+    "factFamily": "世代",
+    "factCoverage": "この世代の実測数",
+    "moduleBoth": "Ampere + Ada モジュール",
+    "moduleAda": "Ada モジュール",
+    "moduleAmpere": "Ampere モジュール",
+    "moduleTuring": "Turing モジュール",
+    "gainNone": "同一カードの数値は未公開",
+    "coverageOf": "{total} 枚中 {measured} 枚"
   },
   "bench": {
     "title": "ベンチマーク: 純正 vs アンロック後",
@@ -108,7 +173,92 @@
     "stock": "純正",
     "unlocked": "アンロック後",
     "readTitle": "1.00× という比の読み方",
-    "readBody": "1.00× の行はアンロック失敗ではありません。その経路が元々制限されておらず、オーバーライドが復元するものがなかったという意味です。自分のカードで測定して、気にしているモードが 1.00× だった場合、アンロックは正しく適用されていて、そのワークロードには効かないだけかもしれません。"
+    "readBody": "1.00× の行はアンロック失敗ではありません。その経路が元々制限されておらず、オーバーライドが復元するものがなかったという意味です。自分のカードで測定して、気にしているモードが 1.00× だった場合、アンロックは正しく適用されていて、そのワークロードには効かないだけかもしれません。",
+    "explorer": {
+      "colCard": "カード",
+      "colMode": "モード",
+      "colStock": "純正",
+      "colUnlocked": "解除後",
+      "colGain": "向上",
+      "filterLabel": "表示",
+      "viewAll": "すべて",
+      "viewChanged": "変化あり",
+      "viewFlat": "変化なし",
+      "searchLabel": "モードやカードを検索",
+      "searchPlaceholder": "bf16、f16、4090…",
+      "resultOne": "{n} 行",
+      "resultMany": "{n} 行",
+      "sortLabel": "並び順",
+      "emptyTitle": "一致する行がありません",
+      "emptyBody": "bf16 などのモード名を試すか、絞り込みを解除してください。",
+      "clear": "絞り込みを解除"
+    },
+    "tableTitle": "全行を絞り込み表示",
+    "runsTitle": "計測データの出典",
+    "statRows": "行",
+    "statCards": "実測カード",
+    "statPeak": "最大向上",
+    "statFlat": "変化なしの行",
+    "modes": {
+      "metaSuffix": "実機での実測値",
+      "gatedYes": "ヒューズで制限",
+      "gatedNo": "制限なし",
+      "statRows": "行",
+      "statChanged": "変化あり",
+      "statPeak": "最大ゲイン",
+      "methodTitle": "このモードの測定方法",
+      "colStock": "純正",
+      "colUnlocked": "アンロック後",
+      "colGain": "ゲイン",
+      "colCard": "カード",
+      "tableTitle": "このモードで実測された全カード",
+      "tableNote": "同一カード、同一ドライバー、同一バイナリ。唯一の変数はアンロックの有無です。",
+      "coverageTitle": "対象範囲",
+      "coverageBody": "表には同一カードでの実測があるものだけを載せています。載っていないカードは未測定であり、失敗したという意味ではありません。",
+      "otherModes": "実測済みの他のモード",
+      "tensor-f16-f16": {
+        "name": "FP16 と FP16 アキュムレータ",
+        "body": "全速のテンソルコア経路です。Ada ではアンロック前からハードウェア上限に達しているため、実測 1.02× はゲインではなく 3 回中最良値の測定ノイズです。"
+      },
+      "tensor-f16-f32": {
+        "name": "FP16 と FP32 アキュムレータ",
+        "body": "多くの推論カーネルが使う形状です。Ada ではこの経路が SM speed-select ヒューズで制限されるため、アンロックで倍になります。"
+      },
+      "tensor-bf16-f32": {
+        "name": "BF16 と FP32 アキュムレータ",
+        "body": "レート制限の仕組みは FP16/FP32 と同じで、BF16 は指数部が広くなります。学習や多くの推論スタックがこの形状を好みます。"
+      },
+      "tensor-tf32": {
+        "name": "TF32 と FP32 アキュムレータ",
+        "body": "19 ビットの TF32 入力で、学習スループット向けです。Ada では同じくヒューズで制限され、アンロックでほぼ倍になります。"
+      },
+      "tensor-int8": {
+        "name": "INT8 と INT32 アキュムレータ",
+        "body": "量子化推論です。ヒューズによる制限を受けたことがないため 1.00× となり、これが正しい結果です。"
+      },
+      "tensor-int4": {
+        "name": "INT4 と INT32 アキュムレータ",
+        "body": "最も高密度な量子化経路です。INT8 と同様にヒューズ制限はなく、アンロックは効果がありません。"
+      },
+      "tensor-fp8": {
+        "name": "CUTLASS 経由の FP8 E4M3",
+        "body": "発行レートのループではなく実際の GEMM カーネルです。実測 1.0029× は、FP8 が制限されていなかった最も明確な証拠です。"
+      },
+      "dp4a": {
+        "name": "dp4a 整数ドット積",
+        "body": "1 レーンあたり 4 回の INT8 積和です。整数経路のため SM レートヒューズの影響を受けず 1.00× のままです。"
+      },
+      "fp32-ffma": {
+        "name": "スカラー FP32 融合積和",
+        "body": "テンソルコアではなく CUDA コアの経路です。対照として掲載しており、どのカードでも 1.00× を保つことからアンロックがテンソル経路に限定されることが分かります。"
+      },
+      "gemm-f16-f32": {
+        "name": "cuBLAS GEMM としての FP16/FP32",
+        "body": "上記の発行レート行とは別の測定です。Turing 上の実 cuBLAS GEMM を 4 つの M.N.K サイズで測ったもので、1.36–1.64× を Ada の発行レート数値と平均してはいけません。"
+      }
+    },
+    "modesTitle": "計算パス別のベンチマーク",
+    "modesBody": "各カードは複数の命令パスで測定されており、アンロックが動かすのはその一部だけです。「実際に何を測ったか」で行をまとめることで、融合積和パスでの 2.0× を全パスの 2.0× と読み違えるのを防ぎます。"
   },
   "install": {
     "title": "GPU Unlock のインストール",
@@ -126,10 +276,56 @@
     "repoAda": "Ada: AD102 RTX 4090 と実験的な AD103 カナリアを追加し、Ampere のデバイスリストも維持。",
     "faqLink": "よくある質問",
     "repoMerged": "統合版：2つの上流ブランチとサスペンド／復帰後の再アンロックに対応。Ampere と Ada をひとつのクローンで扱えます。",
-    "repoTuring": "RTX 20 シリーズ向けの独立モジュール。独自の turing_unlock.targets で有効化します"
+    "repoTuring": "RTX 20 シリーズ向けの独立モジュール。独自の turing_unlock.targets で有効化します",
+    "stepsTitle": "手順",
+    "copyLabel": "コピー",
+    "copiedLabel": "コピー済み",
+    "verifyCopy": "コピー",
+    "reqHint": "ここにある内容はすべてカード上で確認したもので、推測ではありません。",
+    "markDone": "完了にする",
+    "done": "完了",
+    "progress": "{done} / {total} ステップ完了（このタブのみ）"
   },
   "faq": {
     "title": "GPU Unlock FAQ",
-    "description": "アンロックが変えるもの、確認済みのカード、どの程度速くなるか、Windows で動くか、ハードウェアリスクは何か、無効化の方法。"
+    "description": "アンロックが変えるもの、確認済みのカード、どの程度速くなるか、Windows で動くか、ハードウェアリスクは何か、無効化の方法。",
+    "expandAll": "すべて開く",
+    "collapseAll": "すべて閉じる"
+  },
+  "windows": {
+    "title": "Windows GPU UNLOCK — Windows 向け UEFI 移植と、その適用範囲",
+    "description": "impacifist/Windows-GPU-UNLOCK は、Linux カーネルモジュールではなく Windows 起動前に動く EFI ペイロードとしてアンロックを実行します。記録済みのハードウェア構成、4 つの起動経路、前提条件、リリース範囲をまとめます。",
+    "h1": "Windows 経路：Windows の起動前に動く EFI ペイロード",
+    "lead": "このサイトが扱う 3 つの上流プロジェクトはいずれも Linux カーネルモジュールです。Windows-GPU-UNLOCK は別実装で、独自の EFI システムパーティションを作成し、レジスタ操作を Windows Boot Manager へ引き継ぐペイロード内で行います。純正とアンロック後の比較も公開していないため、このページでは記録済みの構成と起動経路を示し、向上率は掲載しません。",
+    "linuxTitle": "これは Linux モジュールではなく、代用にもなりません",
+    "linuxBody": "ここでの内容は Linux 環境には当てはまらず、カーネルモジュールも Windows には使えません。根底の考え方——NVIDIA ドライバがバインドする前にレート選択レジスタを書く——は共通ですが、起動経路・ツール・失敗の仕方は異なります。Linux をお使いの場合は、このサイトのカード一覧と実測データを参照してください。",
+    "scopeTitle": "現時点でのこのリリース",
+    "scopeBody": "最新タグは {release} で、ソースのみのプレリリースです。対応済みと判断する前に、下の範囲の説明を読んでください。",
+    "cardsTitle": "記録済みおよび報告済みのハードウェア",
+    "cardsBody": "プロファイルは特定の 1 システム上の 1 枚のカードを対象にします。同じ GPU 型番でもマザーボードが違えば対象外であり、メンテナ自身の検証で記録されたのは 1 行目だけです。",
+    "colCard": "カード",
+    "colChip": "チップ",
+    "colStatus": "状態",
+    "colRoute": "経路",
+    "statusRecorded": "メンテナが記録",
+    "statusReported": "ハードウェア成功の報告あり",
+    "statusUpstream": "上流の対象のみ",
+    "pathsTitle": "4 つの起動経路は互換ではありません",
+    "pathsBody": "どの経路を使うかは、映像出力を単体 GPU に残すかどうか、USB メモリを使えるかどうかで決まります。経路ごとにリポジトリ内のガイドが分かれています。",
+    "colPath": "経路",
+    "colDisplay": "表示と入力",
+    "colGuide": "ガイド",
+    "guideLink": "ガイドを開く",
+    "reqTitle": "開始前の要件",
+    "stepsTitle": "重要なのは順序",
+    "measureTitle": "記録済みの実行で測られた値",
+    "measureBody": "元の B650M / RTX 3090 FE の実行では、CUDA 12.6 / cuBLAS 12.6、4096 x 4096 で 3 回の中央値として次の値が報告されました。アンロック後のカードの絶対値であり、対応する純正値は公開されていないため、向上率ではありません。",
+    "colMode": "項目",
+    "colValue": "値",
+    "teardownTitle": "記録済みの実行が残した状態",
+    "teardownBody": "成功した子ペイロードはアンロック後に次の状態を報告しました。カードが正しくドライバへ引き渡された証拠です。",
+    "licenseTitle": "ライセンス",
+    "repoLink": "GitHub の impacifist/Windows-GPU-UNLOCK",
+    "faqLink": "よくある質問"
   }
 }

@@ -25,3 +25,13 @@ export function absUrl(path: string): string {
 export function localeUrl(locale: string, path = ""): string {
   return absUrl(`/${locale}${path}`);
 }
+
+/**
+ * Absolute URL on the companion install host. Install and FAQ were 301'd off this domain,
+ * so an in-app `Link` to them costs a hop and, worse, drops the visitor on a different host
+ * from inside a page that never mentions the jump. Linking absolutely makes the cross-host
+ * move explicit in the markup instead of hiding it behind a redirect.
+ */
+export function installUrl(locale: string, path: "/install" | "/faq"): string {
+  return `${INSTALL_SITE}/${locale}${path}`;
+}

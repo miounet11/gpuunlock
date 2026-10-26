@@ -4,7 +4,23 @@
     "skip": "Zum Inhalt springen",
     "gpus": "Karten",
     "benchmarks": "Benchmarks",
-    "install": "Installationsanleitung"
+    "install": "Installation",
+    "faq": "FAQ",
+    "windows": "Windows-Port",
+    "close": "Menü schließen",
+    "theme": "Design",
+    "themeSystem": "System",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "language": "Sprache",
+    "footerExplore": "Entdecken",
+    "footerUpstream": "Upstream",
+    "footerTagline": "Die Belegseite des GPU-Unlock-Projekts: akzeptierte Geräte-IDs und Messungen auf derselben Karte.",
+    "footerLegal": "Quelltext unter GPL-2.0-only. NVIDIA-Firmware unterliegt eigenen Bedingungen. Keine Verbindung zu NVIDIA.",
+    "footerSister": "Schwesterseite",
+    "installHome": "gpu-unlock.com",
+    "sisterInstall": "Bauen und installieren",
+    "sisterFaq": "FAQ"
   },
   "home": {
     "title": "GPU Unlock — unterstützte NVIDIA-Karten, gemessene Beschleunigung, Installationsschritte",
@@ -41,7 +57,13 @@
     "upstreamAmpere": "das Ampere-Modul: GA102, GA103, GA104, GA106 (v1.0.0)",
     "upstreamAda": "der Ada-Fork: ergänzt AD102 RTX 4090 und eine experimentelle AD103-Kanarie (v1.1.1)",
     "upstreamUsage": "das zusammengeführte öffentliche Repository mit den Nutzungshinweisen der Website",
-    "upstreamTuring": "das eigenständige Turing-Modul für RTX-20-Serie (TU102/TU104/TU106)"
+    "upstreamTuring": "das eigenständige Turing-Modul für RTX-20-Serie (TU102/TU104/TU106)",
+    "chartTitle": "Wo sich die Rate wirklich ändert",
+    "chartCaption": "Auf derselben Karte mit denselben Binaries gemessen. Balken starten bei Serie.",
+    "chartStock": "Serie = 1,00×",
+    "chartPeak": "Maximum",
+    "faqExpand": "Alle ausklappen",
+    "faqCollapse": "Alle einklappen"
   },
   "gpus": {
     "title": "Unterstützte NVIDIA-Karten",
@@ -71,7 +93,30 @@
     "idsTitle": "Die eigene Karte prüfen",
     "idsBody": "Führe `lspci -nn | grep -i nvidia` aus und vergleiche die Geräte-ID `10de:xxxx` mit der untenstehenden akzeptierten Liste. GeForce- und CMP-IDs für GA102/GA104 stehen in der akzeptierten Liste; professionelle RTX-A-Serie und Data-Center-Teile nicht. AD102 akzeptiert nur die RTX 4090, AD103 ist auf die exakte Canary-Adresse der RTX 4070 Ti SUPER begrenzt. Die Turing-IDs (TU102, TU104, TU106) akzeptiert ein separates Modul – eine Turing-Karte braucht daher die Turing-Installation, nicht die zusammengeführte.",
     "installLink": "Installationsschritte",
-    "acceptedIdsTitle": "Alle akzeptierten Geräte-IDs"
+    "acceptedIdsTitle": "Alle akzeptierten Geräte-IDs",
+    "explorer": {
+      "searchPlaceholder": "Nach Name, Chip oder PCI-ID suchen…",
+      "searchLabel": "Karten durchsuchen",
+      "filterLabel": "Nach Status filtern",
+      "all": "Alle",
+      "sortLabel": "Sortieren",
+      "sortName": "Karte",
+      "sortChip": "Chip",
+      "sortStatus": "Status",
+      "sortGain": "Gewinn",
+      "sortPci": "PCI-ID",
+      "resultOne": "{count} Karte",
+      "resultMany": "{count} Karten",
+      "emptyTitle": "Keine Karte passt zu diesem Filter.",
+      "emptyBody": " Kürzere Suche oder Filter zurücksetzen, um die ganze Liste zu sehen.",
+      "clear": "Filter zurücksetzen",
+      "noGain": "—"
+    },
+    "statIds": "Akzeptierte PCI-IDs",
+    "statDescribed": "beschriebene Karten",
+    "statMeasured": "auf derselben Karte gemessen",
+    "explorerTitle": "Karte finden",
+    "legendTitle": "Was der Status bedeutet"
   },
   "device": {
     "metaTitle": "{name} ({id}) — GPU-Unlock-Unterstützung",
@@ -87,7 +132,27 @@
     "noBench": "Für diese Karte wurde keine Messung auf derselben Karte veröffentlicht. Ihr Status stammt aus Kompatibilitätsberichten von Nutzern, nicht aus einem Benchmark unter Kontrolle der Maintainer.",
     "sourcesTitle": "Quellen",
     "installLink": "So installierst du",
-    "backLink": "Alle Karten"
+    "backLink": "Alle Karten",
+    "familyRef": "Für diese Karte gibt es keine Messung an derselben Karte. Die nächste gemessene Karte am selben Unlock-Modul ist {name} ({family}); deren Gewinne sind ein Anhaltspunkt, nicht die Zahlen dieser Karte.",
+    "familyNone": "Diese Karte gehört zur {family}-Generation. Hier sind {total} Karten dieser Generation gelistet, aber keine einzige Messung an derselben Karte. Nichts auf dieser Seite sollte als erwarteter Gewinn dieser Karte gelesen werden.",
+    "cutlassTitle": "FP8 über den CUTLASS-Profiler",
+    "cutlassNote": "Ein anderes Programm als die Schleife oben: ein einzelner 4096³-Kernel, vom CUTLASS-Profiler gemessen, in GFLOP/s. Eigene Tabelle, weil beide Zahlen keine gemeinsame Methode teilen.",
+    "colIters": "Iterationen",
+    "peakLine": "Höchster Gewinn {peak}× für diese Karte in dieser Gruppe.",
+    "factsTitle": "Kartendaten",
+    "factPci": "PCI-ID",
+    "factChip": "Chip",
+    "factModule": "Unlock-Modul",
+    "factStatus": "Status",
+    "factGain": "Gemeldeter Gewinn",
+    "factFamily": "Generation",
+    "factCoverage": "In dieser Generation gemessen",
+    "moduleBoth": "Ampere- + Ada-Modul",
+    "moduleAda": "Ada-Modul",
+    "moduleAmpere": "Ampere-Modul",
+    "moduleTuring": "Turing-Modul",
+    "gainNone": "Keine Zahl für dieselbe Karte veröffentlicht",
+    "coverageOf": "{measured} von {total} Karten"
   },
   "bench": {
     "title": "Benchmarks: Original gegen Unlock",
@@ -108,7 +173,92 @@
     "stock": "Original",
     "unlocked": "Unlock",
     "readTitle": "Wie man ein Verhältnis von 1,00× liest",
-    "readBody": "Eine 1,00×-Zeile ist kein fehlgeschlagenes Unlock. Sie sagt, dass dieser Pfad nie gedrosselt war, das Override also nichts wiederherzustellen hatte. Wenn du deine eigene Karte benchmarkst und bei dem Modus, der dir wichtig ist, 1,00× siehst, kann das Unlock durchaus korrekt gegriffen haben und dieser Workload profitiert einfach nicht."
+    "readBody": "Eine 1,00×-Zeile ist kein fehlgeschlagenes Unlock. Sie sagt, dass dieser Pfad nie gedrosselt war, das Override also nichts wiederherzustellen hatte. Wenn du deine eigene Karte benchmarkst und bei dem Modus, der dir wichtig ist, 1,00× siehst, kann das Unlock durchaus korrekt gegriffen haben und dieser Workload profitiert einfach nicht.",
+    "explorer": {
+      "colCard": "Karte",
+      "colMode": "Modus",
+      "colStock": "Serie",
+      "colUnlocked": "Entsperrt",
+      "colGain": "Gewinn",
+      "filterLabel": "Zeilen zeigen",
+      "viewAll": "Alle",
+      "viewChanged": "Nur veränderte",
+      "viewFlat": "Nur unveränderte",
+      "searchLabel": "Modi oder Karten suchen",
+      "searchPlaceholder": "bf16, f16, 4090…",
+      "resultOne": "{n} Zeile",
+      "resultMany": "{n} Zeilen",
+      "sortLabel": "Sortierung",
+      "emptyTitle": "Keine Zeile passt",
+      "emptyBody": "Versuchen Sie einen Modus wie bf16 oder heben Sie den Filter auf.",
+      "clear": "Filter zurücksetzen"
+    },
+    "tableTitle": "Alle Zeilen, filterbar",
+    "runsTitle": "Woher diese Läufe stammen",
+    "statRows": "Zeilen",
+    "statCards": "gemessene Karten",
+    "statPeak": "höchster Gewinn",
+    "statFlat": "unveränderte Zeilen",
+    "modes": {
+      "metaSuffix": "auf einer echten Karte gemessen",
+      "gatedYes": "durch die Fuse begrenzt",
+      "gatedNo": "nie begrenzt",
+      "statRows": "Zeilen",
+      "statChanged": "verändert",
+      "statPeak": "höchster Gewinn",
+      "methodTitle": "Wie dieser Modus gemessen wurde",
+      "colStock": "Serie",
+      "colUnlocked": "Entsperrt",
+      "colGain": "Gewinn",
+      "colCard": "Karte",
+      "tableTitle": "Alle auf diesem Modus gemessenen Karten",
+      "tableNote": "Gleiche Karte, gleicher Treiber, gleiches Binary. Die einzige Variable ist der Unlock.",
+      "coverageTitle": "Abdeckung",
+      "coverageBody": "Nur Karten mit einer Messung derselben Karte erscheinen in der Tabelle. Eine fehlende Karte wurde auf diesem Pfad nicht gemessen, was nicht dasselbe ist wie durchgefallen.",
+      "otherModes": "Weitere gemessene Modi",
+      "tensor-f16-f16": {
+        "name": "FP16 mit FP16-Akkumulator",
+        "body": "Der Tensor-Core-Pfad mit voller Rate. Auf Ada liegt er schon vor dem Unlock am Hardwarelimit, ein gemessenes 1.02× ist daher Messrauschen aus drei Läufen, kein Gewinn."
+      },
+      "tensor-f16-f32": {
+        "name": "FP16 mit FP32-Akkumulator",
+        "body": "Die Form, die die meisten Inferenz-Kernel nutzen. Genau dieser Pfad wird auf Ada durch die SM-Speed-Select-Fuse begrenzt, weshalb ein Unlock ihn verdoppelt."
+      },
+      "tensor-bf16-f32": {
+        "name": "BF16 mit FP32-Akkumulator",
+        "body": "Dieselbe Begrenzung wie FP16/FP32, mit breiterem Exponenten bei BF16. Training und viele Inferenz-Stacks bevorzugen diese Form."
+      },
+      "tensor-tf32": {
+        "name": "TF32 mit FP32-Akkumulator",
+        "body": "19-Bit-TF32-Eingaben, auf Trainingsdurchsatz ausgelegt. Auf Ada ebenfalls fuse-begrenzt und vom Unlock nahezu verdoppelt."
+      },
+      "tensor-int8": {
+        "name": "INT8 mit INT32-Akkumulator",
+        "body": "Quantisierte Inferenz. Nie durch die Fuse begrenzt, daher 1.00× — und das ist das korrekte Ergebnis."
+      },
+      "tensor-int4": {
+        "name": "INT4 mit INT32-Akkumulator",
+        "body": "Der dichteste quantisierte Pfad. Wie INT8 nie fuse-begrenzt, der Unlock bewirkt hier nichts."
+      },
+      "tensor-fp8": {
+        "name": "FP8 E4M3 über CUTLASS",
+        "body": "Ein echter GEMM-Kernel statt einer Issue-Rate-Schleife. Gemessen 1.0029× — der klarste Beleg, dass FP8 nie begrenzt war."
+      },
+      "dp4a": {
+        "name": "Das dp4a Integer-Skalarprodukt",
+        "body": "Vier INT8-Multiply-Accumulates pro Lane. Ein Integer-Pfad, die SM-Rate-Fuse lässt ihn bei 1.00×."
+      },
+      "fp32-ffma": {
+        "name": "Skalares FP32 Fused Multiply-Add",
+        "body": "Der CUDA-Core-Pfad, nicht die Tensor Cores. Als Kontrolle aufgenommen: er bleibt auf jeder Karte bei 1.00×, was zeigt, dass der Unlock auf Tensor-Pfade begrenzt ist."
+      },
+      "gemm-f16-f32": {
+        "name": "FP16/FP32 als cuBLAS-GEMM",
+        "body": "Eine andere Messung als die Issue-Rate-Zeilen oben: ein echtes cuBLAS-GEMM auf Turing bei vier M.N.K-Größen. Die 1.36–1.64× dürfen nicht mit den Ada-Issue-Rate-Werten gemittelt werden."
+      }
+    },
+    "modesTitle": "Benchmarks nach Rechenpfad",
+    "modesBody": "Jede Karte wurde auf mehreren Befehlspfaden gemessen, und der Unlock bewegt nur einige davon. Die Zeilen danach zu gruppieren, was sie tatsächlich messen, verhindert, dass ein 2,0× auf einem Fused-Multiply-Pfad als 2,0× auf allem gelesen wird."
   },
   "install": {
     "title": "GPU Unlock installieren",
@@ -126,10 +276,56 @@
     "repoAda": "Ada: ergänzt AD102 RTX 4090 und die experimentelle AD103-Kanarie und behält die Ampere-Geräteliste.",
     "faqLink": "Häufige Fragen",
     "repoMerged": "Zusammengeführt: beide Upstream-Forks plus erneutes Entsperren nach Suspend/Resume. Ein Clone deckt Ampere und Ada ab.",
-    "repoTuring": "das eigenständige Modul für RTX-20-Serie, mit eigenem turing_unlock.targets-Schalter"
+    "repoTuring": "das eigenständige Modul für RTX-20-Serie, mit eigenem turing_unlock.targets-Schalter",
+    "stepsTitle": "Schritt für Schritt",
+    "copyLabel": "Kopieren",
+    "copiedLabel": "Kopiert",
+    "verifyCopy": "Kopieren",
+    "reqHint": "Alles hier wurde an der Karte geprüft, nicht angenommen.",
+    "markDone": "Schritt erledigt",
+    "done": "Erledigt",
+    "progress": "{done} von {total} Schritten erledigt (nur dieser Tab)"
   },
   "faq": {
     "title": "GPU Unlock FAQ",
-    "description": "Was das Unlock ändert, welche Karten bestätigt sind, wie viel schneller es wird, ob es unter Windows läuft, worin das Hardware-Risiko besteht und wie man es abschaltet."
+    "description": "Was das Unlock ändert, welche Karten bestätigt sind, wie viel schneller es wird, ob es unter Windows läuft, worin das Hardware-Risiko besteht und wie man es abschaltet.",
+    "expandAll": "Alle ausklappen",
+    "collapseAll": "Alle einklappen"
+  },
+  "windows": {
+    "title": "Windows GPU UNLOCK — der UEFI-Port für Windows und was er wirklich abdeckt",
+    "description": "impacifist/Windows-GPU-UNLOCK führt das Unlock als EFI-Payload vor dem Windows-Start aus, nicht als Linux-Kernelmodul. Dokumentiert sind die erfassten Hardwareprofile, die vier Startwege, die Voraussetzungen und der Umfang des Releases.",
+    "h1": "Der Windows-Weg: ein EFI-Payload, der vor dem Windows-Start läuft",
+    "lead": "Die drei hier dokumentierten Upstream-Projekte sind Linux-Kernelmodule. Windows-GPU-UNLOCK ist eine andere Umsetzung: Es legt eine eigene EFI-Systempartition an und führt die Registerarbeit in einem Payload aus, der an den Windows Boot Manager übergibt. Ein Vorher-Nachher-Paar derselben Karte wird nicht veröffentlicht, daher nennt diese Seite die erfassten Profile und Startwege statt einer Gewinnangabe.",
+    "linuxTitle": "Das ist nicht das Linux-Modul und ersetzt es nicht",
+    "linuxBody": "Nichts davon gilt für eine Linux-Installation, und das Kernelmodul gilt nicht für Windows. Beide teilen die Grundidee — das Rate-Select-Register schreiben, bevor der NVIDIA-Treiber bindet —, aber Startweg, Werkzeuge und Fehlerbilder unterscheiden sich. Unter Linux nutzen Sie die Kartenliste und die Messwerte dieser Seite.",
+    "scopeTitle": "Was dieses Release derzeit ist",
+    "scopeBody": "Das neueste Tag ist {release}, ein Pre-Release, das nur Quellcode enthält. Lesen Sie die Umfangsliste, bevor Sie eine Karte als abgedeckt ansehen.",
+    "cardsTitle": "Erfasste und gemeldete Hardware",
+    "cardsBody": "Ein Profil deckt eine Karte in einem bestimmten System ab. Dasselbe GPU-Modell auf einem anderen Mainboard ist von diesem Profil nicht erfasst, und nur die erste Zeile wurde vom Maintainer im eigenen Test erfasst.",
+    "colCard": "Karte",
+    "colChip": "Chip",
+    "colStatus": "Status",
+    "colRoute": "Weg",
+    "statusRecorded": "Vom Maintainer erfasst",
+    "statusReported": "Hardware-Erfolg gemeldet",
+    "statusUpstream": "Nur Upstream-Ziel",
+    "pathsTitle": "Vier Startwege, nicht austauschbar",
+    "pathsBody": "Welcher Weg passt, hängt davon ab, ob das Bild auf der diskreten Karte bleibt und ob Sie einen USB-Stick nutzen können. Jeder Weg hat einen eigenen Leitfaden im Repository.",
+    "colPath": "Weg",
+    "colDisplay": "Bild und Eingabe",
+    "colGuide": "Leitfaden",
+    "guideLink": "Leitfaden öffnen",
+    "reqTitle": "Voraussetzungen vor dem Start",
+    "stepsTitle": "Die Reihenfolge, auf die es ankommt",
+    "measureTitle": "Was der erfasste Lauf gemessen hat",
+    "measureBody": "Der ursprüngliche B650M-/RTX-3090-FE-Lauf meldete diese Werte unter CUDA 12.6 / cuBLAS 12.6 bei 4096 x 4096 als Median aus drei Läufen. Es sind Absolutwerte der entsperrten Karte — ein Stock-Wert dazu ist nicht veröffentlicht, also ist es kein Gewinn.",
+    "colMode": "Pfad",
+    "colValue": "Wert",
+    "teardownTitle": "Was der erfasste Lauf hinterlassen hat",
+    "teardownBody": "Der erfolgreiche Child meldete nach dem Unlock diesen Zustand — der Beleg dafür, dass die Karte sauber an den Treiber übergeben wurde.",
+    "licenseTitle": "Lizenz",
+    "repoLink": "impacifist/Windows-GPU-UNLOCK auf GitHub",
+    "faqLink": "Häufige Fragen"
   }
 }

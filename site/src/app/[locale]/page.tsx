@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { DEVICES, acceptedCount } from "@/data/devices";
 import { BENCH_RUNS } from "@/data/benchmarks";
+import { GainChart } from "@/components/gain-chart";
 import { jsonLdGraph, organizationLd, pageLd, websiteLd } from "@/lib/jsonld";
 import { pageMeta } from "@/lib/seo";
 import { REPOS, SITE , INSTALL_SITE } from "@/lib/site";
@@ -20,6 +21,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ],
   });
 }
+
+/**
+ * The headline rows: the paths where the override moved the rate by more than 10%.
+ * Derived from BENCH_RUNS rather than written out, so the chart cannot drift from the
+ * benchmarks page it links to.
+ */
+const HEADLINE_GAINS = BENCH_RUNS.flatMap((run) =>
+  run.rows
+    .filter((r) => r.ratio > 1.1)
+    .map((r) => ({ label: r.mode, sub: `${r.card} · ${r.unit}`, ratio: r.ratio })),
+);
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -87,40 +99,18 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <p>{t("whatWarnBody")}</p>
       </div>
 
-      <h2>{t("benchTitle")}</h2>
+      <h2>{t("chartTitle")}</h2>
       <p>{t("benchBody")}</p>
-      <table>
-        <thead>
-          <tr>
-            <th>{t("colCard")}</th>
-            <th>{t("colMode")}</th>
-            <th>{t("colStock")}</th>
-            <th>{t("colUnlocked")}</th>
-            <th>{t("colGain")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {BENCH_RUNS.flatMap((run) =>
-            run.rows
-              .filter((r) => r.ratio > 1.1)
-              .map((r) => (
-                <tr key={`${r.cardSlug}-${r.mode}`}>
-                  <td>
-                    <Link href={`/gpus/${r.cardSlug}`}>{r.card}</Link>
-                  </td>
-                  <td>
-                    <code>{r.mode}</code>
-                  </td>
-                  <td>{r.stock.toFixed(1)}</td>
-                  <td>{r.unlocked.toFixed(1)}</td>
-                  <td>
-                    <strong>{r.ratio.toFixed(2)}×</strong>
-                  </td>
-                </tr>
-              )),
-          )}
-        </tbody>
-      </table>
+      {/* Only the paths the override actually moves. A 1.00× row rendered as a full bar
+          would read as a gain, so the flat rows stay on the benchmarks page. */}
+      <GainChart
+        data={HEADLINE_GAINS}
+        labels={{
+          stock: t("chartStock"),
+          peak: t("chartPeak"),
+          caption: t("chartCaption"),
+        }}
+      />
       <p className="meta">
         <Link href="/benchmarks">{t("seeAllBench")}</Link>
       </p>
