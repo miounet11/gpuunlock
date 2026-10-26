@@ -54,3 +54,10 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Daily runs check that the host actually serves this build, not an older one. The
+      # local build and the live host drift apart the moment a deploy is skipped, and
+      # nothing else in this pipeline can see that: the tree is green either way.
+      - name: Deployed site matches this build
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: npm run verify:deploy
