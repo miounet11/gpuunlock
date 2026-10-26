@@ -60,9 +60,13 @@ export const BENCH_RUNS: BenchRun[] = [
     powerLimitW: 450,
     source: "https://github.com/JustAResearcher/gpu-unlock-ada/tree/main/docs/evidence/rtx4090",
     rows: [
-      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "f16/f16", unit: "TF/s", stock: 325.7, unlocked: 331.6, ratio: 1.018, iters: 20000, note: "stock run includes one slow sample (306.3); best-of-three" },
-      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "f16/f32", unit: "TF/s", stock: 165.6, unlocked: 330.8, ratio: 1.998, iters: 20000 },
-      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "bf16/f32", unit: "TF/s", stock: 165.5, unlocked: 330.3, ratio: 1.996, iters: 20000 },
+      // FP16 tensor rate: 330.3 TFLOP/s is the Ada whitepaper's dense figure for this
+      // chip at 128 SMs and 2.52 GHz, i.e. 1024 FLOP/cycle/SM. Measured values sit at or
+      // a hair above it because the board boosts past the whitepaper's reference clock;
+      // the small overshoot is reported as-is rather than trimmed to fit.
+      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "f16/f16", unit: "TF/s", stock: 325.7, unlocked: 331.6, ratio: 1.018, iters: 20000, ceiling: 330.3, ceilingKind: "spec", ceilingBasis: "330.3 TFLOP/s (Ada whitepaper, RTX 4090, 128 SMs, 2.52 GHz, FP16 dense) = 1024 FLOP/cycle/SM", note: "stock run includes one slow sample (306.3); best-of-three" },
+      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "f16/f32", unit: "TF/s", stock: 165.6, unlocked: 330.8, ratio: 1.998, iters: 20000, ceiling: 330.3, ceilingKind: "spec", ceilingBasis: "330.3 TFLOP/s (Ada whitepaper, RTX 4090, 128 SMs, 2.52 GHz, FP16 dense) = 1024 FLOP/cycle/SM" },
+      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "bf16/f32", unit: "TF/s", stock: 165.5, unlocked: 330.3, ratio: 1.996, iters: 20000, ceiling: 330.3, ceilingKind: "spec", ceilingBasis: "330.3 TFLOP/s (Ada whitepaper, RTX 4090, 128 SMs, 2.52 GHz, FP16 dense) = 1024 FLOP/cycle/SM; BF16 runs at the same rate" },
       { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "s8/s32", unit: "TF/s", stock: 661.6, unlocked: 659.5, ratio: 0.997, iters: 20000, note: "already at full rate before the unlock" },
       { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "dp4a", unit: "TF/s", stock: 164.5, unlocked: 164.1, ratio: 0.998, iters: 20000 },
       { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "ffma", unit: "TF/s", stock: 79.1, unlocked: 79.1, ratio: 1.0, iters: 20000, note: "FP32 was never rate-limited" },
@@ -77,7 +81,12 @@ export const BENCH_RUNS: BenchRun[] = [
     powerLimitW: 240,
     source: "https://github.com/JustAResearcher/gpu-unlock-ada/tree/main/docs/evidence/ada2705",
     rows: [
-      { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "f16/f32", unit: "TFLOP/s", stock: 94.96, unlocked: 188.97, ratio: 1.99, iters: 20000 },
+      // 1024 FLOP/cycle/SM (the whitepaper's own 330.3 ÷ 128 ÷ 2.52 GHz) × 66 SMs ×
+      // 2.82 GHz = 190.6 TFLOP/s. Two independent facts support this divisor: this card's
+      // FP16→FP16 path already ran at 189.9 TFLOP/s while still locked, and after the
+      // unlock the FP16→FP32 path lands on 188.97 — 99.2% of the derived peak. The unlock
+      // removed the accumulate-type restriction, not the rate limit.
+      { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "f16/f32", unit: "TFLOP/s", stock: 94.96, unlocked: 188.97, ratio: 1.99, iters: 20000, ceiling: 190.6, ceilingKind: "derived", ceilingBasis: "1024 FLOP/cycle/SM (330.3 TFLOP/s ÷ 128 SMs ÷ 2.52 GHz) × 66 SMs × 2.82 GHz = 190.6 TFLOP/s" },
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "tf32", unit: "TFLOP/s", stock: 47.49, unlocked: 94.51, ratio: 1.99, iters: 20000 },
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "u4/s32", unit: "TOP/s", stock: 754.81, unlocked: 754.68, ratio: 1.0, iters: 20000, note: "integer path, unaffected" },
       // Same evidence folder, separate CUTLASS profiler run. In GFLOP/s rather than

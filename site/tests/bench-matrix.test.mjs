@@ -251,23 +251,64 @@ test("the ceiling block has labels in every locale", async () => {
 });
 
 test("a ceiling is only placed on a row whose unit matches it", () => {
-  // Two quantities carry a peak here: FP8 in GFLOP/s and Turing FP16→FP32 in TFLOP/s.
-  // A ceiling on any other row would compare across quantities that share no unit.
+  // Three quantities carry a peak: FP16/BF16 tensor rate in TFLOP/s, Turing FP16→FP32 in
+  // TFLOP/s, and FP8 in GFLOP/s. A ceiling on any other row would compare across
+  // quantities that share no unit.
   const withCeiling = allRows.filter((r) => r.ceiling !== undefined);
-  const allowed = new Set(["e4m3/f32", "f16/f32"]);
+  const allowed = new Set(["e4m3/f32", "f16/f16", "f16/f32", "bf16/f32"]);
   for (const r of withCeiling) {
     assert.ok(allowed.has(r.mode), `${r.cardSlug} ${r.mode} should not carry a ceiling`);
-    // The 2080 Ti f16/f32 ceiling is TFLOP/s; the FP8 one is GFLOP/s. A TFLOP/s peak
-    // on a GFLOP/s row would be off by 1000.
-    if (r.unit === "GFLOP/s") assert.ok(r.ceiling > 1000, "GFLOP/s ceiling looks like TFLOP/s");
-    if (r.unit === "TFLOP/s") assert.ok(r.ceiling < 1000, "TFLOP/s ceiling looks like GFLOP/s");
+    // Only the FP8 row is in GFLOP/s; everything else is TFLOP/s. Getting this wrong is
+    // a factor-of-1000 error, so it is checked per row rather than per file. The 4090
+    // rows spell the unit "TF/s" while others use "TFLOP/s", so the check normalises
+    // first — matching the literal alone would silently skip the 4090's three rows.
+    const unit = r.unit === "TF/s" ? "TFLOP/s" : r.unit;
+    // Enumerated rather than "anything else is TFLOP/s": a new unit must fail here
+    // instead of being validated against the wrong magnitude table.
+    const magnitude = { "GFLOP/s": [1000, Infinity], "TFLOP/s": [0, 1000] }[unit];
+    assert.ok(magnitude, `${r.cardSlug} ${r.mode}: unhandled unit ${r.unit}`);
+    assert.ok(
+      r.ceiling > magnitude[0] && r.ceiling <= magnitude[1],
+      `${unit} ceiling ${r.ceiling} is outside the expected magnitude`,
+    );
   }
-  // The 2080 Ti is the only card with a Turing peak; the FP8 ceiling belongs to the
-  // 4070 Ti SUPER alone.
+  // Every measured card with a published peak, and no card without one.
   assert.deepEqual(
     [...new Set(withCeiling.map((r) => r.cardSlug))].sort(),
-    ["rtx-2080-ti", "rtx-4070-ti-super"],
+    ["rtx-2080-ti", "rtx-4070-ti-super", "rtx-4090"],
   );
+
+  // Guard the normalisation above: the 4090 is the only card spelling TFLOP/s as "TF/s".
+  // If that alias ever stops appearing, this test is no longer exercising the branch it
+  // was written for and should be revisited rather than left silently passing.
+  const aliased = withCeiling.filter((r) => r.unit === "TF/s");
+  assert.equal(aliased.length, 3, "the three 4090 rows should still spell TFLOP/s as TF/s");
+  assert.ok(
+    aliased.every((r) => r.cardSlug === "rtx-4090"),
+    "only the 4090 uses the TF/s spelling",
+  );
+});
+
+test("the Ada FP16 ceiling reproduces from the whitepaper divisor", () => {
+  // 330.3 ÷ 128 ÷ 2.52 GHz = 1.024 TFLOP/s per GHz per SM, i.e. 1024 FLOP/cycle/SM.
+  // That divisor is what both Ada cards are checked against.
+  const perCycle = 330.3 / (128 * 2.52); // TFLOP/s per GHz per SM
+  assert.ok(Math.abs(perCycle - 1.024) < 0.001, `divisor drifted to ${perCycle.toFixed(4)}`);
+
+  const r4090 = allRows.find((r) => r.cardSlug === "rtx-4090" && r.mode === "f16/f16");
+  assert.ok(Math.abs(r4090.ceiling - 128 * perCycle * 2.52) < 0.2);
+
+  const super070 = allRows.find(
+    (r) => r.cardSlug === "rtx-4070-ti-super" && r.mode === "f16/f32",
+  );
+  const derived = 66 * perCycle * 2.82;
+  assert.ok(
+    Math.abs(super070.ceiling - derived) < 0.2,
+    `4070 Ti SUPER ceiling ${super070.ceiling} vs recomputed ${derived.toFixed(1)}`,
+  );
+  // The two facts that make the divisor credible: the locked FP16→FP16 path already ran
+  // at the derived peak, and the unlocked FP16→FP32 path lands within 1% of it.
+  assert.ok(super070.unlocked / super070.ceiling > 0.98, "unlock should reach the peak");
 });
 
 test("the Turing ceiling reproduces from its stated arithmetic", () => {

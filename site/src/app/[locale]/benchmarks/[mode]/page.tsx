@@ -43,11 +43,12 @@ function unitOf(r: { unit: string }): string {
 }
 
 /**
- * Measured values keep one decimal because the source reports them that way (68.3).
- * A spec figure that happens to be whole (176400 GFLOP/s) should not grow a ".0".
+ * Keep every significant decimal the source reports: 68.3 stays 68.3, 188.97 stays
+ * 188.97, and a spec figure that happens to be whole (176400) grows no trailing ".0".
+ * Rounding to one place would turn 188.97 into 189.0 and misstate the measurement.
  */
 function num(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+  return Number.isInteger(n) ? String(n) : String(Number(n.toFixed(2)));
 }
 
 export function generateStaticParams() {
@@ -171,7 +172,7 @@ export default async function ModePage({
                 {t("ceilingRow", {
                   card: r.card,
                   value: num(r.unlocked),
-                  unit: r.unit,
+                  unit: unitOf(r),
                   ceiling: num(r.ceiling!),
                   pct: ((r.unlocked / r.ceiling!) * 100).toFixed(1),
                 })}
