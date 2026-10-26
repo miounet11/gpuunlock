@@ -1,0 +1,56 @@
+name: site
+
+# The site carries factual claims (card status, measured ratios, upstream release pins).
+# Those drift silently when someone edits a data file and forgets the copy, so run the
+# checks on every push that touches the site or its data.
+on:
+  push:
+    paths:
+      - "site/**"
+      - ".github/workflows/site.yml"
+  pull_request:
+    paths:
+      - "site/**"
+      - ".github/workflows/site.yml"
+  schedule:
+    # Upstream can re-run a benchmark at any time. Without this, the copied evidence and
+    # the numbers derived from it would stay green forever because nothing ever looked.
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # sitemap.ts reads `git log` for real lastmod values. A shallow clone would
+          # silently fall back to the fixed date and defeat the point.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: Type check
+        run: npm run lint
+
+      - name: Data integrity
+        run: npm test
+
+      # Scheduled/manual runs also check the copy under docs/evidence/ against upstream.
+      # Push and PR runs skip it: the network makes those runs flaky without telling us
+      # anything, because they are already checking a tree the author just edited.
+      - name: Upstream evidence is current
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: node scripts/check-upstream-evidence.mjs
+
+      - name: Build
+        run: npm run build
