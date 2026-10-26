@@ -265,6 +265,25 @@ test("the ceiling block has labels in every locale", async () => {
   }
 });
 
+test("integer rows are reported in TOP/s, not TFLOP/s", () => {
+  // The runner prints every mode under one "best TF/s" column, and
+  // docs/evidence/rtx4090/README.md:17 warns that label also covers integer rates.
+  // Copying the column header into the data would label an integer throughput as FLOPs.
+  const INTEGER = new Set(["s8/s32", "u4/s32", "dp4a"]);
+  const SCALAR = new Set(["ffma"]);
+  for (const r of allRows) {
+    if (INTEGER.has(r.mode)) {
+      assert.equal(r.unit, "TOP/s", `${r.cardSlug} ${r.mode} should be TOP/s`);
+    }
+    if (SCALAR.has(r.mode)) {
+      assert.equal(r.unit, "TF/s", `${r.cardSlug} ${r.mode} is scalar FP32, keep TF/s`);
+    }
+  }
+  // Both spellings must still be exercised, or this test stops proving anything.
+  assert.ok(allRows.some((r) => INTEGER.has(r.mode)));
+  assert.ok(allRows.some((r) => SCALAR.has(r.mode)));
+});
+
 test("a ceiling is only placed on a row whose unit matches it", () => {
   // Three quantities carry a peak: FP16/BF16 tensor rate in TFLOP/s, Turing FP16→FP32 in
   // TFLOP/s, and FP8 in GFLOP/s. A ceiling on any other row would compare across

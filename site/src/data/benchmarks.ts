@@ -70,8 +70,12 @@ export const BENCH_RUNS: BenchRun[] = [
       // BF16/FP32 independently at 189.6–189.7 TF/s after the unlock against 189.8–189.9
       // for FP16, so the two paths are observed to run at the same rate on this hardware.
       { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "bf16/f32", unit: "TF/s", stock: 165.5, unlocked: 330.3, ratio: 1.996, iters: 20000, ceiling: 330.3, ceilingKind: "spec", ceilingBasis: "330.3 TFLOP/s (Ada whitepaper, RTX 4090, 128 SMs, 2.52 GHz, FP16 dense) = 1024 FLOP/cycle/SM; measured BF16/FP32 is 189.6–189.7 TF/s vs 189.8–189.9 for FP16, i.e. the same rate (docs/ada-2705-report.md)" },
-      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "s8/s32", unit: "TF/s", stock: 661.6, unlocked: 659.5, ratio: 0.997, iters: 20000, note: "already at full rate before the unlock" },
-      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "dp4a", unit: "TF/s", stock: 164.5, unlocked: 164.1, ratio: 0.998, iters: 20000 },
+      // The runner prints every mode under one "best TF/s" header, but s8/s32 and dp4a
+      // are integer rates. docs/evidence/rtx4090/README.md:17 says the raw label also
+      // covers integer operation rates and that the report labels those TOP/s, so the
+      // unit is corrected here rather than copied from the runner's column header.
+      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "s8/s32", unit: "TOP/s", stock: 661.6, unlocked: 659.5, ratio: 0.997, iters: 20000, note: "already at full rate before the unlock" },
+      { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "dp4a", unit: "TOP/s", stock: 164.5, unlocked: 164.1, ratio: 0.998, iters: 20000 },
       { card: "RTX 4090", cardSlug: "rtx-4090", pciId: "10de:2684", mode: "ffma", unit: "TF/s", stock: 79.1, unlocked: 79.1, ratio: 1.0, iters: 20000, note: "FP32 was never rate-limited" },
     ],
   },
