@@ -15,12 +15,19 @@ export function pageMeta(opts: {
     keywords: opts.keywords,
     alternates: {
       canonical: url,
-      languages: Object.fromEntries(
-        ["en", "zh", "ja", "de", "fr", "es", "pt"].map((l) => [
-          l,
-          `${SITE}/${l}${opts.path}`,
-        ]),
-      ),
+      languages: {
+        ...Object.fromEntries(
+          ["en", "zh", "ja", "de", "fr", "es", "pt"].map((l) => [
+            l,
+            `${SITE}/${l}${opts.path}`,
+          ]),
+        ),
+        // Without x-default a search engine sees seven equally good candidates and picks
+        // one for a visitor whose language matches none of them. English is the published
+        // default everywhere else on this site (root redirect, og:locale fallbacks), so
+        // naming it here keeps the two stories the same.
+        "x-default": `${SITE}/en${opts.path}`,
+      },
     },
     openGraph: {
       type: "website",
