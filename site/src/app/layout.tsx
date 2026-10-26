@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   },
   description:
     "Which NVIDIA cards the GPU Unlock kernel module supports, what the same-card benchmarks actually measured, and how to install it on Ampere, Ada and Turing.",
-  robots: { index: true, follow: true },
+  // No `robots` here on purpose. Next already emits `noindex` for the 404 boundary, and an
+  // explicit `index, follow` on this layout landed next to it — every 404 carried both
+  // tags, contradicting itself. Absence of the tag means indexable, which is what every
+  // real page wants, so the declaration was doing nothing except fighting the 404.
   icons: { icon: "/favicon.svg" },
 };
 

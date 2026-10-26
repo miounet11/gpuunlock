@@ -316,3 +316,17 @@ test("the 404 boundary stays the single static root document", () => {
     );
   }
 });
+
+test("the root layout does not declare robots", () => {
+  // Next injects `noindex` into the 404 boundary by itself. A `robots: { index: true }` on
+  // the root layout was merged into every page including that boundary, so each 404 served
+  // `<meta name="robots" content="noindex">` immediately followed by `content="index,
+  // follow"` — a page telling crawlers both things. Omitting the tag is how a page says
+  // "indexable", so the declaration only ever created the contradiction.
+  const root = readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(
+    root,
+    /^\s*robots:/m,
+    "a robots field on the root layout puts index,follow beside the 404's noindex",
+  );
+});
