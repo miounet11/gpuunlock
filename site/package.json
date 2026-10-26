@@ -8,7 +8,9 @@
     "postbuild": "node scripts/standalone-assets.mjs",
     "start": "next start -p 3100",
     "lint": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "sync:evidence": "node scripts/sync-upstream-evidence.mjs",
+    "check:evidence": "node scripts/check-upstream-evidence.mjs"
   },
   "dependencies": {
     "next": "^15.5.4",

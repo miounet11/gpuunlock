@@ -50,7 +50,7 @@ jobs:
       # anything, because they are already checking a tree the author just edited.
       - name: Upstream evidence is current
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: node scripts/check-upstream-evidence.mjs
+        run: npm run check:evidence
 
       - name: Build
         run: npm run build
