@@ -26,6 +26,16 @@ export interface BenchRow {
   iters: number;
   /** Defaults to "mma-loop" when omitted; the runner was the standard harness. */
   harness?: Harness;
+  /**
+   * Dense peak for this quantity at this card's own configuration. Only set when the
+   * repository carries a number for the same thing; a peak borrowed from a different
+   * quantity would turn "at the limit" into a claim nobody measured.
+   */
+  ceiling?: number;
+  /** "spec" = published by the vendor; "derived" = scaled from a published figure. */
+  ceilingKind?: "spec" | "derived";
+  /** Where the number comes from, including the arithmetic when it was scaled. */
+  ceilingBasis?: string;
   note?: string;
 }
 
@@ -72,7 +82,13 @@ export const BENCH_RUNS: BenchRun[] = [
       { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "u4/s32", unit: "TOP/s", stock: 754.81, unlocked: 754.68, ratio: 1.0, iters: 20000, note: "integer path, unaffected" },
       // Same evidence folder, separate CUTLASS profiler run. In GFLOP/s rather than
       // TFLOP/s, which is why the unit is carried per row and not per group.
-      { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "e4m3/f32", unit: "GFLOP/s", stock: 59325.8, unlocked: 59495.0, ratio: 1.003, iters: 20, harness: "cutlass", note: "CUTLASS 4.8.1, 4096³, device reference required" },
+      // The one row in this file with a ceiling the repository can show its working for.
+      // 330.3 TFLOP/s is the Ada whitepaper's RTX 4090 FP8 dense figure at 128 SMs and
+      // 2.52 GHz; scaling to this card's 66 SMs and 2.61 GHz gives ~176.4 TFLOP/s, which
+      // is docs/ada-2705-report.md's own arithmetic. The measured value sits near a
+      // third of that because it is one 4096³ GEMM, not an issue-rate peak — showing
+      // the distance is the point, not hiding it.
+      { card: "RTX 4070 Ti SUPER", cardSlug: "rtx-4070-ti-super", pciId: "10de:2705", mode: "e4m3/f32", unit: "GFLOP/s", stock: 59325.8, unlocked: 59495.0, ratio: 1.003, iters: 20, harness: "cutlass", ceiling: 176400, ceilingKind: "derived", ceilingBasis: "330.3 TFLOP/s (Ada whitepaper, RTX 4090, 128 SMs, 2.52 GHz, FP8 dense) × 66/128 SMs × 2.61/2.52 GHz = ~176.4 TFLOP/s", note: "CUTLASS 4.8.1, 4096³, device reference required" },
     ],
   },
   {

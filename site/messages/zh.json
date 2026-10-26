@@ -255,7 +255,9 @@
       "gemm-f16-f32": {
         "name": "以 cuBLAS GEMM 测得的 FP16/FP32",
         "body": "与上面发射率行是不同测量：Turing 上真实 cuBLAS GEMM，四个 M.N.K 尺寸。其 1.36–1.64× 不可与 Ada 的发射率数字混算。"
-      }
+      },
+      "ceilingTitle": "与稠密峰值的距离",
+      "ceilingRow": "{card}：实测 {value} {unit}，稠密峰值为 {ceiling} {unit}，达到 {pct}%。"
     },
     "modesTitle": "按计算路径分组的跑分",
     "modesBody": "每张卡都在多条指令路径上做过测量，而解锁只让其中一部分变化。按「实际测的是什么」把数据行分组，可以避免把某一条融合乘加路径上的 2.0× 误读成所有路径都 2.0×。"

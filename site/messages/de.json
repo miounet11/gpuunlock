@@ -255,7 +255,9 @@
       "gemm-f16-f32": {
         "name": "FP16/FP32 als cuBLAS-GEMM",
         "body": "Eine andere Messung als die Issue-Rate-Zeilen oben: ein echtes cuBLAS-GEMM auf Turing bei vier M.N.K-Größen. Die 1.36–1.64× dürfen nicht mit den Ada-Issue-Rate-Werten gemittelt werden."
-      }
+      },
+      "ceilingTitle": "Abstand zur Dense-Spitze",
+      "ceilingRow": "{card}: gemessene {value} {unit} gegenüber einer Dense-Spitze von {ceiling} {unit} — {pct}% davon."
     },
     "modesTitle": "Benchmarks nach Rechenpfad",
     "modesBody": "Jede Karte wurde auf mehreren Befehlspfaden gemessen, und der Unlock bewegt nur einige davon. Die Zeilen danach zu gruppieren, was sie tatsächlich messen, verhindert, dass ein 2,0× auf einem Fused-Multiply-Pfad als 2,0× auf allem gelesen wird."

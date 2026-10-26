@@ -255,7 +255,9 @@
       "gemm-f16-f32": {
         "name": "FP16/FP32 as a cuBLAS GEMM",
         "body": "A different measurement from the issue-rate rows above: a real cuBLAS GEMM at four M.N.K sizes on Turing. Its 1.36–1.64× must not be averaged with the Ada issue-rate numbers."
-      }
+      },
+      "ceilingTitle": "Distance to the dense peak",
+      "ceilingRow": "{card}: {value} {unit} measured against a {ceiling} {unit} dense peak — {pct}% of it."
     },
     "modesTitle": "Benchmarks by compute path",
     "modesBody": "Each card was measured on several instruction paths, and the unlock moves only some of them. Grouping the rows by what they actually exercise keeps a 2.0× on a fused-multiply path from being read as a 2.0× on everything."

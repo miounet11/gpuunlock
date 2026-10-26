@@ -187,3 +187,62 @@ test("family membership follows the chip prefix, not a hand-kept list", async ()
   assert.ok(amp.total > 0);
   assert.equal(amp.measured, 0, "no Ampere board has a same-card run in this repo");
 });
+
+test("a ceiling is never published alone", () => {
+  for (const r of allRows) {
+    if (r.ceiling === undefined) continue;
+    assert.ok(r.ceilingKind, `${r.cardSlug} ${r.mode}: ceiling without ceilingKind`);
+    assert.ok(r.ceilingBasis, `${r.cardSlug} ${r.mode}: ceiling without ceilingBasis`);
+    assert.ok(["spec", "derived"].includes(r.ceilingKind), "unexpected ceilingKind");
+    assert.ok(r.ceiling > 0);
+  }
+});
+
+test("a measured value does not exceed its own ceiling", () => {
+  for (const r of allRows) {
+    if (r.ceiling === undefined) continue;
+    assert.ok(
+      r.unlocked <= r.ceiling * 1.05,
+      `${r.cardSlug} ${r.mode}: ${r.unlocked} is above the ${r.ceiling} ceiling`,
+    );
+  }
+});
+
+test("the scaled FP8 ceiling reproduces from its stated arithmetic", () => {
+  // If the basis prose and the number drift apart, the page would cite a derivation
+  // that does not produce the figure shown next to it.
+  const fp8 = allRows.find((r) => r.mode === "e4m3/f32");
+  assert.ok(fp8?.ceiling);
+  const scaled = 330.3 * (66 / 128) * (2.61 / 2.52);
+  assert.ok(
+    Math.abs(fp8.ceiling - scaled * 1000) < 200,
+    `ceiling ${fp8.ceiling} GFLOP/s vs recomputed ${(scaled * 1000).toFixed(0)}`,
+  );
+  assert.equal(fp8.ceilingKind, "derived");
+});
+
+test("the ceiling block has labels in every locale", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const loc of ["en", "zh", "ja", "de", "fr", "es", "pt"]) {
+    const m = JSON.parse(
+      readFileSync(new URL(`../messages/${loc}.json`, import.meta.url), "utf8"),
+    );
+    for (const key of ["ceilingTitle", "ceilingRow"]) {
+      assert.ok(m.bench.modes[key], `${loc}.json bench.modes.${key} is missing`);
+    }
+    // A translator dropping a placeholder would render a literal "{pct}".
+    for (const ph of ["{card}", "{value}", "{ceiling}", "{pct}"]) {
+      assert.ok(
+        m.bench.modes.ceilingRow.includes(ph),
+        `${loc}.json ceilingRow is missing ${ph}`,
+      );
+    }
+  }
+});
+
+test("only quantities this repository has a peak for carry a ceiling", () => {
+  // TF/s rows and the GFLOP/s row are different quantities; a ceiling placed on the
+  // wrong one would invite a comparison across them.
+  const withCeiling = allRows.filter((r) => r.ceiling !== undefined);
+  assert.deepEqual(withCeiling.map((r) => r.mode), ["e4m3/f32"]);
+});

@@ -26,6 +26,9 @@ function measuredFor(group: ModeGroup) {
         ratio: r.ratio,
         iters: r.iters,
         note: r.note,
+        ceiling: r.ceiling,
+        ceilingKind: r.ceilingKind,
+        ceilingBasis: r.ceilingBasis,
       })),
   );
 }
@@ -81,6 +84,7 @@ export default async function ModePage({
   const tBench = await getTranslations("bench");
   const name = t(`${group.id}.name`);
   const best = rows.reduce((a, b) => (b.ratio > a.ratio ? b : a), rows[0]);
+  const ceilingRows = rows.filter((r) => r.ceiling !== undefined);
   const changed = rows.filter((r) => r.ratio >= 1.01).length;
 
   return (
@@ -142,6 +146,30 @@ export default async function ModePage({
         </p>
         <p>{group.method}</p>
       </div>
+
+      {/* Only shown when a row carries a ceiling, and always with its derivation. The
+          distance to the peak is the finding: one GEMM at a third of the dense rate is
+          not the same statement as an issue-rate loop at the limit. */}
+      {ceilingRows.length > 0 && (
+        <div className="callout">
+          <p>
+            <strong>{t("ceilingTitle")}</strong>
+          </p>
+          {ceilingRows.map((r) => (
+            <p key={`${r.cardSlug}-${r.mode}`} className="meta">
+              {t("ceilingRow", {
+                card: r.card,
+                value: r.unlocked.toFixed(0),
+                unit: r.unit,
+                ceiling: r.ceiling!.toFixed(0),
+                pct: ((r.unlocked / r.ceiling!) * 100).toFixed(1),
+              })}
+              <br />
+              <span className="meta">{r.ceilingBasis}</span>
+            </p>
+          ))}
+        </div>
+      )}
 
       <section className="section">
         <h2>{t("tableTitle")}</h2>
