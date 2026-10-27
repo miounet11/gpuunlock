@@ -20,7 +20,14 @@
     "footerSister": "Sister site",
     "installHome": "gpu-unlock.com",
     "sisterInstall": "Build and install guide",
-    "sisterFaq": "FAQ"
+    "sisterFaq": "FAQ",
+    "footerFriends": "Friends",
+    "footerFriendsNote": "Sister sites on this host — each links back here.",
+    "footerFriend_gpuunlockInstall": "Build, boot order and verification steps for the unlock",
+    "footerFriend_stratat": "Inference economics on your own NVIDIA GPUs",
+    "footerFriend_cleanyourtv": "A quiet Android TV launcher, without ads or recommendations",
+    "footerFriend_jevcode": "Concepts, API and ecosystem notes for clavue-jev",
+    "footerFriend_androidadcleaner": "Turn off vendor bloat ads over adb, no root required"
   },
   "home": {
     "title": "GPU Unlock — which NVIDIA cards are supported, and the measured numbers",

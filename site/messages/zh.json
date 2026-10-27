@@ -20,7 +20,14 @@
     "footerSister": "姊妹站点",
     "installHome": "gpu-unlock.com",
     "sisterInstall": "构建与安装指南",
-    "sisterFaq": "常见问题"
+    "sisterFaq": "常见问题",
+    "footerFriends": "友链",
+    "footerFriendsNote": "同一台服务器上的友站，均回链本站。",
+    "footerFriend_gpuunlockInstall": "解锁的构建、启动顺序与验证步骤",
+    "footerFriend_stratat": "在自有 NVIDIA GPU 上算推理的经济账",
+    "footerFriend_cleanyourtv": "安静的 Android TV 桌面，没有广告与推荐流",
+    "footerFriend_jevcode": "clavue-jev 的概念、API 与生态笔记",
+    "footerFriend_androidadcleaner": "用 adb 关掉厂商广告，无需 root"
   },
   "home": {
     "title": "GPU Unlock — 支持的 NVIDIA 显卡、实测提速与安装步骤",

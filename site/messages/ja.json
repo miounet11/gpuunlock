@@ -20,7 +20,14 @@
     "footerSister": "姉妹サイト",
     "installHome": "gpu-unlock.com",
     "sisterInstall": "ビルドとインストール",
-    "sisterFaq": "よくある質問"
+    "sisterFaq": "よくある質問",
+    "footerFriends": "リンク",
+    "footerFriendsNote": "同じホストの姉妹サイト。いずれも相互リンクです。",
+    "footerFriend_gpuunlockInstall": "アンロックのビルド・起動順・検証手順",
+    "footerFriend_stratat": "自前の NVIDIA GPU で推論コストを計算",
+    "footerFriend_cleanyourtv": "広告も推薦もない、静かな Android TV ランチャー",
+    "footerFriend_jevcode": "clavue-jev の概念・API・エコシステム",
+    "footerFriend_androidadcleaner": "adb でメーカー広告を停止、root 不要"
   },
   "home": {
     "title": "GPU Unlock — 対応 NVIDIA カード、実測の高速化、導入手順",

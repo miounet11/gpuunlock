@@ -4,6 +4,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { SITE_NAME, REPOS, INSTALL_SITE } from "@/lib/site";
+import { FRIEND_SITES, friendUrl } from "@/data/friends";
 import { NavShell } from "@/components/nav-shell";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -157,6 +158,25 @@ export default async function LocaleLayout({
                         {nav.installHome ?? "gpu-unlock.com"}
                       </a>
                     </li>
+                  </ul>
+                </div>
+                <div>
+                  {/* The other sites on this host, all of which link back here. gpu-unlock.com
+                      is omitted on purpose: the Sister site group above already links to it
+                      three times, and repeating it would make the same host appear twice. */}
+                  <h3>{nav.footerFriends ?? "Friends"}</h3>
+                  <ul>
+                    {FRIEND_SITES.filter((site) => site.origin !== INSTALL_SITE).map((site) => (
+                      <li key={site.origin}>
+                        <a
+                          href={friendUrl(site, locale)}
+                          rel="friend noopener noreferrer"
+                          title={nav[`footerFriend_${site.slug}`] ?? site.description}
+                        >
+                          {site.name}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </div>
                 <div>

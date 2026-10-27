@@ -20,7 +20,14 @@
     "footerSister": "Schwesterseite",
     "installHome": "gpu-unlock.com",
     "sisterInstall": "Bauen und installieren",
-    "sisterFaq": "FAQ"
+    "sisterFaq": "FAQ",
+    "footerFriends": "Partner",
+    "footerFriendsNote": "Schwesterseiten auf diesem Host — jede verlinkt hierher zurück.",
+    "footerFriend_gpuunlockInstall": "Build, Startreihenfolge und Prüfschritte zum Unlock",
+    "footerFriend_stratat": "Inferenzkosten auf eigenen NVIDIA-GPUs",
+    "footerFriend_cleanyourtv": "Ein ruhiger Android-TV-Launcher ohne Werbung und Empfehlungen",
+    "footerFriend_jevcode": "Konzepte, API und Ökosystem-Notizen zu clavue-jev",
+    "footerFriend_androidadcleaner": "Herstellerwerbung per adb abschalten, ohne Root"
   },
   "home": {
     "title": "GPU Unlock — unterstützte NVIDIA-Karten, gemessene Beschleunigung, Installationsschritte",
