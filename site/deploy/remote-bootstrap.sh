@@ -130,7 +130,44 @@ if [ -n "$old_trees" ]; then
 fi
 
 echo "==> restarting pm2 process"
-pm2 restart gpuunlock --update-env >/dev/null 2>&1 || pm2 start "$APP_DIR/ecosystem.config.cjs"
+# The pm2 config travels with the source (`site/deploy/ecosystem.config.cjs`), not with the host.
+# Referring to `$APP_DIR/ecosystem.config.cjs` only worked because a hand-made copy happened to
+# sit there; on a freshly reinstalled host — where nothing under /opt/gpuunlock exists yet — pm2
+# would have nothing to start and the deploy would fail after the tree was already swapped.
+#
+# The config is rendered here rather than read from the repo because the committed copy hardcodes
+# /opt/gpuunlock/.next/standalone: honouring GPUUNLOCK_DIR would then start pm2 in one directory
+# while the tree was swapped into another, and the process would serve whatever was there before.
+PM2_CONF="$APP_DIR/ecosystem.config.cjs"
+cat >"$PM2_CONF" <<EOF
+module.exports = {
+  apps: [
+    {
+      name: "gpuunlock",
+      cwd: "$LIVE",
+      script: "server.js",
+      env: { NODE_ENV: "production", PORT: "3300", HOSTNAME: "127.0.0.1" },
+      max_memory_restart: "512M",
+      instances: 1,
+      exec_mode: "fork",
+    },
+  ],
+};
+EOF
+if pm2 describe gpuunlock >/dev/null 2>&1; then
+  # `pm2 restart` reuses the cwd recorded at start time, so a moved tree would keep serving the
+  # old path. Only recreate the process when the path actually changed — delete-then-start always
+  # leaves a gap, and the normal case (same path, new build) does not need one.
+  # pm2 pads the table column, so the captured value carries trailing spaces; without the trim
+  # the comparison is always unequal and every deploy recreates the process for nothing.
+  stored_cwd=$(pm2 describe gpuunlock 2>/dev/null | sed -n 's/.*exec cwd *│ *\(.*\) *│.*/\1/p' | head -1 | sed 's/[[:space:]]*$//')
+  if [ -n "$stored_cwd" ] && [ "$stored_cwd" != "$LIVE" ]; then
+    echo "    cwd moved: $stored_cwd -> $LIVE; recreating the pm2 process" >&2
+    pm2 delete gpuunlock >/dev/null 2>&1 || true
+  fi
+fi
+pm2 start "$PM2_CONF" >/dev/null 2>&1 || pm2 restart gpuunlock --update-env >/dev/null 2>&1
+pm2 save >/dev/null 2>&1 || true
 sleep 4
 
 # The live tree was already swapped, so a process that did not come back leaves disk and
