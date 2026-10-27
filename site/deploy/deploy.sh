@@ -50,7 +50,7 @@ rsync -az --delete \
   "$ROOT/" "$USER@$HOST:$REMOTE/"
 
 echo "==> building and restarting on host"
-ssh "${SSH_OPTS[@]}" "$USER@$HOST" "chmod +x $REMOTE/deploy/remote-bootstrap.sh && $REMOTE/deploy/remote-bootstrap.sh"
+ssh "${SSH_OPTS[@]}" "$USER@$HOST" "chmod +x $REMOTE/deploy/remote-bootstrap.sh $REMOTE/deploy/nginx-install.sh && $REMOTE/deploy/remote-bootstrap.sh"
 
 echo "==> verifying $DEPLOY_URL against this build"
 cd "$ROOT" && DEPLOY_HOST="$DEPLOY_URL" npm run --silent verify:deploy

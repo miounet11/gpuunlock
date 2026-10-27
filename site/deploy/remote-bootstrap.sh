@@ -189,4 +189,12 @@ if [ "$code" != "200" ]; then
   exit 1
 fi
 
+# The app answering on loopback is not the site being up: nginx is what the public reaches, and
+# its vhost, analytics snippet and log_format used to exist only on this host. A reinstall wiped
+# them, so the deploy could restore the process and still serve nothing. Installed after the
+# :3300 check above, because the vhost proxies to that port and installing it earlier would
+# reload nginx onto a dead upstream.
+echo "==> configuring nginx"
+APP_DIR="$APP_DIR" "$SITE/deploy/nginx-install.sh"
+
 echo "==> deploy done"
