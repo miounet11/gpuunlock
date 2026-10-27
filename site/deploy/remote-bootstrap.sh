@@ -70,14 +70,17 @@ if [ -z "$SMOKE_PORT" ]; then
 fi
 
 echo "==> smoke test on :$SMOKE_PORT"
-( cd "$STANDALONE" && PORT="$SMOKE_PORT" HOSTNAME=127.0.0.1 node server.js >/tmp/gpuunlock-smoke.log 2>&1 & echo $! >/tmp/gpuunlock-smoke.pid )
+# `exec` matters: without it `$!` is the PID of the subshell that runs `cd && node`, not of
+# node itself, so the `kill` below reaped the wrapper and left the server running. Five of them
+# had piled up on this host (3399-3403, ~540M) before anyone noticed — one per deploy.
+( cd "$STANDALONE" && exec env PORT="$SMOKE_PORT" HOSTNAME=127.0.0.1 node server.js >/tmp/gpuunlock-smoke.log 2>&1 ) &
+SMOKE_PID=$!
 sleep 5
 smoke_fail=0
 if ! grep -q 'Ready in' /tmp/gpuunlock-smoke.log 2>/dev/null; then
   echo "smoke server did not start on :$SMOKE_PORT; see /tmp/gpuunlock-smoke.log" >&2
   tail -5 /tmp/gpuunlock-smoke.log >&2 || true
-  kill "$(cat /tmp/gpuunlock-smoke.pid 2>/dev/null)" 2>/dev/null || true
-  rm -f /tmp/gpuunlock-smoke.pid
+  kill "$SMOKE_PID" 2>/dev/null || true
   exit 1
 fi
 for path in /en /en/windows /en/gpus /en/benchmarks/tensor-fp8 /ja/gpus/rtx-4090; do
@@ -89,8 +92,15 @@ done
 unknown=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://127.0.0.1:$SMOKE_PORT/en/gpus/rtx-9999" || echo 000)
 echo "    /en/gpus/rtx-9999 -> $unknown (want 404)"
 [ "$unknown" = "404" ] || smoke_fail=1
-kill "$(cat /tmp/gpuunlock-smoke.pid 2>/dev/null)" 2>/dev/null || true
-rm -f /tmp/gpuunlock-smoke.pid
+
+# Reap by port as well as by PID. The PID is correct now, but a smoke server that outlives the
+# script holds a port in the range the next deploy probes, and that is how a stale tree answered
+# a smoke test once already.
+kill "$SMOKE_PID" 2>/dev/null || true
+wait "$SMOKE_PID" 2>/dev/null || true
+if command -v lsof >/dev/null 2>&1; then
+  lsof -nP -iTCP:"$SMOKE_PORT" -sTCP:LISTEN -t 2>/dev/null | xargs -r kill -9 2>/dev/null || true
+fi
 
 if [ "$smoke_fail" -ne 0 ]; then
   echo "smoke test failed; live tree untouched" >&2
@@ -108,11 +118,38 @@ chown -R root:root "$LIVE"
 
 # Keep the two most recent previous trees; this host has 81G free but old builds are 100M each
 # and nothing ever pruned them.
-ls -dt "$LIVE".old-* 2>/dev/null | tail -n +3 | xargs -r rm -rf
+#
+# Pruning must never abort the deploy. Under `set -euo pipefail` the bare
+# `ls ... | tail ... | xargs ...` returns 1 whenever no old tree matches — on the first deploy to
+# a clean host, or after a previous run already pruned — and because this sits between the
+# `cp -a` and the pm2 restart, the script died with the new tree on disk and the *old* process
+# still serving it. The state looked deployed and was not.
+old_trees=$(ls -dt "$LIVE".old-* 2>/dev/null | tail -n +3 || true)
+if [ -n "$old_trees" ]; then
+  printf '%s\n' "$old_trees" | xargs -r rm -rf || echo "warning: could not prune old trees" >&2
+fi
 
 echo "==> restarting pm2 process"
 pm2 restart gpuunlock --update-env >/dev/null 2>&1 || pm2 start "$APP_DIR/ecosystem.config.cjs"
 sleep 4
-pm2 list | grep -E 'gpuunlock' || true
+
+# The live tree was already swapped, so a process that did not come back leaves disk and
+# process disagreeing — exactly the state this script exists to avoid. Check the port answers,
+# not just that pm2 printed a row.
+if ! pm2 list | grep -q 'gpuunlock.*online'; then
+  echo "pm2 did not bring gpuunlock back online; run: pm2 logs gpuunlock" >&2
+  pm2 list | grep gpuunlock >&2 || true
+  exit 1
+fi
+for attempt in 1 2 3 4 5; do
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://127.0.0.1:3300/en || echo 000)
+  [ "$code" = "200" ] && break
+  sleep 2
+done
+echo "    local :3300/en -> $code"
+if [ "$code" != "200" ]; then
+  echo "the restarted process is not serving on :3300" >&2
+  exit 1
+fi
 
 echo "==> deploy done"
